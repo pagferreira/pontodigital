@@ -594,15 +594,18 @@ function abrirModal(id){ document.getElementById(id).classList.add('on'); }
 setInterval(()=>{ ['d-hr','r-hr','a-hr'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=new Date().toTimeString().slice(0,5);}); },60000);
 
 // ── AUTH ──────────────────────────────────────────────────────
-sb.auth.onAuthStateChange(async(_,session)=>{
+sb.auth.onAuthStateChange(async(event,session)=>{
+  if(event==='TOKEN_REFRESHED') return;
   if(session?.user){
     ST.user=session.user;
     await loadPerfil();
     await loadCfg();
     const p=ST.perfil?.perfil;
-    if(p==='admin')    navA('s-adm');
-    else if(p==='usuario') navU('s-dash');
-    else               ir('s-pendente');
+    console.log('Perfil carregado:', p, ST.perfil);
+    if(p==='admin')         navA('s-adm');
+    else if(p==='usuario')  navU('s-dash');
+    else if(p==='pendente') ir('s-pendente');
+    else { console.warn('Perfil null - user:', ST.user.id); ir('s-pendente'); }
   } else {
     ST.user=null; ST.perfil=null; ir('s-login');
   }
@@ -648,8 +651,11 @@ async function recuperarSenha(){
 
 // ── PERFIL ────────────────────────────────────────────────────
 async function loadPerfil(){
-  const{data}=await sb.from('perfis').select('*').eq('id',ST.user.id).single();
-  ST.perfil=data;
+  try {
+    const{data,error}=await sb.from('perfis').select('*').eq('id',ST.user.id).single();
+    if(error){ console.error('Erro loadPerfil:', error); ST.perfil=null; return; }
+    ST.perfil=data;
+  } catch(e){ console.error('Excecao loadPerfil:', e); ST.perfil=null; }
 }
 
 async function salvarPerfil(){
