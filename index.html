@@ -2,1084 +2,1074 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ponto Eletrônico</title>
 <script>
-  const CONFIG = {
-    SUPABASE_URL:      "https://xdsoeijpmaqflibjabmo.supabase.co",
-    SUPABASE_KEY:      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkc29laWpwbWFxZmxpYmphYm1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NzE4ODcsImV4cCI6MjA5MzI0Nzg4N30.kEl9MfHu_Qt1RNjoRzqpwtUwIqHHfUTxpyNPA_KGQ88",
-    EMAILJS_SERVICE:   "pontodigital",
-    EMAILJS_TEMPLATE:  "template_y59wfpn",
-    EMAILJS_KEY:       "8QaTJMLh3VNT8VjNk",
-  };
+const CONFIG = {
+  SUPABASE_URL:     "https://xdsoeijpmaqflibjabmo.supabase.co",
+  SUPABASE_KEY:     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkc29laWpwbWFxZmxpYmphYm1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NzE4ODcsImV4cCI6MjA5MzI0Nzg4N30.kEl9MfHu_Qt1RNjoRzqpwtUwIqHHfUTxpyNPA_KGQ88",
+  EMAILJS_SERVICE:  "pontodigital",
+  EMAILJS_TEMPLATE: "template_y59wfpn",
+  EMAILJS_KEY:      "8QaTJMLh3VNT8VjNk",
+};
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-:root {
-  --bg:#0a0d14;--s1:#111520;--s2:#181e2e;--s3:#1f2740;
+:root{
+  --bg:#0a0d14;--s1:#111520;--s2:#181e2e;
   --bd:#252d42;--bd2:#2e3a55;
-  --acc:#5b8df5;--acc2:#38d89e;--acc3:#f5c842;--acc4:#e85f5f;--acc5:#9b7fe8;
+  --acc:#5b8df5;--acc2:#38d89e;--acc4:#e85f5f;--acc5:#9b7fe8;
   --t1:#eef0f6;--t2:#7d8ba8;--t3:#3d4d68;
   --green:#38d89e;--yellow:#f5c842;--red:#e85f5f;--blue:#5b8df5;--purple:#9b7fe8;--draft:#f59e42;
   --ff:'Mulish',sans-serif;--fm:'Syne',sans-serif;--fc:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);font-family:var(--ff);color:var(--t1);overflow:hidden;}
-input,button,select,textarea{font-family:var(--ff);}
+input,button,select{font-family:var(--ff);}
 button{cursor:pointer;}
-#app{width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;}
-.screen{display:none;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;}
-.screen.active{display:flex;}
-.screen::-webkit-scrollbar{width:3px;}
-.screen::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
-.sbar{display:flex;justify-content:space-between;padding:12px 20px 4px;font-size:.68rem;font-weight:700;font-family:var(--fc);color:var(--t1);flex-shrink:0;}
+#app{width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
+/* SCREENS */
+.scr{display:none;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;}
+.scr.on{display:flex;}
+.scr::-webkit-scrollbar{width:3px;}
+.scr::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
+/* COMMON */
+.sbar{display:flex;justify-content:space-between;padding:12px 20px 4px;font-size:.68rem;font-weight:700;font-family:var(--fc);flex-shrink:0;}
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;}
-.topbar-info h2{font-family:var(--fm);font-size:.95rem;font-weight:700;letter-spacing:-.02em;}
-.topbar-info span{font-size:.68rem;color:var(--t2);}
-.avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;font-family:var(--fm);}
+.topbar h2{font-family:var(--fm);font-size:.95rem;font-weight:700;letter-spacing:-.02em;}
+.topbar span{font-size:.68rem;color:var(--t2);}
+.av{width:34px;height:34px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;font-family:var(--fm);flex-shrink:0;}
 .bnav{display:flex;justify-content:space-around;padding:10px 0 max(18px,env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--bd);flex-shrink:0;}
-.bni{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.58rem;font-weight:700;color:var(--t3);cursor:pointer;letter-spacing:.03em;-webkit-tap-highlight-color:transparent;}
-.bni.active{color:var(--acc);}
-.bni-ic{font-size:1.2rem;}
-.slabel{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--t3);padding:14px 18px 8px;flex-shrink:0;}
-.back-row{display:flex;align-items:center;gap:10px;padding:10px 16px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;}
+.bni{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.56rem;font-weight:700;color:var(--t3);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.bni.on{color:var(--acc);}
+.bni-ic{font-size:1.15rem;}
+.sl{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--t3);padding:14px 18px 8px;flex-shrink:0;}
+.bkrow{display:flex;align-items:center;gap:10px;padding:10px 16px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;}
 .bk{width:32px;height:32px;background:var(--s1);border:1px solid var(--bd);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--t2);cursor:pointer;}
-.back-row h3{font-family:var(--fm);font-size:.9rem;font-weight:700;}
-.back-row span{font-size:.68rem;color:var(--t2);}
-.btn{border:none;border-radius:13px;padding:14px;font-family:var(--fm);font-size:.88rem;font-weight:700;letter-spacing:-.01em;transition:opacity .15s;}
+.bkrow h3{font-family:var(--fm);font-size:.9rem;font-weight:700;}
+.bkrow p{font-size:.68rem;color:var(--t2);}
+/* BUTTONS */
+.btn{border:none;border-radius:13px;padding:14px;font-family:var(--fm);font-size:.88rem;font-weight:700;transition:opacity .15s;}
 .btn:active{opacity:.82;}
-.btn-primary{background:linear-gradient(135deg,var(--acc),#4a7ae8);color:#fff;box-shadow:0 8px 20px rgba(91,141,245,.28);}
-.btn-green{background:linear-gradient(135deg,var(--acc2),#28c48a);color:#fff;box-shadow:0 8px 20px rgba(56,216,158,.25);}
-.btn-red{background:linear-gradient(135deg,var(--acc4),#c93030);color:#fff;box-shadow:0 8px 20px rgba(232,95,95,.25);}
+.btn-p{background:linear-gradient(135deg,var(--acc),#4a7ae8);color:#fff;box-shadow:0 8px 20px rgba(91,141,245,.28);}
+.btn-g{background:linear-gradient(135deg,var(--acc2),#28c48a);color:#fff;box-shadow:0 8px 20px rgba(56,216,158,.25);}
+.btn-r{background:linear-gradient(135deg,var(--acc4),#c93030);color:#fff;box-shadow:0 8px 20px rgba(232,95,95,.25);}
 .btn-ghost{background:rgba(91,141,245,.1);border:1px solid rgba(91,141,245,.25);color:var(--acc);}
 .btn-draft{background:rgba(245,159,66,.12);border:1px solid rgba(245,159,66,.3);color:var(--draft);}
-.btn-warn{background:rgba(232,95,95,.1);border:1px solid rgba(232,95,95,.25);color:var(--red);}
-.btn-full{width:100%;}
+.btn-w{width:100%;}
 .btn-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.fgroup{margin-bottom:14px;}
-.flabel{display:block;font-size:.68rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
-.finput{width:100%;background:var(--s1);border:1px solid var(--bd2);border-radius:12px;padding:13px 15px;color:var(--t1);font-family:var(--ff);font-size:.9rem;outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;}
-.finput:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(91,141,245,.14);}
-.finput::placeholder{color:var(--t3);}
-.fselect{width:100%;background:var(--s1);border:1px solid var(--bd2);border-radius:12px;padding:13px 15px;color:var(--t1);font-family:var(--ff);font-size:.9rem;outline:none;-webkit-appearance:none;appearance:none;}
+/* FORM */
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:.68rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.fi{width:100%;background:var(--s1);border:1px solid var(--bd2);border-radius:12px;padding:13px 15px;color:var(--t1);font-size:.9rem;outline:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s;}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(91,141,245,.14);}
+.fi::placeholder{color:var(--t3);}
+select.fi{cursor:pointer;}
+/* CARDS */
 .cards2{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px;flex-shrink:0;}
 .card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:13px 12px;}
-.card.cg{border-color:rgba(56,216,158,.28);background:rgba(56,216,158,.05);}
-.card.cb{border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);}
-.card.cy{border-color:rgba(245,200,66,.28);background:rgba(245,200,66,.05);}
-.card.cr{border-color:rgba(232,95,95,.28);background:rgba(232,95,95,.05);}
-.card.cp{border-color:rgba(155,127,232,.28);background:rgba(155,127,232,.05);}
-.card-ic{font-size:1.1rem;margin-bottom:7px;}
-.card-v{font-family:var(--fc);font-size:1.2rem;font-weight:600;letter-spacing:-.02em;}
-.card-v.g{color:var(--green);}.card-v.b{color:var(--blue);}.card-v.y{color:var(--yellow);}.card-v.r{color:var(--red);}.card-v.p{color:var(--purple);}
-.card-l{font-size:.68rem;color:var(--t2);margin-top:2px;line-height:1.3;}
-.cal-wrap{padding:0 14px;flex-shrink:0;}
+.cg{border-color:rgba(56,216,158,.28);background:rgba(56,216,158,.05);}
+.cb{border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);}
+.cy{border-color:rgba(245,200,66,.28);background:rgba(245,200,66,.05);}
+.cr{border-color:rgba(232,95,95,.28);background:rgba(232,95,95,.05);}
+.cp{border-color:rgba(155,127,232,.28);background:rgba(155,127,232,.05);}
+.cv{font-family:var(--fc);font-size:1.2rem;font-weight:600;letter-spacing:-.02em;margin-top:7px;}
+.cv.g{color:var(--green);}.cv.b{color:var(--blue);}.cv.y{color:var(--yellow);}.cv.r{color:var(--red);}.cv.p{color:var(--purple);}
+.cl{font-size:.68rem;color:var(--t2);margin-top:2px;line-height:1.3;}
+/* CALENDAR */
+.cal{padding:0 14px;flex-shrink:0;}
 .cal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .cal-mo{font-family:var(--fm);font-size:.82rem;font-weight:700;}
-.cal-navs{display:flex;gap:4px;}
+.cal-nav{display:flex;gap:4px;}
 .cal-nb{width:28px;height:28px;background:var(--s1);border:1px solid var(--bd);border-radius:7px;color:var(--t2);font-size:.75rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.cal-dnames{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
-.cal-dn{text-align:center;font-size:.6rem;font-weight:800;color:var(--t3);padding:3px 0;letter-spacing:.05em;}
+.cal-dn{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
+.cal-d{text-align:center;font-size:.6rem;font-weight:800;color:var(--t3);padding:3px 0;letter-spacing:.05em;}
 .cal-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .cc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fc);transition:transform .1s;-webkit-tap-highlight-color:transparent;}
-.cc:active{transform:scale(.92);}
-.cc.empty,.cc.wk{background:transparent;pointer-events:none;}
+.cc:active{transform:scale(.9);}
+.cc.e,.cc.wk{background:transparent;pointer-events:none;}
 .cc.wk{color:var(--t3);opacity:.35;}
 .cc.ok{background:rgba(56,216,158,.2);color:var(--green);}
-.cc.draft{background:rgba(245,159,66,.2);color:var(--draft);}
-.cc.folga{background:rgba(91,141,245,.18);color:var(--blue);}
-.cc.today{background:var(--acc);color:#fff;box-shadow:0 0 14px rgba(91,141,245,.5);}
-.cc.miss{background:rgba(232,95,95,.18);color:var(--red);}
-.cc.fut{color:var(--t3);}
+.cc.dr{background:rgba(245,159,66,.2);color:var(--draft);}
+.cc.fl{background:rgba(91,141,245,.18);color:var(--blue);}
+.cc.td{background:var(--acc);color:#fff;box-shadow:0 0 14px rgba(91,141,245,.5);}
+.cc.ms{background:rgba(232,95,95,.18);color:var(--red);}
+.cc.ft{color:var(--t3);}
 .leg{display:flex;flex-wrap:wrap;gap:8px 12px;padding:10px 14px;flex-shrink:0;}
 .li{display:flex;align-items:center;gap:4px;font-size:.64rem;color:var(--t2);}
 .ld{width:8px;height:8px;border-radius:3px;}
-.ld-ok{background:var(--green);}.ld-draft{background:var(--draft);}.ld-miss{background:var(--red);}.ld-folga{background:var(--blue);}.ld-today{background:var(--acc);}
-.tfields{padding:0 14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0;}
+/* TIME FIELDS */
+.tfs{padding:0 14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0;}
 .tf{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
-.tf.filled{border-color:rgba(56,216,158,.38);background:rgba(56,216,158,.04);}
-.tf.draft-f{border-color:rgba(245,159,66,.38);background:rgba(245,159,66,.04);}
-.tf-lbl{font-size:.66rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
-.tf-val{font-family:var(--fc);font-size:1.25rem;font-weight:600;background:transparent;border:none;color:var(--t1);outline:none;width:90px;}
-.tf-val::placeholder{color:var(--t3);}
-.tf-ic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
-.tf-ok{background:var(--green);color:#fff;}
-.tf-pend{background:var(--s2);border:2px solid var(--bd2);}
-.tf-draft-ic{background:rgba(245,159,66,.2);border:2px solid var(--draft);color:var(--draft);font-size:.65rem;}
-.tog-row{margin:0 14px;background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
-.tog-lbl{font-size:.85rem;font-weight:700;}
-.tog-sub{font-size:.68rem;color:var(--t2);margin-top:2px;}
-.tog{width:42px;height:23px;background:var(--bd2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;}
+.tf.ok{border-color:rgba(56,216,158,.38);background:rgba(56,216,158,.04);}
+.tf.dr{border-color:rgba(245,159,66,.38);background:rgba(245,159,66,.04);}
+.tfl{font-size:.66rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
+.tfv{font-family:var(--fc);font-size:1.25rem;font-weight:600;background:transparent;border:none;color:var(--t1);outline:none;width:90px;}
+.tfv::placeholder{color:var(--t3);}
+.tfic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
+.tfic-ok{background:var(--green);color:#fff;}
+.tfic-pend{background:var(--s2);border:2px solid var(--bd2);}
+.tfic-dr{background:rgba(245,159,66,.2);border:2px solid var(--draft);color:var(--draft);font-size:.65rem;}
+/* TOGGLE */
+.tog-row{margin:0 14px;background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.tog{width:42px;height:23px;background:var(--bd2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .tog.on{background:var(--acc2);}
 .tog-k{width:17px;height:17px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 .tog.on .tog-k{transform:translateX(19px);}
+/* NOTE */
 .note{margin:10px 14px 0;background:rgba(91,141,245,.06);border:1px solid rgba(91,141,245,.15);border-radius:10px;padding:9px 12px;font-size:.68rem;color:var(--t2);display:flex;align-items:flex-start;gap:7px;line-height:1.5;flex-shrink:0;}
-.note.warn{background:rgba(245,200,66,.06);border-color:rgba(245,200,66,.2);}
-.note.success{background:rgba(56,216,158,.06);border-color:rgba(56,216,158,.2);}
-.note.danger{background:rgba(232,95,95,.06);border-color:rgba(232,95,95,.2);}
-#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s2);border:1px solid var(--bd2);border-radius:12px;padding:10px 18px;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;max-width:90vw;white-space:normal;text-align:center;}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-#toast.success{border-color:rgba(56,216,158,.4);color:var(--green);}
-#toast.error{border-color:rgba(232,95,95,.4);color:var(--red);}
-#toast.info{border-color:rgba(91,141,245,.4);color:var(--blue);}
-#loader{position:fixed;inset:0;background:rgba(10,13,20,.85);display:none;align-items:center;justify-content:center;z-index:998;flex-direction:column;gap:12px;}
-#loader.show{display:flex;}
-.spinner{width:36px;height:36px;border:3px solid var(--bd2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;}
+/* TOAST */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s2);border:1px solid var(--bd2);border-radius:12px;padding:10px 18px;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;max-width:88vw;text-align:center;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.s{border-color:rgba(56,216,158,.4);color:var(--green);}
+#toast.e{border-color:rgba(232,95,95,.4);color:var(--red);}
+#toast.i{border-color:rgba(91,141,245,.4);color:var(--blue);}
+/* LOADER */
+#ld{position:fixed;inset:0;background:rgba(10,13,20,.85);display:none;align-items:center;justify-content:center;z-index:998;flex-direction:column;gap:12px;}
+#ld.on{display:flex;}
+.sp{width:36px;height:36px;border:3px solid var(--bd2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-#loader p{font-size:.78rem;color:var(--t2);}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center;z-index:997;}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--s1);border:1px solid var(--bd2);border-radius:22px 22px 0 0;padding:20px 18px 32px;width:100%;max-width:430px;animation:slideUp .25s ease;}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal h3{font-family:var(--fm);font-size:1rem;font-weight:700;margin-bottom:16px;}
-.date-bar{margin:12px 14px 6px;background:var(--s1);border:1px solid var(--bd2);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.db-lbl{font-size:.62rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;}
-.db-val{font-family:var(--fm);font-size:.9rem;font-weight:700;}
-.db-edit{background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);border-radius:8px;padding:5px 11px;color:var(--acc);font-size:.7rem;font-weight:700;cursor:pointer;}
-.profile-hero{padding:20px 18px 16px;background:linear-gradient(180deg,rgba(91,141,245,.08) 0%,transparent 100%);border-bottom:1px solid var(--bd);flex-shrink:0;}
-.ph-av{width:56px;height:56px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-family:var(--fm);font-weight:800;color:#fff;box-shadow:0 8px 24px rgba(91,141,245,.28);margin-bottom:12px;}
-.ph-name{font-family:var(--fm);font-size:1.05rem;font-weight:800;letter-spacing:-.02em;}
-.ph-sub{font-size:.72rem;color:var(--t2);margin-top:3px;}
-.fech-header{padding:16px 18px 14px;background:linear-gradient(180deg,rgba(91,141,245,.08) 0%,transparent 100%);border-bottom:1px solid var(--bd);flex-shrink:0;}
-.fech-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(91,141,245,.14);border:1px solid rgba(91,141,245,.28);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-.fech-name{font-family:var(--fm);font-size:1rem;font-weight:800;}
-.fech-meta{font-size:.72rem;color:var(--t2);margin-top:3px;line-height:1.5;}
+#ld p{font-size:.78rem;color:var(--t2);}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center;z-index:997;}
+.mov.on{display:flex;}
+.mo{background:var(--s1);border:1px solid var(--bd2);border-radius:22px 22px 0 0;padding:20px 18px 32px;width:100%;max-width:430px;animation:su .25s ease;}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mo h3{font-family:var(--fm);font-size:1rem;font-weight:700;margin-bottom:16px;}
+/* LOGIN */
+#s-login,#s-cadastro,#s-pendente{background:var(--bg);justify-content:center;padding:36px 26px;}
+.lmark{width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:22px;box-shadow:0 8px 24px rgba(91,141,245,.35);}
+.lglow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 260px 260px at 50% 20%,rgba(91,141,245,.12),transparent 70%),radial-gradient(ellipse 180px 180px at 80% 80%,rgba(56,216,158,.08),transparent 70%);}
+.lh{font-family:var(--fm);font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1.15;margin-bottom:5px;}
+.ls{color:var(--t2);font-size:.8rem;margin-bottom:32px;}
+.lfoot{margin-top:16px;text-align:center;font-size:.72rem;color:var(--t3);}
+.lfoot a{color:var(--acc);cursor:pointer;}
+/* PERFIL hero */
+.phero{padding:20px 18px 16px;background:linear-gradient(180deg,rgba(91,141,245,.08),transparent);border-bottom:1px solid var(--bd);flex-shrink:0;}
+.phav{width:56px;height:56px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff;box-shadow:0 8px 24px rgba(91,141,245,.28);margin-bottom:12px;}
+.phname{font-family:var(--fm);font-size:1.05rem;font-weight:800;}
+.phsub{font-size:.72rem;color:var(--t2);margin-top:3px;}
+/* FECHAMENTO */
+.fechhdr{padding:16px 18px 14px;background:linear-gradient(180deg,rgba(91,141,245,.08),transparent);border-bottom:1px solid var(--bd);flex-shrink:0;}
+.fechbdg{display:inline-flex;align-items:center;gap:5px;background:rgba(91,141,245,.14);border:1px solid rgba(91,141,245,.28);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.fechnm{font-family:var(--fm);font-size:1rem;font-weight:800;}
+.fechmt{font-size:.72rem;color:var(--t2);margin-top:3px;line-height:1.5;}
 .sum3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:12px 14px;flex-shrink:0;}
 .s3c{background:var(--s1);border:1px solid var(--bd);border-radius:11px;padding:11px 8px;text-align:center;}
 .s3v{font-family:var(--fc);font-size:.95rem;font-weight:600;}
-.s3l{font-size:.6rem;color:var(--t2);margin-top:3px;line-height:1.3;}
-.tbl-wrap{padding:0 14px;flex-shrink:0;overflow-x:auto;}
-.ptbl{width:100%;border-collapse:collapse;font-size:.68rem;}
-.ptbl th{background:var(--s2);color:var(--t2);font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:7px 4px;text-align:center;font-size:.58rem;}
-.ptbl th:first-child{text-align:left;padding-left:6px;}
-.ptbl td{padding:6px 4px;text-align:center;border-bottom:1px solid rgba(37,45,66,.6);font-family:var(--fc);font-size:.66rem;}
-.ptbl td:first-child{text-align:left;font-family:var(--ff);font-weight:700;font-size:.68rem;padding-left:6px;}
-.ptbl tr.wkrow td{color:var(--t3);opacity:.5;}
-.tag-ok{color:var(--green);}.tag-fl{color:var(--blue);}.tag-pl{color:var(--green);font-weight:700;}.tag-mn{color:var(--red);font-weight:700;}.tag-dr{color:var(--draft);}
+.s3l{font-size:.6rem;color:var(--t2);margin-top:3px;}
+/* TABLE */
+.tw{padding:0 14px;flex-shrink:0;overflow-x:auto;}
+.pt{width:100%;border-collapse:collapse;font-size:.67rem;}
+.pt th{background:var(--s2);color:var(--t2);font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:7px 4px;text-align:center;font-size:.57rem;}
+.pt th:first-child{text-align:left;padding-left:6px;}
+.pt td{padding:6px 4px;text-align:center;border-bottom:1px solid rgba(37,45,66,.6);font-family:var(--fc);font-size:.65rem;}
+.pt td:first-child{text-align:left;font-family:var(--ff);font-weight:700;font-size:.67rem;padding-left:6px;}
+.pt .wkr td{color:var(--t3);opacity:.5;}
+.tp{color:var(--green);font-weight:700;}.tm{color:var(--red);font-weight:700;}.tfl{color:var(--blue);}.tdr{color:var(--draft);}.tok{color:var(--green);}
+/* SIGS */
 .sigs{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;flex-shrink:0;}
 .sig{border:1px dashed var(--bd2);border-radius:11px;padding:10px 10px 8px;}
-.sig-line{height:1px;background:var(--bd2);margin:18px 0 7px;}
-.sig-lbl{font-size:.6rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;}
-.sig-name{font-size:.68rem;color:var(--t1);margin-top:3px;}
-.sig-sub{font-size:.6rem;color:var(--t3);margin-top:2px;font-family:var(--fc);}
-.adm-header{padding:14px 18px;background:linear-gradient(180deg,rgba(155,127,232,.1) 0%,transparent 100%);border-bottom:1px solid var(--bd);flex-shrink:0;}
-.adm-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(155,127,232,.14);border:1px solid rgba(155,127,232,.28);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
-.adm-title{font-family:var(--fm);font-size:1rem;font-weight:800;}
-.adm-sub{font-size:.72rem;color:var(--t2);margin-top:3px;}
-.reg-item{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;margin-bottom:8px;}
+.sig-ln{height:1px;background:var(--bd2);margin:18px 0 7px;}
+.sig-lb{font-size:.6rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;}
+.sig-nm{font-size:.68rem;color:var(--t1);margin-top:3px;}
+.sig-sb{font-size:.6rem;color:var(--t3);margin-top:2px;font-family:var(--fc);}
+/* ADMIN */
+.admhdr{padding:14px 18px;background:linear-gradient(180deg,rgba(155,127,232,.1),transparent);border-bottom:1px solid var(--bd);flex-shrink:0;}
+.admbdg{display:inline-flex;align-items:center;gap:5px;background:rgba(155,127,232,.14);border:1px solid rgba(155,127,232,.28);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
+.admtl{font-family:var(--fm);font-size:1rem;font-weight:800;}
+.admsb{font-size:.72rem;color:var(--t2);margin-top:3px;}
+/* FUNC SELECTOR */
+.fsel{margin:0 14px 4px;flex-shrink:0;}
+/* REG ITEMS */
+.ri{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;margin-bottom:8px;}
 .ri-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.ri-date{font-family:var(--fm);font-size:.82rem;font-weight:700;}
-.ri-badge{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:3px 9px;font-size:.62rem;font-weight:800;letter-spacing:.05em;}
-.ri-badge.ok{background:rgba(56,216,158,.15);color:var(--green);}
-.ri-badge.dr{background:rgba(245,159,66,.15);color:var(--draft);}
-.ri-badge.ms{background:rgba(232,95,95,.15);color:var(--red);}
-.ri-badge.fl{background:rgba(91,141,245,.15);color:var(--blue);}
-.ri-times{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;}
-.ri-t{text-align:center;}
-.ri-t-lbl{font-size:.56rem;color:var(--t3);font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
-.ri-t-val{font-family:var(--fc);font-size:.78rem;font-weight:600;margin-top:2px;}
-.ri-t-val.ph{color:var(--t3);}
-.ri-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--bd);}
-.ri-saldo{font-family:var(--fc);font-size:.78rem;font-weight:700;}
+.ri-dt{font-family:var(--fm);font-size:.82rem;font-weight:700;}
+.ri-bdg{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:3px 9px;font-size:.62rem;font-weight:800;}
+.ri-bdg.ok{background:rgba(56,216,158,.15);color:var(--green);}
+.ri-bdg.dr{background:rgba(245,159,66,.15);color:var(--draft);}
+.ri-bdg.ms{background:rgba(232,95,95,.15);color:var(--red);}
+.ri-bdg.fl{background:rgba(91,141,245,.15);color:var(--blue);}
+.ri-times{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:8px;}
+.rit{text-align:center;}
+.rit-l{font-size:.55rem;color:var(--t3);font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+.rit-v{font-family:var(--fc);font-size:.78rem;font-weight:600;margin-top:2px;}
+.rit-v.ph{color:var(--t3);}
+.ri-ft{display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--bd);}
+.ri-sd{font-family:var(--fc);font-size:.78rem;font-weight:700;}
 .ri-ts{font-size:.6rem;color:var(--t3);}
-.cfg-block{margin:0 14px 12px;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px;flex-shrink:0;}
-.cfg-block-title{font-family:var(--fm);font-size:.8rem;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);}
-.cfg-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.cfg-row:last-child{margin-bottom:0;}
-.cfg-lbl{font-size:.78rem;color:var(--t2);}
-.cfg-input{background:var(--s2);border:1px solid var(--bd2);border-radius:8px;padding:7px 10px;color:var(--t1);font-family:var(--fc);font-size:.78rem;width:90px;text-align:center;outline:none;}
-.cfg-input:focus{border-color:var(--acc);}
-.cfg-input.wide{width:100%;margin-top:5px;text-align:left;font-family:var(--ff);}
-/* Usuários pendentes */
-.user-item{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;margin-bottom:8px;}
-.user-item.pendente{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04);}
-.user-item-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.user-item-name{font-family:var(--fm);font-size:.85rem;font-weight:700;}
-.user-item-email{font-size:.68rem;color:var(--t2);margin-top:2px;}
-.user-status{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:3px 9px;font-size:.62rem;font-weight:800;}
-.user-status.pendente{background:rgba(245,200,66,.15);color:var(--yellow);}
-.user-status.usuario{background:rgba(56,216,158,.15);color:var(--green);}
-.user-status.admin{background:rgba(155,127,232,.15);color:var(--purple);}
-.user-actions{display:flex;gap:6px;margin-top:8px;}
-.btn-sm{border:none;border-radius:8px;padding:6px 12px;font-family:var(--fm);font-size:.68rem;font-weight:700;cursor:pointer;}
-.btn-sm-green{background:rgba(56,216,158,.15);color:var(--green);border:1px solid rgba(56,216,158,.3);}
-.btn-sm-red{background:rgba(232,95,95,.15);color:var(--red);border:1px solid rgba(232,95,95,.3);}
-/* Seletor de funcionário */
-.func-selector{margin:0 14px 12px;flex-shrink:0;}
-.func-selector select{width:100%;background:var(--s1);border:1px solid var(--bd2);border-radius:12px;padding:11px 14px;color:var(--t1);font-family:var(--ff);font-size:.85rem;font-weight:600;outline:none;-webkit-appearance:none;cursor:pointer;}
-/* Login */
-#screen-login{background:var(--bg);justify-content:center;padding:40px 26px;}
-.login-glow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 260px 260px at 50% 20%,rgba(91,141,245,.12) 0%,transparent 70%),radial-gradient(ellipse 180px 180px at 80% 80%,rgba(56,216,158,.08) 0%,transparent 70%);}
-.login-mark{width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:22px;box-shadow:0 8px 24px rgba(91,141,245,.35);}
-.login-h{font-family:var(--fm);font-size:1.55rem;font-weight:800;letter-spacing:-.04em;line-height:1.15;margin-bottom:5px;}
-.login-s{color:var(--t2);font-size:.8rem;margin-bottom:36px;}
-.login-foot{margin-top:16px;text-align:center;color:var(--t3);font-size:.72rem;}
-.login-foot a{color:var(--acc);cursor:pointer;}
-/* Pendente */
-#screen-pendente{background:var(--bg);justify-content:center;align-items:center;padding:40px 26px;text-align:center;}
-.pend-ic{font-size:3rem;margin-bottom:16px;}
-.pend-h{font-family:var(--fm);font-size:1.2rem;font-weight:800;margin-bottom:10px;}
-.pend-s{color:var(--t2);font-size:.82rem;line-height:1.6;margin-bottom:28px;}
+/* USER ITEMS */
+.ui{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;margin-bottom:8px;}
+.ui.pend{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04);}
+.ui-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.ui-nm{font-family:var(--fm);font-size:.85rem;font-weight:700;}
+.ui-em{font-size:.68rem;color:var(--t2);margin-top:2px;}
+.ui-st{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:3px 9px;font-size:.62rem;font-weight:800;}
+.ui-st.pend{background:rgba(245,200,66,.15);color:var(--yellow);}
+.ui-st.usuario{background:rgba(56,216,158,.15);color:var(--green);}
+.ui-st.admin{background:rgba(155,127,232,.15);color:var(--purple);}
+.ui-ac{display:flex;gap:6px;margin-top:8px;}
+.bsm{border:none;border-radius:8px;padding:6px 12px;font-family:var(--fm);font-size:.68rem;font-weight:700;cursor:pointer;}
+.bsm-g{background:rgba(56,216,158,.15);color:var(--green);border:1px solid rgba(56,216,158,.3);}
+.bsm-r{background:rgba(232,95,95,.15);color:var(--red);border:1px solid rgba(232,95,95,.3);}
+/* CFG */
+.cfgb{margin:0 14px 12px;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px;flex-shrink:0;}
+.cfgb-t{font-family:var(--fm);font-size:.8rem;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);}
+.cfgr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.cfgr:last-child{margin-bottom:0;}
+.cfgl{font-size:.78rem;color:var(--t2);}
+.cfgi{background:var(--s2);border:1px solid var(--bd2);border-radius:8px;padding:7px 10px;color:var(--t1);font-family:var(--fc);font-size:.78rem;width:90px;text-align:center;outline:none;}
+.cfgi:focus{border-color:var(--acc);}
+.cfgi-w{width:100%;margin-top:5px;text-align:left;font-family:var(--ff);}
+/* PENDENTE */
+#s-pendente{text-align:center;align-items:center;}
+.pnd-ic{font-size:3rem;margin-bottom:16px;}
+.pnd-h{font-family:var(--fm);font-size:1.2rem;font-weight:800;margin-bottom:10px;}
+.pnd-s{color:var(--t2);font-size:.82rem;line-height:1.6;margin-bottom:28px;}
+/* DATE BAR */
+.datebar{margin:12px 14px 6px;background:var(--s1);border:1px solid var(--bd2);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.dbv{font-family:var(--fm);font-size:.9rem;font-weight:700;}
+.dbedit{background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);border-radius:8px;padding:5px 11px;color:var(--acc);font-size:.7rem;font-weight:700;cursor:pointer;}
+
+/* PRINT */
 @media print{
-  body{background:#fff;color:#000;}
+  body{background:#fff;color:#000;overflow:visible;}
   #app{max-width:none;height:auto;overflow:visible;}
-  .screen{display:none!important;}
-  #screen-fechamento.active,#screen-admin-fechamento.active{display:block!important;background:#fff;color:#000;font-family:'Arial',sans-serif;padding:20px;overflow:visible;}
-  .bnav,.topbar,.back-row,.btn,.note,.slabel,.fech-badge{display:none!important;}
-  .fech-header{background:none;border-bottom:2px solid #333;}
-  .fech-name{font-size:14px;font-weight:700;color:#000;}
-  .fech-meta{font-size:11px;color:#555;}
+  .scr{display:none!important;}
+  #s-fechamento.on,#s-adm-fech.on{display:block!important;background:#fff;color:#000;font-family:Arial,sans-serif;padding:16px;overflow:visible;}
+  .bnav,.topbar,.bkrow,.btn,.note,.sl,.fechbdg,#ld,#toast,.mov,.bk{display:none!important;}
+  .fechhdr{background:none;border-bottom:2px solid #000;padding:0 0 10px;margin-bottom:10px;}
+  .fechnm{font-size:13px;font-weight:700;color:#000;}
+  .fechmt{font-size:10px;color:#555;}
   .sum3{margin-bottom:10px;}
-  .s3c{border:1px solid #ccc;background:#f9f9f9;}
-  .s3v{color:#000!important;}
-  .s3l{color:#555;}
-  .ptbl th{background:#333!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .ptbl td{color:#000;}
-  .ptbl tr.wkrow td{color:#bbb;}
-  .tag-pl{color:green!important;}.tag-mn{color:red!important;}.tag-fl{color:#3366cc!important;}.tag-dr{color:#cc6600!important;}
-  .sigs{margin-top:20px;}
-  .sig{border:1px solid #ccc;}
-  .sig-line{background:#333;}
-  .sig-lbl,.sig-sub{color:#555;}
-  .sig-name{color:#000;}
-  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .s3c{border:1px solid #ccc;background:#f8f8f8;padding:8px;}
+  .s3v,.s3l{color:#000!important;}
+  .pt th{background:#222!important;color:#fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  .pt td,.pt th{padding:5px 4px;}
+  .pt .wkr td{color:#aaa;}
+  .tp{color:green!important;}.tm{color:red!important;}.tfl{color:#336!important;}.tdr{color:#930!important;}
+  .sigs{margin-top:16px;}
+  .sig{border:1px solid #ccc;background:#fff;}
+  .sig-ln{background:#333;}
+  .sig-lb,.sig-sb{color:#555;}
+  .sig-nm{color:#000;}
+  *{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
 }
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- ══ LOGIN ══ -->
-<div class="screen active" id="screen-login">
-  <div class="login-glow"></div>
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<div class="scr on" id="s-login">
+  <div class="lglow"></div>
   <div style="position:relative;z-index:1;width:100%">
-    <div class="login-mark">⏱</div>
-    <div class="login-h">Controle<br>de Ponto</div>
-    <div class="login-s">Acesse sua conta para continuar</div>
-    <div class="fgroup"><label class="flabel">E-mail</label><input class="finput" type="email" id="login-email" placeholder="seu@email.com" autocomplete="email"></div>
-    <div class="fgroup"><label class="flabel">Senha</label><input class="finput" type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password"></div>
-    <button class="btn btn-primary btn-full" style="margin-top:8px" onclick="fazerLogin()">Entrar</button>
-    <div class="login-foot" style="margin-top:16px">
-      <a onclick="mostrarCadastro()">Não tem conta? Solicitar acesso</a><br><br>
-      <a onclick="esqueceuSenha()" style="color:var(--t3)">Esqueceu a senha?</a>
+    <div class="lmark">⏱</div>
+    <div class="lh">Controle<br>de Ponto</div>
+    <div class="ls">Acesse sua conta para continuar</div>
+    <div class="fg"><label class="fl">E-mail</label><input class="fi" type="email" id="l-email" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="fg"><label class="fl">Senha</label><input class="fi" type="password" id="l-senha" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn btn-p btn-w" onclick="fazerLogin()">Entrar</button>
+    <div class="lfoot" style="margin-top:18px">
+      <a onclick="ir('s-cadastro')">Não tem conta? Solicitar acesso</a><br><br>
+      <a onclick="recuperarSenha()" style="color:var(--t3)">Esqueceu a senha?</a>
     </div>
   </div>
 </div>
 
-<!-- ══ CADASTRO ══ -->
-<div class="screen" id="screen-cadastro">
-  <div class="login-glow"></div>
-  <div style="position:relative;z-index:1;width:100%;padding:40px 26px">
-    <div class="login-mark">👤</div>
-    <div class="login-h">Criar Conta</div>
-    <div class="login-s">Preencha seus dados para solicitar acesso</div>
-    <div class="fgroup"><label class="flabel">Nome Completo</label><input class="finput" type="text" id="cad-nome" placeholder="Seu nome completo"></div>
-    <div class="fgroup"><label class="flabel">E-mail</label><input class="finput" type="email" id="cad-email" placeholder="seu@email.com"></div>
-    <div class="fgroup"><label class="flabel">Senha</label><input class="finput" type="password" id="cad-senha" placeholder="Mínimo 6 caracteres"></div>
-    <div class="fgroup"><label class="flabel">RG</label><input class="finput" type="text" id="cad-rg" placeholder="XX.XXX.XXX"></div>
-    <div class="fgroup"><label class="flabel">Data de Nascimento</label><input class="finput" type="date" id="cad-nasc"></div>
-    <button class="btn btn-primary btn-full" onclick="fazerCadastro()">Solicitar Acesso</button>
-    <div class="login-foot" style="margin-top:16px"><a onclick="mostrarLogin()">← Voltar para o login</a></div>
+<!-- ══ CADASTRO ════════════════════════════════════════════ -->
+<div class="scr" id="s-cadastro">
+  <div class="lglow"></div>
+  <div style="position:relative;z-index:1;width:100%;padding-top:10px">
+    <div class="lmark">👤</div>
+    <div class="lh">Criar Conta</div>
+    <div class="ls">Preencha seus dados para solicitar acesso</div>
+    <div class="fg"><label class="fl">Nome Completo</label><input class="fi" type="text" id="c-nome" placeholder="Seu nome completo"></div>
+    <div class="fg"><label class="fl">E-mail</label><input class="fi" type="email" id="c-email" placeholder="seu@email.com"></div>
+    <div class="fg"><label class="fl">Senha (mín. 6 caracteres)</label><input class="fi" type="password" id="c-senha" placeholder="••••••••"></div>
+    <div class="fg"><label class="fl">RG</label><input class="fi" type="text" id="c-rg" placeholder="XX.XXX.XXX"></div>
+    <div class="fg"><label class="fl">Data de Nascimento</label><input class="fi" type="date" id="c-nasc"></div>
+    <button class="btn btn-p btn-w" onclick="fazerCadastro()">Solicitar Acesso</button>
+    <div class="lfoot" style="margin-top:16px"><a onclick="ir('s-login')">← Voltar para login</a></div>
   </div>
 </div>
 
-<!-- ══ AGUARDANDO APROVAÇÃO ══ -->
-<div class="screen" id="screen-pendente">
-  <div class="login-glow"></div>
+<!-- ══ AGUARDANDO APROVAÇÃO ════════════════════════════════ -->
+<div class="scr" id="s-pendente">
+  <div class="lglow"></div>
   <div style="position:relative;z-index:1">
-    <div class="pend-ic">⏳</div>
-    <div class="pend-h">Solicitação Enviada</div>
-    <div class="pend-s">Seu cadastro foi recebido e está aguardando aprovação do administrador.<br><br>Você receberá acesso assim que for aprovado.</div>
-    <button class="btn btn-ghost btn-full" onclick="fazerLogout()">Sair</button>
+    <div class="pnd-ic">⏳</div>
+    <div class="pnd-h">Aguardando Aprovação</div>
+    <div class="pnd-s">Seu cadastro foi recebido.<br>Aguarde o administrador liberar seu acesso.<br><br>Você pode tentar logar novamente após a aprovação.</div>
+    <button class="btn btn-ghost btn-w" onclick="fazerLogout()">Sair</button>
   </div>
 </div>
 
-<!-- ══ DASHBOARD (usuário) ══ -->
-<div class="screen" id="screen-dashboard">
-  <div class="sbar"><span id="db-time">09:41</span><span>⚡</span></div>
+<!-- ══ DASHBOARD ════════════════════════════════════════════ -->
+<div class="scr" id="s-dash">
+  <div class="sbar"><span id="d-hr">09:41</span><span>⚡</span></div>
   <div class="topbar">
-    <div class="topbar-info"><h2 id="db-saudacao">Bom dia 👋</h2><span id="db-sub">carregando...</span></div>
-    <div class="avatar" id="db-avatar">?</div>
+    <div><h2 id="d-sauda">Bom dia 👋</h2><span id="d-sub">carregando...</span></div>
+    <div class="av" id="d-av">?</div>
   </div>
-  <div class="slabel">Banco de Horas — <span id="db-mes-label"></span></div>
+  <div class="sl">Banco de Horas — <span id="d-mes"></span></div>
   <div class="cards2">
-    <div class="card cg"><div class="card-ic">⏱</div><div class="card-v g" id="db-saldo">--:--</div><div class="card-l">Saldo do mês</div></div>
-    <div class="card cb"><div class="card-ic">📅</div><div class="card-v b" id="db-dias">-/-</div><div class="card-l">Dias preenchidos</div></div>
-    <div class="card cy"><div class="card-ic">💾</div><div class="card-v y" id="db-rascunhos">0</div><div class="card-l">Rascunhos salvos</div></div>
-    <div class="card cr"><div class="card-ic">⚠️</div><div class="card-v r" id="db-pendentes">0</div><div class="card-l">Dias pendentes</div></div>
+    <div class="card cg"><div style="font-size:1.1rem">⏱</div><div class="cv g" id="d-saldo">--:--</div><div class="cl">Saldo do mês</div></div>
+    <div class="card cb"><div style="font-size:1.1rem">📅</div><div class="cv b" id="d-dias">-/-</div><div class="cl">Dias preenchidos</div></div>
+    <div class="card cy"><div style="font-size:1.1rem">💾</div><div class="cv y" id="d-rasc">0</div><div class="cl">Rascunhos</div></div>
+    <div class="card cr"><div style="font-size:1.1rem">⚠️</div><div class="cv r" id="d-pend">0</div><div class="cl">Pendentes</div></div>
   </div>
-  <div class="slabel">Calendário — <span id="cal-title"></span></div>
-  <div class="cal-wrap">
-    <div class="cal-top"><span class="cal-mo" id="cal-mo-label"></span><div class="cal-navs"><div class="cal-nb" onclick="calNav(-1)">‹</div><div class="cal-nb" onclick="calNav(1)">›</div></div></div>
-    <div class="cal-dnames"><div class="cal-dn">D</div><div class="cal-dn">S</div><div class="cal-dn">T</div><div class="cal-dn">Q</div><div class="cal-dn">Q</div><div class="cal-dn">S</div><div class="cal-dn">S</div></div>
+  <div class="sl">Calendário — <span id="d-cal-tit"></span></div>
+  <div class="cal">
+    <div class="cal-top"><span class="cal-mo" id="cal-mo"></span><div class="cal-nav"><div class="cal-nb" onclick="calNav(-1)">‹</div><div class="cal-nb" onclick="calNav(1)">›</div></div></div>
+    <div class="cal-dn"><div class="cal-d">D</div><div class="cal-d">S</div><div class="cal-d">T</div><div class="cal-d">Q</div><div class="cal-d">Q</div><div class="cal-d">S</div><div class="cal-d">S</div></div>
     <div class="cal-cells" id="cal-cells"></div>
   </div>
   <div class="leg">
-    <div class="li"><div class="ld ld-ok"></div>Registrado</div>
-    <div class="li"><div class="ld ld-draft"></div>Rascunho</div>
-    <div class="li"><div class="ld ld-miss"></div>Pendente</div>
-    <div class="li"><div class="ld ld-folga"></div>Folga</div>
-    <div class="li"><div class="ld ld-today"></div>Hoje</div>
+    <div class="li"><div class="ld" style="background:var(--green)"></div>Registrado</div>
+    <div class="li"><div class="ld" style="background:var(--draft)"></div>Rascunho</div>
+    <div class="li"><div class="ld" style="background:var(--red)"></div>Pendente</div>
+    <div class="li"><div class="ld" style="background:var(--blue)"></div>Folga</div>
+    <div class="li"><div class="ld" style="background:var(--acc)"></div>Hoje</div>
   </div>
-  <div style="margin:4px 14px 14px"><button class="btn btn-green btn-full" onclick="irRegistro(null)">＋ Registrar ponto de hoje</button></div>
+  <div style="margin:4px 14px 14px"><button class="btn btn-g btn-w" onclick="irRegistro(null)">＋ Registrar ponto de hoje</button></div>
   <div class="bnav">
-    <div class="bni active" onclick="nav('dashboard')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni" onclick="nav('registro')"><div class="bni-ic">⏱</div>Registro</div>
-    <div class="bni" onclick="nav('fechamento')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni" onclick="nav('perfil')"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni on"  onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
+    <div class="bni"     onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
+    <div class="bni"     onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni"     onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
   </div>
 </div>
 
-<!-- ══ REGISTRO ══ -->
-<div class="screen" id="screen-registro">
-  <div class="sbar"><span id="reg-time">09:41</span><span>⚡</span></div>
-  <div class="back-row"><div class="bk" onclick="nav('dashboard')">←</div><div><h3>Registrar Ponto</h3><span id="reg-dia-nome"></span></div></div>
-  <div class="date-bar">
-    <div><div class="db-lbl">Data do registro</div><div class="db-val" id="reg-data-display"></div></div>
-    <div class="db-edit" onclick="abrirModalData()">✏ Alterar</div>
+<!-- ══ REGISTRO ════════════════════════════════════════════ -->
+<div class="scr" id="s-reg">
+  <div class="sbar"><span id="r-hr">09:41</span><span>⚡</span></div>
+  <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Registrar Ponto</h3><p id="r-dia"></p></div></div>
+  <div class="datebar">
+    <div><div style="font-size:.62rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Data</div><div class="dbv" id="r-data-disp"></div></div>
+    <div class="dbedit" onclick="abrirModalData()">✏ Alterar</div>
   </div>
-  <div class="slabel">Horários do dia</div>
-  <div class="tfields">
-    <div class="tf" id="tf-entrada"><div><div class="tf-lbl">🌅 Entrada</div><input type="time" class="tf-val" id="inp-entrada" onchange="atualizarCampo('entrada')"></div><div class="tf-ic tf-pend" id="ic-entrada"></div></div>
-    <div class="tf" id="tf-saida-alm"><div><div class="tf-lbl">🍽 Saída Almoço</div><input type="time" class="tf-val" id="inp-saida-alm" onchange="atualizarCampo('saida-alm')"></div><div class="tf-ic tf-pend" id="ic-saida-alm"></div></div>
-    <div class="tf" id="tf-retorno-alm"><div><div class="tf-lbl">↩ Retorno Almoço</div><input type="time" class="tf-val" id="inp-retorno-alm" onchange="atualizarCampo('retorno-alm')"></div><div class="tf-ic tf-pend" id="ic-retorno-alm"></div></div>
-    <div class="tf" id="tf-saida"><div><div class="tf-lbl">🌙 Saída</div><input type="time" class="tf-val" id="inp-saida" onchange="atualizarCampo('saida')"></div><div class="tf-ic tf-pend" id="ic-saida"></div></div>
+  <div class="sl">Horários</div>
+  <div class="tfs">
+    <div class="tf" id="tf-e"><div><div class="tfl">🌅 Entrada</div><input type="time" class="tfv" id="i-e" onchange="mudaCampo('e')"></div><div class="tfic tfic-pend" id="ic-e"></div></div>
+    <div class="tf" id="tf-sa"><div><div class="tfl">🍽 Saída Almoço</div><input type="time" class="tfv" id="i-sa" onchange="mudaCampo('sa')"></div><div class="tfic tfic-pend" id="ic-sa"></div></div>
+    <div class="tf" id="tf-ra"><div><div class="tfl">↩ Retorno Almoço</div><input type="time" class="tfv" id="i-ra" onchange="mudaCampo('ra')"></div><div class="tfic tfic-pend" id="ic-ra"></div></div>
+    <div class="tf" id="tf-s"><div><div class="tfl">🌙 Saída</div><input type="time" class="tfv" id="i-s" onchange="mudaCampo('s')"></div><div class="tfic tfic-pend" id="ic-s"></div></div>
   </div>
   <div class="tog-row" style="margin-top:10px">
-    <div><div class="tog-lbl">🌴 Marcar como Folga</div><div class="tog-sub">Dia não útil ou folga eventual</div></div>
-    <div class="tog" id="tog-folga" onclick="toggleFolga()"><div class="tog-k"></div></div>
+    <div><div style="font-size:.85rem;font-weight:700">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
+    <div class="tog" id="tog" onclick="toggleFolga()"><div class="tog-k"></div></div>
   </div>
   <div class="note" style="margin-top:10px">🕐 <span><b style="color:var(--t1)">Registrar e Enviar</b> grava o timestamp e envia e-mail. Rascunho salva sem enviar.</span></div>
   <div style="margin:12px 14px 20px" class="btn-pair">
     <button class="btn btn-draft" onclick="salvarRascunho()">💾 Salvar Rascunho</button>
-    <button class="btn btn-green" onclick="registrarEnviar()">✅ Registrar e Enviar</button>
+    <button class="btn btn-g"     onclick="registrarEnviar()">✅ Registrar e Enviar</button>
   </div>
   <div class="bnav">
-    <div class="bni" onclick="nav('dashboard')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni active"><div class="bni-ic">⏱</div>Registro</div>
-    <div class="bni" onclick="nav('fechamento')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni" onclick="nav('perfil')"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
+    <div class="bni on"><div class="bni-ic">⏱</div>Registro</div>
+    <div class="bni"    onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
   </div>
 </div>
 
-<!-- ══ PERFIL ══ -->
-<div class="screen" id="screen-perfil">
-  <div class="sbar"><span>09:41</span><span>⚡</span></div>
-  <div class="back-row"><div class="bk" onclick="nav('dashboard')">←</div><div><h3>Dados Cadastrais</h3><span>Informações pessoais</span></div></div>
-  <div class="profile-hero">
-    <div class="ph-av" id="perfil-av">?</div>
-    <div class="ph-name" id="perfil-nome-display">—</div>
-    <div class="ph-sub" id="perfil-role-display">Carregando...</div>
+<!-- ══ PERFIL ══════════════════════════════════════════════ -->
+<div class="scr" id="s-perfil">
+  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Dados Cadastrais</h3><p>Informações pessoais</p></div></div>
+  <div class="phero">
+    <div class="phav" id="p-av">?</div>
+    <div class="phname" id="p-nm">—</div>
+    <div class="phsub"  id="p-sub">—</div>
   </div>
   <div style="padding:14px;flex:1">
-    <div class="fgroup"><label class="flabel">Nome Completo</label><input class="finput" type="text" id="perfil-nome" placeholder="Seu nome completo"></div>
-    <div class="fgroup"><label class="flabel">Identidade (RG)</label><input class="finput" type="text" id="perfil-rg" placeholder="XX.XXX.XXX"></div>
-    <div class="fgroup"><label class="flabel">Data de Nascimento</label><input class="finput" type="date" id="perfil-nasc"></div>
-    <div class="fgroup"><label class="flabel">E-mail</label><input class="finput" type="email" id="perfil-email" placeholder="seu@email.com"></div>
+    <div class="fg"><label class="fl">Nome Completo</label><input class="fi" type="text"   id="p-nome" placeholder="Seu nome completo"></div>
+    <div class="fg"><label class="fl">RG</label>           <input class="fi" type="text"   id="p-rg"   placeholder="XX.XXX.XXX"></div>
+    <div class="fg"><label class="fl">Data de Nascimento</label><input class="fi" type="date" id="p-nasc"></div>
+    <div class="fg"><label class="fl">E-mail</label>       <input class="fi" type="email"  id="p-email" placeholder="seu@email.com"></div>
   </div>
-  <div style="margin:0 14px 20px"><button class="btn btn-primary btn-full" onclick="salvarPerfil()">Salvar Dados</button></div>
+  <div style="margin:0 14px 20px"><button class="btn btn-p btn-w" onclick="salvarPerfil()">Salvar Dados</button></div>
   <div class="bnav">
-    <div class="bni" onclick="nav('dashboard')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni" onclick="nav('registro')"><div class="bni-ic">⏱</div>Registro</div>
-    <div class="bni" onclick="nav('fechamento')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni active"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
+    <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
+    <div class="bni"    onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni on"><div class="bni-ic">👤</div>Perfil</div>
   </div>
 </div>
 
-<!-- ══ FECHAMENTO (usuário) ══ -->
-<div class="screen" id="screen-fechamento">
-  <div class="sbar"><span>09:41</span><span>⚡</span></div>
-  <div class="back-row"><div class="bk" onclick="nav('dashboard')">←</div><div><h3>Fechamento Mensal</h3><span>1 página A4</span></div></div>
-  <div class="fech-header"><div class="fech-badge">📋 Relatório Mensal</div><div class="fech-name" id="fech-nome">—</div><div class="fech-meta" id="fech-meta">Carregando...</div></div>
+<!-- ══ FECHAMENTO (usuário) ════════════════════════════════ -->
+<div class="scr" id="s-fech">
+  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Fechamento Mensal</h3><p>1 página A4</p></div></div>
+  <div class="fechhdr"><div class="fechbdg">📋 Relatório</div><div class="fechnm" id="f-nm">—</div><div class="fechmt" id="f-mt">—</div></div>
   <div class="sum3">
-    <div class="s3c"><div class="s3v" style="color:var(--blue)" id="fech-contratado">--h</div><div class="s3l">Contratado</div></div>
-    <div class="s3c"><div class="s3v" style="color:var(--green)" id="fech-trabalhado">--h</div><div class="s3l">Trabalhado</div></div>
-    <div class="s3c"><div class="s3v" id="fech-saldo-final">--:--</div><div class="s3l">Saldo final</div></div>
+    <div class="s3c"><div class="s3v" style="color:var(--blue)"  id="f-ct">--h</div><div class="s3l">Contratado</div></div>
+    <div class="s3c"><div class="s3v" style="color:var(--green)" id="f-tr">--h</div><div class="s3l">Trabalhado</div></div>
+    <div class="s3c"><div class="s3v" id="f-sd">--:--</div><div class="s3l">Saldo final</div></div>
   </div>
-  <div class="slabel">Registros do mês</div>
-  <div class="tbl-wrap"><table class="ptbl"><thead><tr><th>Data</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="fech-tbody"></tbody></table></div>
-  <div class="slabel">Assinaturas</div>
+  <div class="sl">Registros</div>
+  <div class="tw"><table class="pt"><thead><tr><th>Data</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="f-body"></tbody></table></div>
+  <div class="sl">Assinaturas</div>
   <div class="sigs">
-    <div class="sig"><div class="sig-line"></div><div class="sig-lbl">Funcionário(a)</div><div class="sig-name" id="sig-func">—</div><div class="sig-sub" id="sig-rg">—</div></div>
-    <div class="sig"><div class="sig-line"></div><div class="sig-lbl">Empregador</div><div class="sig-name" id="sig-emp">—</div></div>
+    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="f-sig-fn">—</div><div class="sig-sb" id="f-sig-rg">—</div></div>
+    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="f-sig-em">—</div></div>
   </div>
-  <div style="margin:8px 14px 20px"><button class="btn btn-red btn-full" onclick="window.print()">📄 Gerar PDF / Imprimir</button></div>
+  <div style="margin:8px 14px 20px"><button class="btn btn-r btn-w" onclick="window.print()">📄 Gerar PDF / Imprimir</button></div>
   <div class="bnav">
-    <div class="bni" onclick="nav('dashboard')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni" onclick="nav('registro')"><div class="bni-ic">⏱</div>Registro</div>
-    <div class="bni active"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni" onclick="nav('perfil')"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
+    <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
+    <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
   </div>
 </div>
 
-<!-- ══ ADMIN — PAINEL ══ -->
-<div class="screen" id="screen-admin">
-  <div class="sbar"><span id="adm-time">09:41</span><span>⚡</span></div>
-  <div class="adm-header"><div class="adm-badge">👔 Administrador</div><div class="adm-title">Painel de Gestão</div><div class="adm-sub" id="adm-sub">Carregando...</div></div>
-  <div class="slabel">Funcionário</div>
-  <div class="func-selector"><select id="func-select" onchange="trocarFuncionario()"><option value="">Selecione um funcionário...</option></select></div>
-  <div class="slabel">Resumo do Mês</div>
+<!-- ══ ADMIN — PAINEL ══════════════════════════════════════ -->
+<div class="scr" id="s-adm">
+  <div class="sbar"><span id="a-hr">09:41</span><span>⚡</span></div>
+  <div class="admhdr"><div class="admbdg">👔 Admin</div><div class="admtl">Painel de Gestão</div><div class="admsb" id="a-sub">—</div></div>
+  <div class="sl">Funcionário</div>
+  <div class="fsel"><select class="fi" id="a-fsel" onchange="trocaFunc()"><option value="">Selecione um funcionário...</option></select></div>
+  <div class="sl">Resumo do Mês</div>
   <div class="cards2">
-    <div class="card cp"><div class="card-ic">⏱</div><div class="card-v p" id="adm-saldo">--:--</div><div class="card-l">Saldo do mês</div></div>
-    <div class="card cg"><div class="card-ic">✅</div><div class="card-v g" id="adm-ok">0</div><div class="card-l">Dias registrados</div></div>
-    <div class="card cy"><div class="card-ic">💾</div><div class="card-v y" id="adm-rascunhos">0</div><div class="card-l">Rascunhos</div></div>
-    <div class="card cr"><div class="card-ic">⚠️</div><div class="card-v r" id="adm-pendentes">0</div><div class="card-l">Pendentes</div></div>
+    <div class="card cp"><div style="font-size:1.1rem">⏱</div><div class="cv p" id="a-saldo">--:--</div><div class="cl">Saldo do mês</div></div>
+    <div class="card cg"><div style="font-size:1.1rem">✅</div><div class="cv g" id="a-ok">0</div><div class="cl">Registrados</div></div>
+    <div class="card cy"><div style="font-size:1.1rem">💾</div><div class="cv y" id="a-rasc">0</div><div class="cl">Rascunhos</div></div>
+    <div class="card cr"><div style="font-size:1.1rem">⚠️</div><div class="cv r" id="a-pend">0</div><div class="cl">Pendentes</div></div>
   </div>
-  <div class="slabel">Registros recentes</div>
-  <div style="padding:0 14px;flex:1;overflow-y:auto" id="adm-lista"></div>
-  <div style="padding:0 14px 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0">
-    <button class="btn btn-ghost" onclick="nav('admin-fechamento')">📊 Fechamento</button>
-    <button class="btn" style="background:rgba(155,127,232,.12);border:1px solid rgba(155,127,232,.28);color:var(--purple)" onclick="nav('admin-config')">⚙️ Config.</button>
+  <div class="sl">Registros Recentes</div>
+  <div style="padding:0 14px;flex:1;overflow-y:auto" id="a-lista"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px 8px;flex-shrink:0">
+    <button class="btn btn-ghost" onclick="navA('s-adm-fech')">📊 Fechamento</button>
+    <button class="btn" style="background:rgba(155,127,232,.12);border:1px solid rgba(155,127,232,.28);color:var(--purple)" onclick="navA('s-adm-cfg')">⚙️ Config.</button>
   </div>
   <div class="bnav">
-    <div class="bni active" onclick="nav('admin')"><div class="bni-ic">🏠</div>Painel</div>
-    <div class="bni" onclick="nav('admin-fechamento')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni" onclick="nav('admin-usuarios')"><div class="bni-ic">👥</div>Usuários</div>
-    <div class="bni" onclick="nav('admin-config')"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni on"  onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
+    <div class="bni"     onclick="navA('s-adm-fech')"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni"     onclick="navA('s-adm-usr')"><div class="bni-ic">👥</div>Usuários</div>
+    <div class="bni"     onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"     onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
-<!-- ══ ADMIN — FECHAMENTO ══ -->
-<div class="screen" id="screen-admin-fechamento">
-  <div class="sbar"><span>09:41</span><span>⚡</span></div>
-  <div class="back-row"><div class="bk" onclick="nav('admin')">←</div><div><h3>Fechamento Mensal</h3><span>Visão do administrador</span></div></div>
-  <div class="fech-header"><div class="fech-badge">📋 Relatório Mensal</div><div class="fech-name" id="adm-fech-nome">—</div><div class="fech-meta" id="adm-fech-meta">Carregando...</div></div>
+<!-- ══ ADMIN — FECHAMENTO ══════════════════════════════════ -->
+<div class="scr" id="s-adm-fech">
+  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="bkrow"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Fechamento Mensal</h3><p id="af-func-label">Selecione um funcionário</p></div></div>
+  <div class="fechhdr"><div class="fechbdg">📋 Relatório</div><div class="fechnm" id="af-nm">—</div><div class="fechmt" id="af-mt">—</div></div>
   <div class="sum3">
-    <div class="s3c"><div class="s3v" style="color:var(--blue)" id="adm-fech-contratado">--h</div><div class="s3l">Contratado</div></div>
-    <div class="s3c"><div class="s3v" style="color:var(--green)" id="adm-fech-trabalhado">--h</div><div class="s3l">Trabalhado</div></div>
-    <div class="s3c"><div class="s3v" id="adm-fech-saldo">--:--</div><div class="s3l">Saldo final</div></div>
+    <div class="s3c"><div class="s3v" style="color:var(--blue)"  id="af-ct">--h</div><div class="s3l">Contratado</div></div>
+    <div class="s3c"><div class="s3v" style="color:var(--green)" id="af-tr">--h</div><div class="s3l">Trabalhado</div></div>
+    <div class="s3c"><div class="s3v" id="af-sd">--:--</div><div class="s3l">Saldo final</div></div>
   </div>
-  <div class="slabel">Registros</div>
-  <div class="tbl-wrap"><table class="ptbl"><thead><tr><th>Data</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="adm-fech-tbody"></tbody></table></div>
-  <div class="slabel">Assinaturas</div>
+  <div class="sl">Registros</div>
+  <div class="tw"><table class="pt"><thead><tr><th>Data</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="af-body"></tbody></table></div>
+  <div class="sl">Assinaturas</div>
   <div class="sigs">
-    <div class="sig"><div class="sig-line"></div><div class="sig-lbl">Funcionário(a)</div><div class="sig-name" id="adm-sig-func">—</div><div class="sig-sub" id="adm-sig-rg">—</div></div>
-    <div class="sig"><div class="sig-line"></div><div class="sig-lbl">Empregador</div><div class="sig-name" id="adm-sig-emp">—</div></div>
+    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="af-sig-fn">—</div><div class="sig-sb" id="af-sig-rg">—</div></div>
+    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="af-sig-em">—</div></div>
   </div>
-  <div style="margin:8px 14px 20px"><button class="btn btn-red btn-full" onclick="window.print()">📄 Gerar PDF / Imprimir</button></div>
+  <div style="margin:8px 14px 20px"><button class="btn btn-r btn-w" onclick="window.print()">📄 Gerar PDF / Imprimir</button></div>
   <div class="bnav">
-    <div class="bni" onclick="nav('admin')"><div class="bni-ic">🏠</div>Painel</div>
-    <div class="bni active"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni" onclick="nav('admin-usuarios')"><div class="bni-ic">👥</div>Usuários</div>
-    <div class="bni" onclick="nav('admin-config')"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
+    <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni"    onclick="navA('s-adm-usr')"><div class="bni-ic">👥</div>Usuários</div>
+    <div class="bni"    onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
-<!-- ══ ADMIN — USUÁRIOS ══ -->
-<div class="screen" id="screen-admin-usuarios">
-  <div class="sbar"><span>09:41</span><span>⚡</span></div>
-  <div class="back-row"><div class="bk" onclick="nav('admin')">←</div><div><h3>Gerenciar Usuários</h3><span>Aprovações e cadastros</span></div></div>
-  <div class="slabel">Aguardando Aprovação</div>
-  <div style="padding:0 14px;flex-shrink:0" id="lista-pendentes"><div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhuma solicitação pendente</div></div>
-  <div class="slabel">Usuários Ativos</div>
-  <div style="padding:0 14px;flex:1;overflow-y:auto" id="lista-usuarios"></div>
+<!-- ══ ADMIN — USUÁRIOS ════════════════════════════════════ -->
+<div class="scr" id="s-adm-usr">
+  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="bkrow"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Usuários</h3><p>Aprovações e cadastros</p></div></div>
+  <div class="sl">Aguardando Aprovação</div>
+  <div style="padding:0 14px;flex-shrink:0" id="u-pend"><div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhuma solicitação pendente ✅</div></div>
+  <div class="sl">Usuários Ativos</div>
+  <div style="padding:0 14px;flex:1;overflow-y:auto" id="u-ativos"></div>
   <div class="bnav">
-    <div class="bni" onclick="nav('admin')"><div class="bni-ic">🏠</div>Painel</div>
-    <div class="bni" onclick="nav('admin-fechamento')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni active"><div class="bni-ic">👥</div>Usuários</div>
-    <div class="bni" onclick="nav('admin-config')"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
+    <div class="bni"    onclick="navA('s-adm-fech')"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni on"><div class="bni-ic">👥</div>Usuários</div>
+    <div class="bni"    onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
-<!-- ══ ADMIN — CONFIGURAÇÕES ══ -->
-<div class="screen" id="screen-admin-config">
-  <div class="sbar"><span>09:41</span><span>⚡</span></div>
-  <div class="back-row"><div class="bk" onclick="nav('admin')">←</div><div><h3>Configurações</h3><span>Jornada e destinatários</span></div></div>
-  <div class="cfg-block" style="margin-top:14px">
-    <div class="cfg-block-title">🕐 Jornada Padrão</div>
-    <div class="cfg-row"><span class="cfg-lbl">Entrada</span><input class="cfg-input" type="time" id="cfg-entrada" value="08:30"></div>
-    <div class="cfg-row"><span class="cfg-lbl">Saída almoço</span><input class="cfg-input" type="time" id="cfg-saida-alm" value="12:00"></div>
-    <div class="cfg-row"><span class="cfg-lbl">Retorno almoço</span><input class="cfg-input" type="time" id="cfg-retorno-alm" value="13:00"></div>
-    <div class="cfg-row"><span class="cfg-lbl">Saída</span><input class="cfg-input" type="time" id="cfg-saida" value="17:30"></div>
-    <div class="cfg-row"><span class="cfg-lbl">Carga diária</span><span id="cfg-carga" style="font-family:var(--fc);font-size:.82rem;font-weight:700;color:var(--acc)">8h00</span></div>
+<!-- ══ ADMIN — CONFIG ══════════════════════════════════════ -->
+<div class="scr" id="s-adm-cfg">
+  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="bkrow"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Configurações</h3><p>Jornada e e-mails</p></div></div>
+  <div class="cfgb" style="margin-top:14px">
+    <div class="cfgb-t">🕐 Jornada Padrão</div>
+    <div class="cfgr"><span class="cfgl">Entrada</span>       <input class="cfgi" type="time" id="cfg-e"  value="08:30"></div>
+    <div class="cfgr"><span class="cfgl">Saída almoço</span>  <input class="cfgi" type="time" id="cfg-sa" value="12:00"></div>
+    <div class="cfgr"><span class="cfgl">Retorno almoço</span><input class="cfgi" type="time" id="cfg-ra" value="13:00"></div>
+    <div class="cfgr"><span class="cfgl">Saída</span>         <input class="cfgi" type="time" id="cfg-s"  value="17:30"></div>
+    <div class="cfgr"><span class="cfgl">Carga diária</span>  <span id="cfg-carga" style="font-family:var(--fc);font-size:.82rem;font-weight:700;color:var(--acc)">8h00</span></div>
   </div>
-  <div class="cfg-block">
-    <div class="cfg-block-title">📧 E-mails de Backup</div>
-    <div style="margin-bottom:8px"><label class="flabel" style="font-size:.62rem">Destinatário 1</label><input class="cfg-input wide finput" type="email" id="cfg-email1" placeholder="email1@empresa.com"></div>
-    <div style="margin-bottom:8px"><label class="flabel" style="font-size:.62rem">Destinatário 2</label><input class="cfg-input wide finput" type="email" id="cfg-email2" placeholder="email2@empresa.com"></div>
-    <div style="margin-bottom:8px"><label class="flabel" style="font-size:.62rem">Destinatário 3</label><input class="cfg-input wide finput" type="email" id="cfg-email3" placeholder="email3@empresa.com"></div>
-    <button class="btn btn-ghost btn-full" style="margin-top:6px;font-size:.78rem;padding:10px" onclick="testarEmail()">📤 Enviar e-mail de teste</button>
+  <div class="cfgb">
+    <div class="cfgb-t">📧 E-mails de Backup</div>
+    <div style="margin-bottom:8px"><label class="fl" style="font-size:.62rem">Destinatário 1</label><input class="cfgi cfgi-w fi" type="email" id="cfg-em1" placeholder="email1@empresa.com"></div>
+    <div style="margin-bottom:8px"><label class="fl" style="font-size:.62rem">Destinatário 2</label><input class="cfgi cfgi-w fi" type="email" id="cfg-em2" placeholder="email2@empresa.com"></div>
+    <div style="margin-bottom:8px"><label class="fl" style="font-size:.62rem">Destinatário 3</label><input class="cfgi cfgi-w fi" type="email" id="cfg-em3" placeholder="email3@empresa.com"></div>
+    <button class="btn btn-ghost btn-w" style="font-size:.78rem;padding:10px;margin-top:6px" onclick="testarEmail()">📤 Enviar e-mail de teste</button>
   </div>
-  <div style="margin:0 14px 24px"><button class="btn btn-primary btn-full" onclick="salvarConfiguracoes()">Salvar Configurações</button></div>
+  <div style="margin:0 14px 24px"><button class="btn btn-p btn-w" onclick="salvarConfig()">Salvar Configurações</button></div>
   <div class="bnav">
-    <div class="bni" onclick="nav('admin')"><div class="bni-ic">🏠</div>Painel</div>
-    <div class="bni" onclick="nav('admin-fechamento')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni" onclick="nav('admin-usuarios')"><div class="bni-ic">👥</div>Usuários</div>
-    <div class="bni active"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
+    <div class="bni"    onclick="navA('s-adm-fech')"><div class="bni-ic">📄</div>Fechamento</div>
+    <div class="bni"    onclick="navA('s-adm-usr')"><div class="bni-ic">👥</div>Usuários</div>
+    <div class="bni on"><div class="bni-ic">⚙️</div>Config.</div>
+    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
 </div><!-- #app -->
 
 <div id="toast"></div>
-<div id="loader"><div class="spinner"></div><p id="loader-msg">Carregando...</p></div>
+<div id="ld"><div class="sp"></div><p id="ld-msg">Carregando...</p></div>
 
-<div class="modal-overlay" id="modal-data">
-  <div class="modal">
+<div class="mov" id="modal-data">
+  <div class="mo">
     <h3>Alterar data do registro</h3>
-    <div class="fgroup"><label class="flabel">Data</label><input class="finput" type="date" id="modal-data-input"></div>
+    <div class="fg"><label class="fl">Data</label><input class="fi" type="date" id="md-inp"></div>
     <div class="btn-pair">
-      <button class="btn btn-ghost" onclick="fecharModal('modal-data')">Cancelar</button>
-      <button class="btn btn-primary" onclick="confirmarData()">Confirmar</button>
+      <button class="btn btn-ghost" onclick="fechaModal()">Cancelar</button>
+      <button class="btn btn-p"     onclick="confirmaData()">Confirmar</button>
     </div>
   </div>
 </div>
 
 <script>
-const { createClient } = supabase;
+// ── INIT ─────────────────────────────────────────────────────
+const {createClient} = supabase;
 const sb = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 emailjs.init(CONFIG.EMAILJS_KEY);
 
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const DIAS_PT = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const DIAS  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-const state = {
+const ST = {
   user: null, perfil: null,
-  config: { entrada:'08:30', saida_almoco:'12:00', retorno_almoco:'13:00', saida:'17:30', id:1 },
-  calAno: new Date().getFullYear(), calMes: new Date().getMonth(),
-  registroData: hojeISO(), folga: false,
-  funcSelecionado: null, // para o admin
+  cfg: {id:1, entrada:'08:30', saida_almoco:'12:00', retorno_almoco:'13:00', saida:'17:30'},
+  ano: new Date().getFullYear(), mes: new Date().getMonth(),
+  regData: hoje(), folga: false,
+  funcId: null, funcNome: null, // funcionário selecionado pelo admin
 };
 
-// ── UTILS ──
-function hojeISO() {
-  const d = new Date();
-  return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
-}
+// ── UTILS ─────────────────────────────────────────────────────
+function hoje(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
 function p2(n){ return String(n).padStart(2,'0'); }
-function formatarDataBR(iso){ if(!iso)return'—'; const[y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
-function formatarDataExtenso(iso){ const[y,m,d]=iso.split('-'); const dt=new Date(y,m-1,d); return `${dt.getDate()} de ${MESES[dt.getMonth()]}, ${y}`; }
-function minParaHM(min){ const s=min<0?'-':'+'; const a=Math.abs(min); return `${s}${p2(Math.floor(a/60))}:${p2(a%60)}`; }
-function minParaH(min){ const a=Math.abs(min); const h=Math.floor(a/60); const m=a%60; return m>0?`${h}h${p2(m)}`:`${h}h`; }
-function toMin(t){ if(!t)return 0; const[h,m]=t.replace(/\..*/,'').split(':').map(Number); return h*60+m; }
-function calcularSaldoMin(r,cfg){
+function dtBR(iso){ if(!iso)return'—'; const[y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function dtEx(iso){ const[y,m,d]=iso.split('-'); const dt=new Date(y,m-1,d); return `${dt.getDate()} de ${MESES[dt.getMonth()]}, ${y}`; }
+function toMin(t){ if(!t)return 0; const[h,m]=(t||'').replace(/\..*/,'').split(':').map(Number); return h*60+m; }
+function minHM(n){ const s=n<0?'-':'+'; const a=Math.abs(n); return `${s}${p2(Math.floor(a/60))}:${p2(a%60)}`; }
+function minH(n){ const a=Math.abs(n); const h=Math.floor(a/60); const m=a%60; return m?`${h}h${p2(m)}`:`${h}h`; }
+function inic(nm){ return (nm||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase(); }
+function saldo(r,c){
   if(!r.entrada||!r.saida||r.folga)return 0;
-  const esp=(toMin(cfg.saida)-toMin(cfg.entrada))-(toMin(cfg.retorno_almoco)-toMin(cfg.saida_almoco));
-  const sa=r.saida_almoco||cfg.saida_almoco; const ra=r.retorno_almoco||cfg.retorno_almoco;
-  const trab=(toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa));
-  return trab-esp;
+  const esp=(toMin(c.saida)-toMin(c.entrada))-(toMin(c.retorno_almoco)-toMin(c.saida_almoco));
+  const sa=r.saida_almoco||c.saida_almoco, ra=r.retorno_almoco||c.retorno_almoco;
+  return (toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa))-esp;
 }
-function diasUteisNoMes(ano,mes){
-  const dias=[]; const total=new Date(ano,mes+1,0).getDate();
-  for(let d=1;d<=total;d++){ const dow=new Date(ano,mes,d).getDay(); if(dow!==0&&dow!==6) dias.push(`${ano}-${p2(mes+1)}-${p2(d)}`); }
+function uteis(ano,mes){
+  const dias=[],tot=new Date(ano,mes+1,0).getDate();
+  for(let d=1;d<=tot;d++){const dow=new Date(ano,mes,d).getDay();if(dow&&dow<6)dias.push(`${ano}-${p2(mes+1)}-${p2(d)}`);}
   return dias;
 }
-function iniciais(nome){ return (nome||'?').split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase(); }
-function toast(msg,tipo='info',dur=3500){
-  const el=document.getElementById('toast'); el.textContent=msg;
-  el.className=`show ${tipo}`; clearTimeout(el._t);
-  el._t=setTimeout(()=>el.className='',dur);
+function toast(msg,t='i',ms=3500){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=`on ${t}`; clearTimeout(el._t);
+  el._t=setTimeout(()=>el.className='',ms);
 }
-function loader(show,msg='Carregando...'){
-  document.getElementById('loader').classList.toggle('show',show);
-  document.getElementById('loader-msg').textContent=msg;
+function ld(show,msg='Carregando...'){
+  document.getElementById('ld').classList.toggle('on',show);
+  document.getElementById('ld-msg').textContent=msg;
 }
-function fecharModal(id){ document.getElementById(id).classList.remove('show'); }
-function abrirModal(id){ document.getElementById(id).classList.add('show'); }
-function mostrarScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id)?.classList.add('active'); }
-function atualizarRelogio(){ ['db-time','reg-time','adm-time'].forEach(id=>{ const el=document.getElementById(id); if(el)el.textContent=new Date().toTimeString().slice(0,5); }); }
-setInterval(atualizarRelogio, 60000);
+function ir(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on')); document.getElementById(id)?.classList.add('on'); }
+function fechaModal(){ document.getElementById('modal-data').classList.remove('on'); }
+function abrirModal(id){ document.getElementById(id).classList.add('on'); }
+setInterval(()=>{ ['d-hr','r-hr','a-hr'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=new Date().toTimeString().slice(0,5);}); },60000);
 
-// ── AUTH ──
-sb.auth.onAuthStateChange(async(event,session)=>{
+// ── AUTH ──────────────────────────────────────────────────────
+sb.auth.onAuthStateChange(async(_,session)=>{
   if(session?.user){
-    state.user=session.user;
-    await carregarPerfil();
-    await carregarConfig();
-    const p=state.perfil?.perfil;
-    if(p==='admin') nav('admin');
-    else if(p==='usuario') nav('dashboard');
-    else mostrarScreen('screen-pendente');
+    ST.user=session.user;
+    await loadPerfil();
+    await loadCfg();
+    const p=ST.perfil?.perfil;
+    if(p==='admin')    navA('s-adm');
+    else if(p==='usuario') navU('s-dash');
+    else               ir('s-pendente');
   } else {
-    state.user=null; state.perfil=null;
-    mostrarScreen('screen-login');
+    ST.user=null; ST.perfil=null; ir('s-login');
   }
 });
 
 async function fazerLogin(){
-  const email=document.getElementById('login-email').value.trim();
-  const senha=document.getElementById('login-senha').value;
-  if(!email||!senha){ toast('Preencha e-mail e senha','error'); return; }
-  loader(true,'Entrando...');
-  const{error}=await sb.auth.signInWithPassword({email,password:senha});
-  loader(false);
-  if(error) toast('E-mail ou senha incorretos','error');
+  const em=document.getElementById('l-email').value.trim();
+  const pw=document.getElementById('l-senha').value;
+  if(!em||!pw){toast('Preencha e-mail e senha','e');return;}
+  ld(true,'Entrando...');
+  const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  ld(false);
+  if(error)toast('E-mail ou senha incorretos','e');
 }
 
 async function fazerCadastro(){
-  const nome=document.getElementById('cad-nome').value.trim();
-  const email=document.getElementById('cad-email').value.trim();
-  const senha=document.getElementById('cad-senha').value;
-  const rg=document.getElementById('cad-rg').value.trim();
-  const nasc=document.getElementById('cad-nasc').value||null;
-  if(!nome||!email||!senha){ toast('Preencha nome, e-mail e senha','error'); return; }
-  if(senha.length<6){ toast('Senha deve ter no mínimo 6 caracteres','error'); return; }
-  loader(true,'Criando conta...');
-  const{data,error}=await sb.auth.signUp({email,password:senha});
-  if(error){ loader(false); toast('Erro: '+error.message,'error'); return; }
-  // Salvar perfil como pendente
-  const{error:ep}=await sb.from('perfis').insert({
-    id:data.user.id, perfil:'pendente', nome, rg, nascimento:nasc, email
-  });
-  loader(false);
-  if(ep){ toast('Erro ao salvar dados: '+ep.message,'error'); return; }
-  toast('Solicitação enviada! Aguarde aprovação.','success',5000);
-  mostrarScreen('screen-pendente');
+  const nome=document.getElementById('c-nome').value.trim();
+  const em  =document.getElementById('c-email').value.trim();
+  const pw  =document.getElementById('c-senha').value;
+  const rg  =document.getElementById('c-rg').value.trim();
+  const nasc=document.getElementById('c-nasc').value||null;
+  if(!nome||!em||!pw){toast('Nome, e-mail e senha são obrigatórios','e');return;}
+  if(pw.length<6){toast('Senha deve ter ao menos 6 caracteres','e');return;}
+  ld(true,'Criando conta...');
+  const{data,error}=await sb.auth.signUp({email:em,password:pw});
+  if(error){ld(false);toast('Erro: '+error.message,'e');return;}
+  const{error:ep}=await sb.from('perfis').insert({id:data.user.id,perfil:'pendente',nome,rg,nascimento:nasc,email:em});
+  ld(false);
+  if(ep){toast('Erro ao salvar dados: '+ep.message,'e');return;}
+  toast('Solicitação enviada! Aguarde aprovação.','s',5000);
+  ir('s-pendente');
 }
 
 async function fazerLogout(){ await sb.auth.signOut(); }
 
-function mostrarCadastro(){ mostrarScreen('screen-cadastro'); }
-function mostrarLogin(){ mostrarScreen('screen-login'); }
-
-async function esqueceuSenha(){
-  const email=document.getElementById('login-email').value.trim();
-  if(!email){ toast('Digite seu e-mail primeiro','error'); return; }
-  const{error}=await sb.auth.resetPasswordForEmail(email);
-  if(!error) toast('Link de recuperação enviado!','success');
-  else toast('Erro ao enviar e-mail','error');
+async function recuperarSenha(){
+  const em=document.getElementById('l-email').value.trim();
+  if(!em){toast('Digite o e-mail primeiro','e');return;}
+  const{error}=await sb.auth.resetPasswordForEmail(em);
+  if(!error)toast('Link de recuperação enviado!','s');
+  else toast('Erro ao enviar','e');
 }
 
-// ── PERFIL ──
-async function carregarPerfil(){
-  const{data}=await sb.from('perfis').select('*').eq('id',state.user.id).single();
-  state.perfil=data;
+// ── PERFIL ────────────────────────────────────────────────────
+async function loadPerfil(){
+  const{data}=await sb.from('perfis').select('*').eq('id',ST.user.id).single();
+  ST.perfil=data;
 }
 
 async function salvarPerfil(){
-  const dados={
-    id:state.user.id,
-    nome:document.getElementById('perfil-nome').value.trim(),
-    rg:document.getElementById('perfil-rg').value.trim(),
-    nascimento:document.getElementById('perfil-nasc').value||null,
-    email:document.getElementById('perfil-email').value.trim(),
-    perfil:state.perfil?.perfil||'usuario',
+  const dados={id:ST.user.id,perfil:ST.perfil?.perfil||'usuario',
+    nome: document.getElementById('p-nome').value.trim(),
+    rg:   document.getElementById('p-rg').value.trim(),
+    nascimento: document.getElementById('p-nasc').value||null,
+    email:document.getElementById('p-email').value.trim(),
   };
-  loader(true,'Salvando...');
+  ld(true,'Salvando...');
   const{error}=await sb.from('perfis').upsert(dados,{onConflict:'id'});
-  loader(false);
-  if(!error){ state.perfil={...state.perfil,...dados}; atualizarUIperfil(); toast('Dados salvos!','success'); }
-  else{ console.error(error); toast('Erro: '+error.message,'error'); }
+  ld(false);
+  if(!error){ST.perfil={...ST.perfil,...dados};renderPerfil();toast('Dados salvos!','s');}
+  else{console.error(error);toast('Erro: '+error.message,'e');}
 }
 
-function preencherFormPerfil(){
-  if(!state.perfil)return;
-  document.getElementById('perfil-nome').value=state.perfil.nome||'';
-  document.getElementById('perfil-rg').value=state.perfil.rg||'';
-  document.getElementById('perfil-nasc').value=state.perfil.nascimento||'';
-  document.getElementById('perfil-email').value=state.perfil.email||state.user.email||'';
-  atualizarUIperfil();
+function renderPerfil(){
+  const nm=ST.perfil?.nome||ST.user?.email||'?';
+  g('p-av').textContent=inic(nm);
+  g('p-nm').textContent=nm;
+  g('p-sub').textContent=ST.perfil?.perfil==='admin'?'Administrador':'Funcionário(a) · Ativo';
+  g('d-av').textContent=inic(nm);
 }
 
-function atualizarUIperfil(){
-  const nome=state.perfil?.nome||state.user?.email||'?';
-  document.getElementById('perfil-av').textContent=iniciais(nome);
-  document.getElementById('perfil-nome-display').textContent=nome;
-  document.getElementById('perfil-role-display').textContent=state.perfil?.perfil==='admin'?'Administrador':'Funcionário(a) · Cadastro ativo';
-  document.getElementById('db-avatar').textContent=iniciais(nome);
-  document.getElementById('db-saudacao').textContent=`${saudacao()} 👋`;
+function preenchePerfil(){
+  if(!ST.perfil)return;
+  g('p-nome').value=ST.perfil.nome||'';
+  g('p-rg').value=ST.perfil.rg||'';
+  g('p-nasc').value=ST.perfil.nascimento||'';
+  g('p-email').value=ST.perfil.email||ST.user.email||'';
+  renderPerfil();
 }
 
-function saudacao(){ const h=new Date().getHours(); return h<12?'Bom dia':h<18?'Boa tarde':'Boa noite'; }
-
-// ── CONFIG ──
-async function carregarConfig(){
+// ── CONFIG ────────────────────────────────────────────────────
+async function loadCfg(){
   const{data}=await sb.from('configuracoes').select('*').limit(1).single();
-  if(data) state.config=data;
+  if(data)ST.cfg=data;
 }
 
-async function salvarConfiguracoes(){
-  const cfg={
-    entrada:document.getElementById('cfg-entrada').value,
-    saida_almoco:document.getElementById('cfg-saida-alm').value,
-    retorno_almoco:document.getElementById('cfg-retorno-alm').value,
-    saida:document.getElementById('cfg-saida').value,
-    email_destino_1:document.getElementById('cfg-email1').value.trim(),
-    email_destino_2:document.getElementById('cfg-email2').value.trim(),
-    email_destino_3:document.getElementById('cfg-email3').value.trim(),
+async function salvarConfig(){
+  const c={
+    entrada:  g('cfg-e').value,  saida_almoco: g('cfg-sa').value,
+    retorno_almoco: g('cfg-ra').value, saida: g('cfg-s').value,
+    email_destino_1: g('cfg-em1').value.trim(),
+    email_destino_2: g('cfg-em2').value.trim(),
+    email_destino_3: g('cfg-em3').value.trim(),
   };
-  loader(true,'Salvando...');
-  const{error}=await sb.from('configuracoes').update(cfg).eq('id',state.config.id);
-  loader(false);
-  if(!error){ state.config={...state.config,...cfg}; atualizarCargaDiaria(); toast('Configurações salvas!','success'); }
-  else toast('Erro: '+error.message,'error');
+  ld(true,'Salvando...');
+  const{error}=await sb.from('configuracoes').update(c).eq('id',ST.cfg.id);
+  ld(false);
+  if(!error){ST.cfg={...ST.cfg,...c};atualizaCarga();toast('Configurações salvas!','s');}
+  else toast('Erro: '+error.message,'e');
 }
 
-function preencherFormConfig(){
-  document.getElementById('cfg-entrada').value=state.config.entrada?.slice(0,5)||'08:30';
-  document.getElementById('cfg-saida-alm').value=state.config.saida_almoco?.slice(0,5)||'12:00';
-  document.getElementById('cfg-retorno-alm').value=state.config.retorno_almoco?.slice(0,5)||'13:00';
-  document.getElementById('cfg-saida').value=state.config.saida?.slice(0,5)||'17:30';
-  document.getElementById('cfg-email1').value=state.config.email_destino_1||'';
-  document.getElementById('cfg-email2').value=state.config.email_destino_2||'';
-  document.getElementById('cfg-email3').value=state.config.email_destino_3||'';
-  atualizarCargaDiaria();
+function preencheCfg(){
+  g('cfg-e').value =ST.cfg.entrada?.slice(0,5)||'08:30';
+  g('cfg-sa').value=ST.cfg.saida_almoco?.slice(0,5)||'12:00';
+  g('cfg-ra').value=ST.cfg.retorno_almoco?.slice(0,5)||'13:00';
+  g('cfg-s').value =ST.cfg.saida?.slice(0,5)||'17:30';
+  g('cfg-em1').value=ST.cfg.email_destino_1||'';
+  g('cfg-em2').value=ST.cfg.email_destino_2||'';
+  g('cfg-em3').value=ST.cfg.email_destino_3||'';
+  atualizaCarga();
 }
 
-function atualizarCargaDiaria(){
-  const carga=(toMin(state.config.saida)-toMin(state.config.entrada))-(toMin(state.config.retorno_almoco)-toMin(state.config.saida_almoco));
-  const el=document.getElementById('cfg-carga'); if(el) el.textContent=minParaH(carga);
+function atualizaCarga(){
+  const c=(toMin(ST.cfg.saida)-toMin(ST.cfg.entrada))-(toMin(ST.cfg.retorno_almoco)-toMin(ST.cfg.saida_almoco));
+  const el=g('cfg-carga');if(el)el.textContent=minH(c);
 }
 
-// ── ADMIN — USUÁRIOS ──
-async function carregarUsuarios(){
-  const{data}=await sb.from('perfis').select('*').order('criado_em',{ascending:false});
-  const pendentes=(data||[]).filter(u=>u.perfil==='pendente');
-  const ativos=(data||[]).filter(u=>u.perfil!=='pendente');
-
-  // Lista pendentes
-  const lp=document.getElementById('lista-pendentes');
-  if(!pendentes.length){ lp.innerHTML='<div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhuma solicitação pendente ✅</div>'; }
-  else {
-    lp.innerHTML=pendentes.map(u=>`
-      <div class="user-item pendente">
-        <div class="user-item-top">
-          <div><div class="user-item-name">${u.nome||'Sem nome'}</div><div class="user-item-email">${u.email||''}</div></div>
-          <div class="user-status pendente">⏳ Pendente</div>
-        </div>
-        ${u.rg?`<div style="font-size:.7rem;color:var(--t2)">RG: ${u.rg}</div>`:''}
-        <div class="user-actions">
-          <button class="btn-sm btn-sm-green" onclick="aprovarUsuario('${u.id}','${u.nome||''}')">✅ Aprovar</button>
-          <button class="btn-sm btn-sm-red" onclick="rejeitarUsuario('${u.id}','${u.nome||''}')">❌ Rejeitar</button>
-        </div>
-      </div>`).join('');
-  }
-
-  // Lista ativos
-  const la=document.getElementById('lista-usuarios');
-  if(!ativos.length){ la.innerHTML='<div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhum usuário ativo</div>'; }
-  else {
-    la.innerHTML=ativos.map(u=>`
-      <div class="user-item">
-        <div class="user-item-top">
-          <div><div class="user-item-name">${u.nome||'Sem nome'}</div><div class="user-item-email">${u.email||''}</div></div>
-          <div class="user-status ${u.perfil}">${u.perfil==='admin'?'👔 Admin':'👤 Usuário'}</div>
-        </div>
-        ${u.rg?`<div style="font-size:.7rem;color:var(--t2)">RG: ${u.rg}</div>`:''}
-      </div>`).join('');
-  }
-
-  // Preencher seletor de funcionário no painel admin
-  const sel=document.getElementById('func-select');
-  const usuarios=ativos.filter(u=>u.perfil==='usuario');
-  sel.innerHTML='<option value="">Selecione um funcionário...</option>'+
-    usuarios.map(u=>`<option value="${u.id}">${u.nome||u.email}</option>`).join('');
-  if(state.funcSelecionado) sel.value=state.funcSelecionado;
+// ── CALENDÁRIO ───────────────────────────────────────────────
+function calNav(d){
+  ST.mes+=d;
+  if(ST.mes>11){ST.mes=0;ST.ano++;}
+  if(ST.mes<0){ST.mes=11;ST.ano--;}
+  renderCal();
 }
 
-async function aprovarUsuario(id,nome){
-  loader(true,'Aprovando...');
-  const{error}=await sb.from('perfis').update({perfil:'usuario'}).eq('id',id);
-  loader(false);
-  if(!error){ toast(`${nome} aprovado(a)!`,'success'); await carregarUsuarios(); }
-  else toast('Erro: '+error.message,'error');
-}
-
-async function rejeitarUsuario(id,nome){
-  if(!confirm(`Rejeitar e remover o cadastro de ${nome}?`)) return;
-  loader(true,'Removendo...');
-  const{error}=await sb.from('perfis').delete().eq('id',id);
-  loader(false);
-  if(!error){ toast(`Cadastro de ${nome} removido`,'info'); await carregarUsuarios(); }
-  else toast('Erro: '+error.message,'error');
-}
-
-function trocarFuncionario(){
-  const id=document.getElementById('func-select').value;
-  state.funcSelecionado=id||null;
-  if(id) carregarDadosAdmin(id);
-  else { document.getElementById('adm-ok').textContent='0'; document.getElementById('adm-rascunhos').textContent='0'; document.getElementById('adm-pendentes').textContent='0'; document.getElementById('adm-saldo').textContent='--:--'; document.getElementById('adm-lista').innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:.8rem">Selecione um funcionário acima</div>'; }
-}
-
-// ── CALENDÁRIO ──
-function calNav(dir){
-  state.calMes+=dir;
-  if(state.calMes>11){state.calMes=0;state.calAno++;}
-  if(state.calMes<0){state.calMes=11;state.calAno--;}
-  renderizarCalendario();
-}
-
-async function renderizarCalendario(){
-  const ano=state.calAno,mes=state.calMes;
+async function renderCal(){
+  const{ano,mes}=ST;
   const label=`${MESES[mes]} ${ano}`;
-  ['cal-title','cal-mo-label','db-mes-label'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label;});
+  ['d-mes','d-cal-tit','cal-mo'].forEach(id=>{const el=g(id);if(el)el.textContent=label;});
   const ini=`${ano}-${p2(mes+1)}-01`, fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
-  const{data}=await sb.from('registros').select('data,folga,rascunho').eq('usuario_id',state.user.id).gte('data',ini).lte('data',fim);
-  const mapa={}; (data||[]).forEach(r=>mapa[r.data]=r);
-  const uteis=diasUteisNoMes(ano,mes); const hoje=hojeISO();
-  let ok=0,rascunhos=0,pendentes=0;
-  uteis.forEach(d=>{ const r=mapa[d]; if(!r){if(d<=hoje)pendentes++;}else if(r.folga)ok++;else if(r.rascunho)rascunhos++;else ok++; });
-  document.getElementById('db-dias').textContent=`${ok}/${uteis.length}`;
-  document.getElementById('db-rascunhos').textContent=rascunhos;
-  document.getElementById('db-pendentes').textContent=pendentes;
-  await calcularSaldoMes(ano,mes,state.user.id,'db-saldo');
-  const prim=new Date(ano,mes,1).getDay(), total=new Date(ano,mes+1,0).getDate();
-  const cells=document.getElementById('cal-cells'); cells.innerHTML='';
-  for(let i=0;i<prim;i++) cells.innerHTML+=`<div class="cc empty"></div>`;
-  for(let d=1;d<=total;d++){
-    const iso=`${ano}-${p2(mes+1)}-${p2(d)}`, dow=new Date(ano,mes,d).getDay(), r=mapa[iso];
+  const{data}=await sb.from('registros').select('data,folga,rascunho').eq('usuario_id',ST.user.id).gte('data',ini).lte('data',fim);
+  const mp={};(data||[]).forEach(r=>mp[r.data]=r);
+  const u=uteis(ano,mes),hj=hoje();
+  let ok=0,rasc=0,pend=0;
+  u.forEach(d=>{const r=mp[d];if(!r){if(d<=hj)pend++;}else if(r.folga)ok++;else if(r.rascunho)rasc++;else ok++;});
+  g('d-dias').textContent=`${ok}/${u.length}`;
+  g('d-rasc').textContent=rasc;
+  g('d-pend').textContent=pend;
+  // saldo
+  const{data:rs}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).gte('data',ini).lte('data',fim).eq('rascunho',false);
+  let tot=0;(rs||[]).forEach(r=>{if(!r.folga)tot+=saldo(r,ST.cfg);});
+  const sel=g('d-saldo');if(sel){sel.textContent=minHM(tot);sel.style.color=tot>=0?'var(--green)':'var(--red)';}
+  // células
+  const prim=new Date(ano,mes,1).getDay(),totd=new Date(ano,mes+1,0).getDate();
+  const cells=g('cal-cells');cells.innerHTML='';
+  for(let i=0;i<prim;i++)cells.innerHTML+=`<div class="cc e"></div>`;
+  for(let d=1;d<=totd;d++){
+    const iso=`${ano}-${p2(mes+1)}-${p2(d)}`,dow=new Date(ano,mes,d).getDay(),r=mp[iso];
     let cls='';
     if(dow===0||dow===6)cls='wk';
-    else if(iso===hoje)cls='today';
-    else if(!r&&iso<hoje)cls='miss';
-    else if(!r)cls='fut';
-    else if(r.folga)cls='folga';
-    else if(r.rascunho)cls='draft';
+    else if(iso===hj)cls='td';
+    else if(!r&&iso<hj)cls='ms';
+    else if(!r)cls='ft';
+    else if(r.folga)cls='fl';
+    else if(r.rascunho)cls='dr';
     else cls='ok';
     cells.innerHTML+=`<div class="cc ${cls}" onclick="irRegistro('${iso}')">${d}</div>`;
   }
 }
 
-async function calcularSaldoMes(ano,mes,uid,elId){
-  const ini=`${ano}-${p2(mes+1)}-01`, fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
-  const{data}=await sb.from('registros').select('*').eq('usuario_id',uid).gte('data',ini).lte('data',fim).eq('rascunho',false);
-  let total=0; (data||[]).forEach(r=>{if(!r.folga)total+=calcularSaldoMin(r,state.config);});
-  const el=document.getElementById(elId);
-  if(el){el.textContent=minParaHM(total);el.style.color=total>=0?'var(--green)':'var(--red)';}
-  return total;
-}
-
-// ── REGISTRO ──
+// ── REGISTRO ─────────────────────────────────────────────────
 function irRegistro(data){
-  state.registroData=data||hojeISO(); state.folga=false;
-  document.getElementById('tog-folga').classList.remove('on');
-  atualizarDisplayData(); carregarRegistroExistente(); nav('registro');
+  ST.regData=data||hoje();ST.folga=false;
+  g('tog').classList.remove('on');
+  atualizaDataDisplay();loadRegExistente();navU('s-reg');
 }
 
-function atualizarDisplayData(){
-  const[y,m,d]=state.registroData.split('-'); const dt=new Date(y,m-1,d);
-  document.getElementById('reg-dia-nome').textContent=DIAS_PT[dt.getDay()];
-  document.getElementById('reg-data-display').textContent=formatarDataExtenso(state.registroData);
-  document.getElementById('reg-time').textContent=new Date().toTimeString().slice(0,5);
+function atualizaDataDisplay(){
+  const[y,m,d]=ST.regData.split('-'),dt=new Date(y,m-1,d);
+  g('r-dia').textContent=DIAS[dt.getDay()];
+  g('r-data-disp').textContent=dtEx(ST.regData);
+  g('r-hr').textContent=new Date().toTimeString().slice(0,5);
 }
 
-async function carregarRegistroExistente(){
-  ['entrada','saida-alm','retorno-alm','saida'].forEach(id=>{
-    const inp=document.getElementById(`inp-${id}`); if(inp)inp.value='';
-    const tf=document.getElementById(`tf-${id}`); if(tf)tf.classList.remove('filled','draft-f');
-    const ic=document.getElementById(`ic-${id}`); if(ic){ic.className='tf-ic tf-pend';ic.textContent='';}
-  });
-  const{data}=await sb.from('registros').select('*').eq('usuario_id',state.user.id).eq('data',state.registroData).single();
+async function loadRegExistente(){
+  limpaFields(false);
+  const{data}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).eq('data',ST.regData).single();
   if(data){
-    state.folga=data.folga;
-    document.getElementById('tog-folga').classList.toggle('on',data.folga);
+    ST.folga=data.folga;
+    g('tog').classList.toggle('on',data.folga);
     if(!data.folga){
-      [['entrada',data.entrada],['saida-alm',data.saida_almoco],['retorno-alm',data.retorno_almoco],['saida',data.saida]].forEach(([id,val])=>{
-        if(val){document.getElementById(`inp-${id}`).value=val.slice(0,5);atualizarVisualCampo(id,data.rascunho);}
+      [['e',data.entrada],['sa',data.saida_almoco],['ra',data.retorno_almoco],['s',data.saida]].forEach(([id,v])=>{
+        if(v){g('i-'+id).value=v.slice(0,5);visualCampo(id,data.rascunho);}
       });
     }
   }
 }
 
-function atualizarCampo(id){ atualizarVisualCampo(id,true); }
+function limpaFields(isDraft){
+  ['e','sa','ra','s'].forEach(id=>{
+    const inp=g('i-'+id);if(inp)inp.value='';
+    const tf=g('tf-'+id);if(tf)tf.classList.remove('ok','dr');
+    const ic=g('ic-'+id);if(ic){ic.className='tfic tfic-pend';ic.textContent='';}
+  });
+}
 
-function atualizarVisualCampo(id,isDraft){
-  const inp=document.getElementById(`inp-${id}`); if(!inp||!inp.value)return;
-  const tf=document.getElementById(`tf-${id}`); const ic=document.getElementById(`ic-${id}`);
-  if(tf){tf.classList.toggle('filled',!isDraft);tf.classList.toggle('draft-f',isDraft);}
-  if(ic){ic.className=`tf-ic ${isDraft?'tf-draft-ic':'tf-ok'}`;ic.textContent=isDraft?'💾':'✓';}
+function mudaCampo(id){visualCampo(id,true);}
+
+function visualCampo(id,isDraft){
+  const inp=g('i-'+id);if(!inp||!inp.value)return;
+  const tf=g('tf-'+id),ic=g('ic-'+id);
+  if(tf){tf.classList.toggle('ok',!isDraft);tf.classList.toggle('dr',isDraft);}
+  if(ic){ic.className=`tfic ${isDraft?'tfic-dr':'tfic-ok'}`;ic.textContent=isDraft?'💾':'✓';}
 }
 
 function toggleFolga(){
-  state.folga=!state.folga; document.getElementById('tog-folga').classList.toggle('on',state.folga);
-  if(state.folga){ ['entrada','saida-alm','retorno-alm','saida'].forEach(id=>{
-    const inp=document.getElementById(`inp-${id}`); if(inp)inp.value='';
-    const tf=document.getElementById(`tf-${id}`); if(tf)tf.classList.remove('filled','draft-f');
-    const ic=document.getElementById(`ic-${id}`); if(ic){ic.className='tf-ic tf-pend';ic.textContent='';}
-  }); }
+  ST.folga=!ST.folga;g('tog').classList.toggle('on',ST.folga);
+  if(ST.folga)limpaFields(false);
 }
 
-function coletarHorarios(){
+function coletaH(){
   return{
-    entrada:document.getElementById('inp-entrada').value||null,
-    saida_almoco:document.getElementById('inp-saida-alm').value||null,
-    retorno_almoco:document.getElementById('inp-retorno-alm').value||null,
-    saida:document.getElementById('inp-saida').value||null,
+    entrada:        g('i-e').value||null,
+    saida_almoco:   g('i-sa').value||null,
+    retorno_almoco: g('i-ra').value||null,
+    saida:          g('i-s').value||null,
   };
 }
 
 async function salvarRascunho(){
-  const h=coletarHorarios();
-  const reg={usuario_id:state.user.id,data:state.registroData,...h,folga:state.folga,rascunho:true,saldo_minutos:null,enviado_em:null};
-  loader(true,'Salvando rascunho...');
+  const h=coletaH();
+  const reg={usuario_id:ST.user.id,data:ST.regData,...h,folga:ST.folga,rascunho:true,saldo_minutos:null,enviado_em:null};
+  ld(true,'Salvando rascunho...');
   const{error}=await sb.from('registros').upsert(reg,{onConflict:'usuario_id,data'});
-  loader(false);
-  if(!error){ ['entrada','saida-alm','retorno-alm','saida'].forEach(id=>atualizarVisualCampo(id,true)); toast('Rascunho salvo!','info'); await renderizarCalendario(); }
-  else{ console.error(error); toast('Erro: '+error.message,'error'); }
+  ld(false);
+  if(!error){['e','sa','ra','s'].forEach(id=>visualCampo(id,true));toast('Rascunho salvo!','i');renderCal();}
+  else{console.error(error);toast('Erro: '+error.message,'e');}
 }
 
 async function registrarEnviar(){
-  const h=coletarHorarios();
-  if(!state.folga&&(!h.entrada||!h.saida)){ toast('Preencha pelo menos entrada e saída','error'); return; }
-  const saldo=state.folga?0:calcularSaldoMin({...h,folga:false},state.config);
-  const reg={usuario_id:state.user.id,data:state.registroData,...h,folga:state.folga,rascunho:false,saldo_minutos:saldo,enviado_em:new Date().toISOString()};
-  loader(true,'Registrando...');
+  const h=coletaH();
+  if(!ST.folga&&(!h.entrada||!h.saida)){toast('Preencha ao menos entrada e saída','e');return;}
+  const sd=ST.folga?0:saldo({...h,folga:false},ST.cfg);
+  const reg={usuario_id:ST.user.id,data:ST.regData,...h,folga:ST.folga,rascunho:false,saldo_minutos:sd,enviado_em:new Date().toISOString()};
+  ld(true,'Registrando...');
   const{error}=await sb.from('registros').upsert(reg,{onConflict:'usuario_id,data'});
-  if(error){loader(false);console.error(error);toast('Erro: '+error.message,'error');return;}
-  await enviarEmailRegistro(reg,saldo);
-  loader(false); toast('Registro enviado! 📧','success');
-  ['entrada','saida-alm','retorno-alm','saida'].forEach(id=>atualizarVisualCampo(id,false));
-  await renderizarCalendario();
+  if(error){ld(false);console.error(error);toast('Erro: '+error.message,'e');return;}
+  await enviaEmail(reg,sd);
+  ld(false);toast('Registro enviado! 📧','s');
+  ['e','sa','ra','s'].forEach(id=>visualCampo(id,false));
+  renderCal();
 }
 
-async function enviarEmailRegistro(r,saldo){
-  const destinos=[state.config.email_destino_1,state.config.email_destino_2,state.config.email_destino_3].filter(Boolean);
-  if(!destinos.length)return;
+async function enviaEmail(r,sd){
+  const dest=[ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
+  if(!dest.length)return;
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
-      nome_funcionaria:state.perfil?.nome||state.user.email,
-      data_registro:formatarDataBR(r.data),
-      entrada:r.entrada||'—',saida_almoco:r.saida_almoco||'—',
-      retorno_almoco:r.retorno_almoco||'—',saida:r.saida||'—',
-      folga:r.folga?'Sim':'Não',saldo_dia:minParaHM(saldo),
-      enviado_em:new Date().toLocaleString('pt-BR'),
-      to_email:destinos.join(','),
+      nome_funcionaria: ST.perfil?.nome||ST.user.email,
+      data_registro: dtBR(r.data),
+      entrada: r.entrada||'—', saida_almoco: r.saida_almoco||'—',
+      retorno_almoco: r.retorno_almoco||'—', saida: r.saida||'—',
+      folga: r.folga?'Sim':'Não', saldo_dia: minHM(sd),
+      enviado_em: new Date().toLocaleString('pt-BR'),
+      to_email: dest.join(','),
     });
-  }catch(e){ toast('Registro salvo, mas falha no e-mail ⚠️','info',4000); }
+  }catch(e){toast('Salvo, mas falha no e-mail ⚠️','i',4000);}
 }
 
 async function testarEmail(){
-  const destinos=[document.getElementById('cfg-email1').value,document.getElementById('cfg-email2').value,document.getElementById('cfg-email3').value].filter(Boolean);
-  if(!destinos.length){toast('Cadastre ao menos um e-mail','error');return;}
-  loader(true,'Enviando teste...');
+  const dest=[g('cfg-em1').value,g('cfg-em2').value,g('cfg-em3').value].filter(Boolean);
+  if(!dest.length){toast('Cadastre ao menos 1 e-mail','e');return;}
+  ld(true,'Enviando teste...');
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
-      nome_funcionaria:state.perfil?.nome||'Teste',data_registro:formatarDataBR(hojeISO()),
+      nome_funcionaria:ST.perfil?.nome||'Teste',data_registro:dtBR(hoje()),
       entrada:'08:30',saida_almoco:'12:00',retorno_almoco:'13:00',saida:'17:30',
       folga:'Não',saldo_dia:'+0:00',enviado_em:new Date().toLocaleString('pt-BR'),
-      to_email:destinos.join(','),
+      to_email:dest.join(','),
     });
-    toast('E-mail de teste enviado!','success');
-  }catch(e){toast('Erro ao enviar teste','error');}
-  loader(false);
+    toast('E-mail de teste enviado!','s');
+  }catch(e){toast('Erro no envio','e');}
+  ld(false);
 }
 
-// ── DATA RETROATIVA ──
+// ── DATA RETROATIVA ──────────────────────────────────────────
 function abrirModalData(){
-  document.getElementById('modal-data-input').value=state.registroData;
-  document.getElementById('modal-data-input').max=hojeISO();
+  g('md-inp').value=ST.regData;g('md-inp').max=hoje();
   abrirModal('modal-data');
 }
-function confirmarData(){
-  const val=document.getElementById('modal-data-input').value;
-  if(val){state.registroData=val;atualizarDisplayData();carregarRegistroExistente();}
-  fecharModal('modal-data');
+function confirmaData(){
+  const v=g('md-inp').value;
+  if(v){ST.regData=v;atualizaDataDisplay();loadRegExistente();}
+  fechaModal();
 }
 
-// ── FECHAMENTO ──
-async function carregarFechamento(uid,prefixo){
-  const ano=state.calAno,mes=state.calMes;
+// ── FECHAMENTO ────────────────────────────────────────────────
+async function renderFech(uid, prefix){
+  const{ano,mes}=ST;
   const ini=`${ano}-${p2(mes+1)}-01`, fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
   const{data:regs}=await sb.from('registros').select('*').eq('usuario_id',uid).gte('data',ini).lte('data',fim).order('data');
-  const{data:perf}=await sb.from('perfis').select('*').eq('id',uid).single();
-  const mapa={}; (regs||[]).forEach(r=>mapa[r.data]=r);
-  const nome=perf?.nome||'—', rg=perf?.rg||'—';
-  const carga=(toMin(state.config.saida)-toMin(state.config.entrada))-(toMin(state.config.retorno_almoco)-toMin(state.config.saida_almoco));
-  const uteis=diasUteisNoMes(ano,mes);
-  let totalTrab=0,saldoTotal=0;
-  const el=(id)=>document.getElementById(id);
-  el(`${prefixo}-nome`).textContent=nome;
-  el(`${prefixo}-meta`).innerHTML=`RG: ${rg} · Período: ${formatarDataBR(ini)} – ${formatarDataBR(fim)}<br>Jornada: ${minParaH(carga)}/dia · Seg a Sex`;
-  const tbody=el(`${prefixo}-tbody`); tbody.innerHTML='';
-  const totalDias=new Date(ano,mes+1,0).getDate();
-  for(let d=1;d<=totalDias;d++){
-    const iso=`${ano}-${p2(mes+1)}-${p2(d)}`, dt=new Date(ano,mes,d), dow=dt.getDay();
-    const diaNome=`${p2(d)} ${DIAS_PT[dow]}`, r=mapa[iso], isWk=dow===0||dow===6;
+  const{data:pf}=await sb.from('perfis').select('*').eq('id',uid).single();
+  const mp={};(regs||[]).forEach(r=>mp[r.data]=r);
+  const nm=pf?.nome||'—', rg=pf?.rg||'—';
+  const carga=(toMin(ST.cfg.saida)-toMin(ST.cfg.entrada))-(toMin(ST.cfg.retorno_almoco)-toMin(ST.cfg.saida_almoco));
+  const u=uteis(ano,mes);
+  let totTrab=0,totSaldo=0;
+  g(`${prefix}-nm`).textContent=nm;
+  g(`${prefix}-mt`).innerHTML=`RG: ${rg} · Período: ${dtBR(ini)} – ${dtBR(fim)}<br>Jornada: ${minH(carga)}/dia · Seg a Sex`;
+  const tbody=g(`${prefix}-body`);tbody.innerHTML='';
+  const totd=new Date(ano,mes+1,0).getDate();
+  for(let d=1;d<=totd;d++){
+    const iso=`${ano}-${p2(mes+1)}-${p2(d)}`,dt=new Date(ano,mes,d),dow=dt.getDay();
+    const dn=`${p2(d)} ${DIAS[dow]}`,r=mp[iso],wk=dow===0||dow===6;
     let tr='';
-    if(isWk) tr=`<tr class="wkrow"><td>${diaNome}</td><td colspan="4" style="text-align:center">—</td><td>—</td></tr>`;
-    else if(!r) tr=`<tr><td>${diaNome}</td><td colspan="4" style="text-align:center;color:var(--red)">Pendente</td><td class="tag-mn">—</td></tr>`;
-    else if(r.folga) tr=`<tr><td>${diaNome}</td><td colspan="4" class="tag-fl" style="text-align:center">Folga</td><td class="tag-fl">—</td></tr>`;
-    else if(r.rascunho) tr=`<tr><td>${diaNome}</td><td colspan="4" class="tag-dr" style="text-align:center">Rascunho</td><td class="tag-dr">...</td></tr>`;
+    if(wk)                tr=`<tr class="wkr"><td>${dn}</td><td colspan="4" style="text-align:center">—</td><td>—</td></tr>`;
+    else if(!r)           tr=`<tr><td>${dn}</td><td colspan="4" style="text-align:center;color:var(--red)">Pendente</td><td class="tm">—</td></tr>`;
+    else if(r.folga)      tr=`<tr><td>${dn}</td><td colspan="4" class="tfl" style="text-align:center">Folga</td><td class="tfl">—</td></tr>`;
+    else if(r.rascunho)   tr=`<tr><td>${dn}</td><td colspan="4" class="tdr" style="text-align:center">Rascunho</td><td class="tdr">...</td></tr>`;
     else{
-      const saldo=calcularSaldoMin(r,state.config); saldoTotal+=saldo;
-      if(r.entrada&&r.saida){const sa=r.saida_almoco||state.config.saida_almoco,ra=r.retorno_almoco||state.config.retorno_almoco;totalTrab+=(toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa));}
-      tr=`<tr><td>${diaNome}</td><td>${r.entrada?.slice(0,5)||'—'}</td><td>${r.saida_almoco?.slice(0,5)||'—'}</td><td>${r.retorno_almoco?.slice(0,5)||'—'}</td><td>${r.saida?.slice(0,5)||'—'}</td><td class="${saldo>=0?'tag-pl':'tag-mn'}">${minParaHM(saldo)}</td></tr>`;
+      const sd=saldo(r,ST.cfg);totSaldo+=sd;
+      if(r.entrada&&r.saida){const sa=r.saida_almoco||ST.cfg.saida_almoco,ra=r.retorno_almoco||ST.cfg.retorno_almoco;totTrab+=(toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa));}
+      tr=`<tr><td>${dn}</td><td>${r.entrada?.slice(0,5)||'—'}</td><td>${r.saida_almoco?.slice(0,5)||'—'}</td><td>${r.retorno_almoco?.slice(0,5)||'—'}</td><td>${r.saida?.slice(0,5)||'—'}</td><td class="${sd>=0?'tp':'tm'}">${minHM(sd)}</td></tr>`;
     }
     tbody.innerHTML+=tr;
   }
-  const contratadoMin=carga*uteis.length;
-  el(`${prefixo}-contratado`).textContent=minParaH(contratadoMin);
-  el(`${prefixo}-trabalhado`).textContent=minParaH(totalTrab);
-  const sfEl=el(`${prefixo}-saldo-final`)||el(`${prefixo}-saldo`);
-  if(sfEl){sfEl.textContent=minParaHM(saldoTotal);sfEl.style.color=saldoTotal>=0?'var(--green)':'var(--red)';}
-  // assinaturas
-  const sf=el(prefixo==='fech'?'sig-func':'adm-sig-func'); if(sf)sf.textContent=nome;
-  const sr=el(prefixo==='fech'?'sig-rg':'adm-sig-rg'); if(sr)sr.textContent=`RG: ${rg}`;
+  g(`${prefix}-ct`).textContent=minH(carga*u.length);
+  g(`${prefix}-tr`).textContent=minH(totTrab);
+  const se=g(`${prefix}-sd`);se.textContent=minHM(totSaldo);se.style.color=totSaldo>=0?'var(--green)':'var(--red)';
+  g(`${prefix}-sig-fn`).textContent=nm;
+  g(`${prefix}-sig-rg`).textContent=`RG: ${rg}`;
 }
 
-// ── ADMIN ──
-async function carregarDadosAdmin(uid){
-  if(!uid)return;
-  const ano=state.calAno,mes=state.calMes;
-  document.getElementById('adm-time').textContent=new Date().toTimeString().slice(0,5);
-  document.getElementById('adm-sub').textContent=`${MESES[mes]} ${ano} · Somente visualização`;
-  const ini=`${ano}-${p2(mes+1)}-01`, fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
+// ── ADMIN ─────────────────────────────────────────────────────
+async function loadUsuarios(){
+  const{data}=await sb.from('perfis').select('*').order('criado_em',{ascending:false});
+  const pend=(data||[]).filter(u=>u.perfil==='pendente');
+  const atv =(data||[]).filter(u=>u.perfil!=='pendente');
+  // preenche seletor
+  const sel=g('a-fsel');
+  const prev=sel.value;
+  sel.innerHTML='<option value="">Selecione um funcionário...</option>'+
+    atv.filter(u=>u.perfil==='usuario').map(u=>`<option value="${u.id}">${u.nome||u.email}</option>`).join('');
+  if(prev)sel.value=prev;
+  // pendentes
+  const lp=g('u-pend');
+  lp.innerHTML=pend.length?pend.map(u=>`
+    <div class="ui pend">
+      <div class="ui-top"><div><div class="ui-nm">${u.nome||'Sem nome'}</div><div class="ui-em">${u.email||''}</div></div><div class="ui-st pend">⏳ Pendente</div></div>
+      ${u.rg?`<div style="font-size:.7rem;color:var(--t2)">RG: ${u.rg}</div>`:''}
+      <div class="ui-ac">
+        <button class="bsm bsm-g" onclick="aprovar('${u.id}','${(u.nome||'').replace(/'/g,'')}')" >✅ Aprovar</button>
+        <button class="bsm bsm-r" onclick="rejeitar('${u.id}','${(u.nome||'').replace(/'/g,'')}')" >❌ Rejeitar</button>
+      </div>
+    </div>`).join('')
+    :'<div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhuma solicitação pendente ✅</div>';
+  // ativos
+  const la=g('u-ativos');
+  la.innerHTML=atv.length?atv.map(u=>`
+    <div class="ui">
+      <div class="ui-top"><div><div class="ui-nm">${u.nome||'Sem nome'}</div><div class="ui-em">${u.email||''}</div></div><div class="ui-st ${u.perfil}">${u.perfil==='admin'?'👔 Admin':'👤 Usuário'}</div></div>
+      ${u.rg?`<div style="font-size:.7rem;color:var(--t2)">RG: ${u.rg}</div>`:''}
+    </div>`).join('')
+    :'<div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhum usuário ativo</div>';
+}
+
+async function aprovar(id,nome){
+  ld(true,'Aprovando...');
+  const{error}=await sb.from('perfis').update({perfil:'usuario'}).eq('id',id);
+  ld(false);
+  if(!error){toast(`${nome} aprovado(a)!`,'s');await loadUsuarios();}
+  else toast('Erro: '+error.message,'e');
+}
+
+async function rejeitar(id,nome){
+  if(!confirm(`Rejeitar e remover o cadastro de ${nome}?`))return;
+  ld(true,'Removendo...');
+  const{error}=await sb.from('perfis').delete().eq('id',id);
+  ld(false);
+  if(!error){toast(`Cadastro de ${nome} removido`,'i');await loadUsuarios();}
+  else toast('Erro: '+error.message,'e');
+}
+
+function trocaFunc(){
+  const id=g('a-fsel').value;
+  if(!id){ST.funcId=null;ST.funcNome=null;limpaAdm();return;}
+  const sel=g('a-fsel');
+  ST.funcId=id;
+  ST.funcNome=sel.options[sel.selectedIndex].text;
+  loadDadosAdm(id);
+}
+
+function limpaAdm(){
+  ['a-saldo','a-ok','a-rasc','a-pend'].forEach(id=>{const el=g(id);if(el)el.textContent='0';});
+  g('a-lista').innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:.8rem">Selecione um funcionário acima</div>';
+}
+
+async function loadDadosAdm(uid){
+  const{ano,mes}=ST;
+  g('a-hr').textContent=new Date().toTimeString().slice(0,5);
+  g('a-sub').textContent=`${MESES[mes]} ${ano}`;
+  const ini=`${ano}-${p2(mes+1)}-01`,fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
   const{data:regs}=await sb.from('registros').select('*').eq('usuario_id',uid).gte('data',ini).lte('data',fim).order('data',{ascending:false});
-  const uteis=diasUteisNoMes(ano,mes); const hoje=hojeISO();
-  let ok=0,rascunhos=0,pendentes=0,saldoTotal=0; const mapa={};
-  (regs||[]).forEach(r=>{mapa[r.data]=r;if(r.folga)ok++;else if(r.rascunho)rascunhos++;else{ok++;saldoTotal+=calcularSaldoMin(r,state.config);}});
-  uteis.forEach(d=>{if(!mapa[d]&&d<=hoje)pendentes++;});
-  document.getElementById('adm-ok').textContent=ok;
-  document.getElementById('adm-rascunhos').textContent=rascunhos;
-  document.getElementById('adm-pendentes').textContent=pendentes;
-  const sa=document.getElementById('adm-saldo'); sa.textContent=minParaHM(saldoTotal); sa.style.color=saldoTotal>=0?'var(--green)':'var(--red)';
-  const lista=document.getElementById('adm-lista'); lista.innerHTML='';
-  const recentes=(regs||[]).slice(0,15);
-  if(!recentes.length){lista.innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:.8rem">Nenhum registro ainda</div>';return;}
-  recentes.forEach(r=>{
-    const[y,m,d]=r.data.split('-'); const dt=new Date(y,m-1,d);
-    const diaNome=`${DIAS_PT[dt.getDay()]}, ${d} de ${MESES[m-1]}`;
-    let bcls='',blbl='';
-    if(r.folga){bcls='fl';blbl='🌴 Folga';}
-    else if(r.rascunho){bcls='dr';blbl='💾 Rascunho';}
-    else{bcls='ok';blbl='✓ Registrado';}
-    const saldo=r.folga||r.rascunho?'—':minParaHM(calcularSaldoMin(r,state.config));
-    const scls=!r.folga&&!r.rascunho?(calcularSaldoMin(r,state.config)>=0?'tag-pl':'tag-mn'):'';
+  const u=uteis(ano,mes),hj=hoje();
+  let ok=0,rasc=0,pend=0,totSD=0;const mp={};
+  (regs||[]).forEach(r=>{mp[r.data]=r;if(r.folga)ok++;else if(r.rascunho)rasc++;else{ok++;totSD+=saldo(r,ST.cfg);}});
+  u.forEach(d=>{if(!mp[d]&&d<=hj)pend++;});
+  g('a-ok').textContent=ok; g('a-rasc').textContent=rasc; g('a-pend').textContent=pend;
+  const se=g('a-saldo');se.textContent=minHM(totSD);se.style.color=totSD>=0?'var(--green)':'var(--red)';
+  const lista=g('a-lista');lista.innerHTML='';
+  const rec=(regs||[]).slice(0,15);
+  if(!rec.length){lista.innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:.8rem">Nenhum registro ainda</div>';return;}
+  rec.forEach(r=>{
+    const[y,m,d]=r.data.split('-'),dt=new Date(y,m-1,d);
+    const dn=`${DIAS[dt.getDay()]}, ${d} de ${MESES[m-1]}`;
+    let bc='',bl='';
+    if(r.folga){bc='fl';bl='🌴 Folga';}
+    else if(r.rascunho){bc='dr';bl='💾 Rascunho';}
+    else{bc='ok';bl='✓ Registrado';}
+    const sd=r.folga||r.rascunho?'—':minHM(saldo(r,ST.cfg));
+    const sc=!r.folga&&!r.rascunho?(saldo(r,ST.cfg)>=0?'tp':'tm'):'';
     const ts=r.enviado_em?new Date(r.enviado_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Não enviado';
-    lista.innerHTML+=`<div class="reg-item">
-      <div class="ri-top"><div class="ri-date">${diaNome}</div><div class="ri-badge ${bcls}">${blbl}</div></div>
+    lista.innerHTML+=`<div class="ri">
+      <div class="ri-top"><div class="ri-dt">${dn}</div><div class="ri-bdg ${bc}">${bl}</div></div>
       ${!r.folga?`<div class="ri-times">
-        <div class="ri-t"><div class="ri-t-lbl">Entrada</div><div class="ri-t-val ${!r.entrada?'ph':''}">${r.entrada?.slice(0,5)||'—'}</div></div>
-        <div class="ri-t"><div class="ri-t-lbl">S.Almoço</div><div class="ri-t-val ${!r.saida_almoco?'ph':''}">${r.saida_almoco?.slice(0,5)||'—'}</div></div>
-        <div class="ri-t"><div class="ri-t-lbl">R.Almoço</div><div class="ri-t-val ${!r.retorno_almoco?'ph':''}">${r.retorno_almoco?.slice(0,5)||'—'}</div></div>
-        <div class="ri-t"><div class="ri-t-lbl">Saída</div><div class="ri-t-val ${!r.saida?'ph':''}">${r.saida?.slice(0,5)||'—'}</div></div>
+        <div class="rit"><div class="rit-l">Entrada</div><div class="rit-v ${!r.entrada?'ph':''}">${r.entrada?.slice(0,5)||'—'}</div></div>
+        <div class="rit"><div class="rit-l">S.Alm.</div><div class="rit-v ${!r.saida_almoco?'ph':''}">${r.saida_almoco?.slice(0,5)||'—'}</div></div>
+        <div class="rit"><div class="rit-l">R.Alm.</div><div class="rit-v ${!r.retorno_almoco?'ph':''}">${r.retorno_almoco?.slice(0,5)||'—'}</div></div>
+        <div class="rit"><div class="rit-l">Saída</div><div class="rit-v ${!r.saida?'ph':''}">${r.saida?.slice(0,5)||'—'}</div></div>
       </div>`:''}
-      <div class="ri-foot"><div class="ri-saldo ${scls}">${saldo}</div><div class="ri-ts">${ts}</div></div>
+      <div class="ri-ft"><div class="ri-sd ${sc}">${sd}</div><div class="ri-ts">${ts}</div></div>
     </div>`;
   });
 }
 
-// ── NAVEGAÇÃO ──
-async function nav(tela){
-  loader(true);
+// ── NAVEGAÇÃO ─────────────────────────────────────────────────
+function g(id){return document.getElementById(id);}
+
+async function navU(tela){
+  ld(true);
   switch(tela){
-    case 'dashboard':
-      mostrarScreen('screen-dashboard'); atualizarUIperfil();
-      document.getElementById('db-sub').textContent=`${MESES[state.calMes]} ${state.calAno}`;
-      await renderizarCalendario(); break;
-    case 'registro':
-      mostrarScreen('screen-registro'); state.registroData=hojeISO();
-      atualizarDisplayData(); await carregarRegistroExistente(); break;
-    case 'perfil':
-      mostrarScreen('screen-perfil'); preencherFormPerfil(); break;
-    case 'fechamento':
-      mostrarScreen('screen-fechamento'); await carregarFechamento(state.user.id,'fech'); break;
-    case 'admin':
-      mostrarScreen('screen-admin'); await carregarUsuarios();
-      if(state.funcSelecionado) await carregarDadosAdmin(state.funcSelecionado); break;
-    case 'admin-fechamento':
-      mostrarScreen('screen-admin-fechamento');
-      const uid=state.funcSelecionado;
-      if(uid) await carregarFechamento(uid,'adm-fech');
-      else toast('Selecione um funcionário primeiro','error'); break;
-    case 'admin-usuarios':
-      mostrarScreen('screen-admin-usuarios'); await carregarUsuarios(); break;
-    case 'admin-config':
-      mostrarScreen('screen-admin-config'); preencherFormConfig(); break;
+    case 's-dash':
+      ir('s-dash');
+      const h=new Date().getHours();
+      g('d-sauda').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+' 👋';
+      g('d-sub').textContent=`${MESES[ST.mes]} ${ST.ano}`;
+      g('d-hr').textContent=new Date().toTimeString().slice(0,5);
+      renderPerfil(); await renderCal(); break;
+    case 's-reg':
+      ir('s-reg');ST.regData=hoje();
+      atualizaDataDisplay();await loadRegExistente();break;
+    case 's-perfil':
+      ir('s-perfil');preenchePerfil();break;
+    case 's-fech':
+      ir('s-fech');await renderFech(ST.user.id,'f');break;
   }
-  loader(false);
+  ld(false);
+}
+
+async function navA(tela){
+  ld(true);
+  switch(tela){
+    case 's-adm':
+      ir('s-adm');await loadUsuarios();
+      if(ST.funcId)await loadDadosAdm(ST.funcId);
+      else limpaAdm();break;
+    case 's-adm-fech':
+      ir('s-adm-fech');
+      if(!ST.funcId){ld(false);toast('Selecione um funcionário no painel primeiro','e');ir('s-adm');await loadUsuarios();break;}
+      g('af-func-label').textContent=ST.funcNome||'';
+      await renderFech(ST.funcId,'af');break;
+    case 's-adm-usr':
+      ir('s-adm-usr');await loadUsuarios();break;
+    case 's-adm-cfg':
+      ir('s-adm-cfg');preencheCfg();break;
+  }
+  ld(false);
 }
 </script>
 </body>
