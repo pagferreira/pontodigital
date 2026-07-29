@@ -11,280 +11,322 @@ const CONFIG = {
   EMAILJS_SERVICE:  "pontodigital",
   EMAILJS_TEMPLATE: "template_y59wfpn",
   EMAILJS_KEY:      "8QaTJMLh3VNT8VjNk",
-  // 🔧 E-mails que recebem cópia de cada registro
-  EMAILS_BACKUP: [
-    "pa.ferreira@gmail.com",
-    "sabrinaveloso@yahoo.com.br",
+  EMAILS_BACKUP:    ["pa.ferreira@gmail.com","sabrinaveloso@yahoo.com.br"],
+  // 🔧 CONFIGURE OS 3 USUÁRIOS — substitua com os dados reais
+  USUARIOS: [
+    { nome: "Paulo",     email: "pa.ferreira@gmail.com",       iniciais: "PF" },
+    { nome: "Sabrina",   email: "sabrinaveloso@yahoo.com.br",  iniciais: "SV" },
+    { nome: "Ana Paula", email: "anapaula@teste.com",          iniciais: "AP" },
   ],
+  VERSION: "v2.3",
 };
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
+/* ── TEMA CLARO ──────────────────────────────────────────── */
 :root{
-  --bg:#0a0d14;--s1:#111520;--s2:#181e2e;
-  --bd:#252d42;--bd2:#2e3a55;
-  --acc:#5b8df5;--acc2:#38d89e;--acc4:#e85f5f;--acc5:#9b7fe8;
-  --t1:#eef0f6;--t2:#7d8ba8;--t3:#3d4d68;
-  --green:#38d89e;--yellow:#f5c842;--red:#e85f5f;--blue:#5b8df5;--purple:#9b7fe8;--draft:#f59e42;
-  --ff:'Mulish',sans-serif;--fm:'Syne',sans-serif;--fc:'JetBrains Mono',monospace;
+  --bg:#eef0f8;
+  --s1:#ffffff;
+  --s2:#f4f5fb;
+  --s3:#e8eaf5;
+  --bd:#dde1f0;
+  --bd2:#c8ceea;
+  --acc:#4a78f0;
+  --acc2:#22c48e;
+  --acc4:#e54444;
+  --acc5:#8b68e8;
+  --t1:#1a2240;
+  --t2:#5c6685;
+  --t3:#9aa0bc;
+  --green:#22c48e;
+  --yellow:#e89a18;
+  --red:#e54444;
+  --blue:#4a78f0;
+  --purple:#8b68e8;
+  --draft:#e89a18;
+  --sh:0 2px 12px rgba(30,40,100,.08);
+  --ff:'Mulish',sans-serif;
+  --fm:'Syne',sans-serif;
+  --fc:'JetBrains Mono',monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);font-family:var(--ff);color:var(--t1);overflow:hidden;}
 input,button,select{font-family:var(--ff);}
 button{cursor:pointer;}
+/* APP */
 #app{width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
-/* SCREENS */
-.scr{display:none;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;}
+.scr{display:none;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .scr.on{display:flex;}
 .scr::-webkit-scrollbar{width:3px;}
 .scr::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
-/* COMMON */
-.sbar{display:flex;justify-content:space-between;padding:12px 20px 4px;font-size:.68rem;font-weight:700;font-family:var(--fc);flex-shrink:0;}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;}
-.topbar h2{font-family:var(--fm);font-size:.95rem;font-weight:700;letter-spacing:-.02em;}
+/* STATUS BAR */
+.sbar{display:flex;justify-content:space-between;padding:12px 20px 4px;font-size:.68rem;font-weight:700;font-family:var(--fc);color:var(--t2);flex-shrink:0;}
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 12px;border-bottom:1px solid var(--bd);background:var(--s1);flex-shrink:0;}
+.topbar h2{font-family:var(--fm);font-size:.95rem;font-weight:700;letter-spacing:-.02em;color:var(--t1);}
 .topbar span{font-size:.68rem;color:var(--t2);}
-.av{width:34px;height:34px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;font-family:var(--fm);flex-shrink:0;}
-.bnav{display:flex;justify-content:space-around;padding:10px 0 max(18px,env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--bd);flex-shrink:0;}
-.bni{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.56rem;font-weight:700;color:var(--t3);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.av{width:34px;height:34px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;}
+/* BOTTOM NAV */
+.bnav{display:flex;justify-content:space-around;padding:10px 0 max(18px,env(safe-area-inset-bottom));background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0;box-shadow:0 -2px 12px rgba(30,40,100,.06);}
+.bni{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.58rem;font-weight:700;color:var(--t3);cursor:pointer;}
 .bni.on{color:var(--acc);}
-.bni-ic{font-size:1.15rem;}
-.sl{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--t3);padding:14px 18px 8px;flex-shrink:0;}
-.bkrow{display:flex;align-items:center;gap:10px;padding:10px 16px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;}
-.bk{width:32px;height:32px;background:var(--s1);border:1px solid var(--bd);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--t2);cursor:pointer;}
-.bkrow h3{font-family:var(--fm);font-size:.9rem;font-weight:700;}
+.bni-ic{font-size:1.2rem;}
+/* SECTION LABEL */
+.sl{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--t3);padding:12px 18px 6px;flex-shrink:0;}
+/* BACK ROW */
+.bkrow{display:flex;align-items:center;gap:10px;padding:10px 16px 12px;border-bottom:1px solid var(--bd);background:var(--s1);flex-shrink:0;}
+.bk{width:32px;height:32px;background:var(--s2);border:1px solid var(--bd);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--t2);cursor:pointer;}
+.bkrow h3{font-family:var(--fm);font-size:.9rem;font-weight:700;color:var(--t1);}
 .bkrow p{font-size:.68rem;color:var(--t2);}
 /* BUTTONS */
-.btn{border:none;border-radius:13px;padding:14px;font-family:var(--fm);font-size:.88rem;font-weight:700;transition:opacity .15s;}
+.btn{border:none;border-radius:13px;padding:14px;font-family:var(--fm);font-size:.88rem;font-weight:700;transition:opacity .15s;touch-action:manipulation;}
 .btn:active{opacity:.82;}
-.btn-p{background:linear-gradient(135deg,var(--acc),#4a7ae8);color:#fff;box-shadow:0 8px 20px rgba(91,141,245,.28);}
-.btn-g{background:linear-gradient(135deg,var(--acc2),#28c48a);color:#fff;box-shadow:0 8px 20px rgba(56,216,158,.25);}
-.btn-r{background:linear-gradient(135deg,var(--acc4),#c93030);color:#fff;box-shadow:0 8px 20px rgba(232,95,95,.25);}
-.btn-ghost{background:rgba(91,141,245,.1);border:1px solid rgba(91,141,245,.25);color:var(--acc);}
-.btn-draft{background:rgba(245,159,66,.12);border:1px solid rgba(245,159,66,.3);color:var(--draft);}
+.btn-p{background:linear-gradient(135deg,var(--acc),#3a68e0);color:#fff;box-shadow:0 6px 18px rgba(74,120,240,.28);}
+.btn-g{background:linear-gradient(135deg,var(--acc2),#18b07e);color:#fff;box-shadow:0 6px 18px rgba(34,196,142,.25);}
+.btn-r{background:linear-gradient(135deg,var(--acc4),#c83030);color:#fff;box-shadow:0 6px 18px rgba(229,68,68,.25);}
+.btn-ghost{background:rgba(74,120,240,.08);border:1px solid rgba(74,120,240,.2);color:var(--acc);}
+.btn-draft{background:rgba(232,154,24,.1);border:1px solid rgba(232,154,24,.25);color:var(--draft);}
 .btn-w{width:100%;}
 .btn-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 /* FORM */
 .fg{margin-bottom:14px;}
 .fl{display:block;font-size:.68rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
-.fi{width:100%;background:var(--s1);border:1px solid var(--bd2);border-radius:12px;padding:13px 15px;color:var(--t1);font-size:.9rem;outline:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s;}
-.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(91,141,245,.14);}
+.fi{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:12px;padding:13px 15px;color:var(--t1);font-size:16px;outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(74,120,240,.12);}
 .fi::placeholder{color:var(--t3);}
 select.fi{cursor:pointer;}
 /* CARDS */
-.cards2{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px;flex-shrink:0;}
-.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:13px 12px;}
-.cg{border-color:rgba(56,216,158,.28);background:rgba(56,216,158,.05);}
-.cb{border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);}
-.cy{border-color:rgba(245,200,66,.28);background:rgba(245,200,66,.05);}
-.cr{border-color:rgba(232,95,95,.28);background:rgba(232,95,95,.05);}
-.cp{border-color:rgba(155,127,232,.28);background:rgba(155,127,232,.05);}
-.cv{font-family:var(--fc);font-size:1.2rem;font-weight:600;letter-spacing:-.02em;margin-top:7px;}
+.cards4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:0 14px;flex-shrink:0;}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:10px 8px;box-shadow:var(--sh);}
+.card.cg{border-left:3px solid var(--green);}
+.card.cb{border-left:3px solid var(--blue);}
+.card.cy{border-left:3px solid var(--yellow);}
+.card.cr{border-left:3px solid var(--red);}
+.card.cp{border-left:3px solid var(--purple);}
+.card.ctoday{border-left:3px solid var(--acc);cursor:pointer;}
+.cv{font-family:var(--fc);font-size:.9rem;font-weight:600;letter-spacing:-.02em;margin-top:4px;}
 .cv.g{color:var(--green);}.cv.b{color:var(--blue);}.cv.y{color:var(--yellow);}.cv.r{color:var(--red);}.cv.p{color:var(--purple);}
-.cl{font-size:.68rem;color:var(--t2);margin-top:2px;line-height:1.3;}
-/* CALENDAR */
-.cal{padding:0 14px;flex-shrink:0;}
-.cal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.cal-mo{font-family:var(--fm);font-size:.82rem;font-weight:700;}
-.cal-nav{display:flex;gap:4px;}
-.cal-nb{width:28px;height:28px;background:var(--s1);border:1px solid var(--bd);border-radius:7px;color:var(--t2);font-size:.75rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.cl{font-size:.58rem;color:var(--t2);margin-top:2px;line-height:1.3;}
+/* CAL */
+.cal-wrap{padding:0 14px;flex-shrink:0;}
+.cal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.cal-mo{font-family:var(--fm);font-size:.82rem;font-weight:700;color:var(--t1);}
+.cal-navs{display:flex;gap:4px;}
+.cal-nb{width:28px;height:28px;background:var(--s1);border:1px solid var(--bd);border-radius:7px;color:var(--t2);font-size:.75rem;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh);}
 .cal-dn{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
 .cal-d{text-align:center;font-size:.6rem;font-weight:800;color:var(--t3);padding:3px 0;letter-spacing:.05em;}
 .cal-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-.cc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fc);transition:transform .1s;-webkit-tap-highlight-color:transparent;}
+.cc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fc);transition:transform .1s;touch-action:manipulation;}
 .cc:active{transform:scale(.9);}
 .cc.e,.cc.wk{background:transparent;pointer-events:none;}
-.cc.wk{color:var(--t3);opacity:.35;}
-.cc.ok{background:rgba(56,216,158,.2);color:var(--green);}
-.cc.dr{background:rgba(245,159,66,.2);color:var(--draft);}
-.cc.fl{background:rgba(91,141,245,.18);color:var(--blue);}
-.cc.td{background:var(--acc);color:#fff;box-shadow:0 0 14px rgba(91,141,245,.5);}
-.cc.ms{background:rgba(232,95,95,.18);color:var(--red);}
+.cc.wk{color:var(--t3);opacity:.4;}
+.cc.ok{background:rgba(34,196,142,.15);color:#14a070;}
+.cc.dr{background:rgba(232,154,24,.15);color:#c07a10;}
+.cc.fl{background:rgba(74,120,240,.12);color:#3060d0;}
+.cc.td{background:var(--acc);color:#fff;box-shadow:0 0 12px rgba(74,120,240,.4);}
+.cc.ms{background:rgba(229,68,68,.12);color:#c02828;}
 .cc.ft{color:var(--t3);}
-.leg{display:flex;flex-wrap:wrap;gap:8px 12px;padding:10px 14px;flex-shrink:0;}
-.li{display:flex;align-items:center;gap:4px;font-size:.64rem;color:var(--t2);}
+/* LEGEND */
+.leg{display:flex;flex-wrap:wrap;gap:6px 10px;padding:6px 14px;flex-shrink:0;}
+.li{display:flex;align-items:center;gap:4px;font-size:.62rem;color:var(--t2);}
 .ld{width:8px;height:8px;border-radius:3px;}
 /* TIME FIELDS */
-.tfs{padding:0 14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0;}
-.tf{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
-.tf.ok{border-color:rgba(56,216,158,.38);background:rgba(56,216,158,.04);}
-.tf.dr{border-color:rgba(245,159,66,.38);background:rgba(245,159,66,.04);}
-.tfl{font-size:.66rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
-.tfv{font-family:var(--fc);font-size:1.25rem;font-weight:600;background:transparent;border:none;color:var(--t1);outline:none;width:100%;min-width:0;-webkit-appearance:none;cursor:pointer;}
-.tfv::placeholder{color:var(--t3);}
+.tfs{padding:0 14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
+.tf{background:var(--s1);border:1.5px solid var(--bd);border-radius:13px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh);}
+.tf.ok{border-color:rgba(34,196,142,.5);background:rgba(34,196,142,.04);}
+.tf.dr{border-color:rgba(232,154,24,.4);background:rgba(232,154,24,.04);}
+.tfl{font-size:.66rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:3px;}
+.tfv{font-family:var(--fc);font-size:1.2rem;font-weight:600;background:transparent;border:none;color:var(--t1);outline:none;width:100%;min-width:0;font-size:16px;-webkit-appearance:none;cursor:pointer;touch-action:manipulation;}
 .tfic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
 .tfic-ok{background:var(--green);color:#fff;}
-.tfic-pend{background:var(--s2);border:2px solid var(--bd2);}
-.tfic-dr{background:rgba(245,159,66,.2);border:2px solid var(--draft);color:var(--draft);font-size:.65rem;}
+.tfic-pend{background:var(--s2);border:2px solid var(--bd);}
+.tfic-dr{background:rgba(232,154,24,.15);border:2px solid var(--draft);color:var(--draft);font-size:.65rem;}
 /* TOGGLE */
-.tog-row{margin:0 14px;background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.tog{width:42px;height:23px;background:var(--bd2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.tog-row{margin:0 14px;background:var(--s1);border:1.5px solid var(--bd);border-radius:13px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh);flex-shrink:0;}
+.tog{width:42px;height:23px;background:var(--bd);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .tog.on{background:var(--acc2);}
-.tog-k{width:17px;height:17px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.tog-k{width:17px;height:17px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .tog.on .tog-k{transform:translateX(19px);}
 /* NOTE */
-.note{margin:10px 14px 0;background:rgba(91,141,245,.06);border:1px solid rgba(91,141,245,.15);border-radius:10px;padding:9px 12px;font-size:.68rem;color:var(--t2);display:flex;align-items:flex-start;gap:7px;line-height:1.5;flex-shrink:0;}
+.note{margin:8px 14px 0;background:rgba(74,120,240,.06);border:1px solid rgba(74,120,240,.15);border-radius:10px;padding:9px 12px;font-size:.68rem;color:var(--t2);display:flex;align-items:flex-start;gap:7px;line-height:1.5;flex-shrink:0;}
 /* TOAST */
-#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s2);border:1px solid var(--bd2);border-radius:12px;padding:10px 18px;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;max-width:88vw;text-align:center;}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1.5px solid var(--bd);border-radius:12px;padding:10px 18px;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;max-width:88vw;text-align:center;box-shadow:0 4px 20px rgba(30,40,100,.15);color:var(--t1);}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
-#toast.s{border-color:rgba(56,216,158,.4);color:var(--green);}
-#toast.e{border-color:rgba(232,95,95,.4);color:var(--red);}
-#toast.i{border-color:rgba(91,141,245,.4);color:var(--blue);}
+#toast.s{border-color:var(--green);color:var(--green);}
+#toast.e{border-color:var(--red);color:var(--red);}
+#toast.i{border-color:var(--blue);color:var(--blue);}
 /* LOADER */
-#ld{position:fixed;inset:0;background:rgba(10,13,20,.85);display:none;align-items:center;justify-content:center;z-index:998;flex-direction:column;gap:12px;}
+#ld{position:fixed;inset:0;background:rgba(238,240,248,.85);display:none;align-items:center;justify-content:center;z-index:998;flex-direction:column;gap:12px;}
 #ld.on{display:flex;}
-.sp{width:36px;height:36px;border:3px solid var(--bd2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;}
+.sp{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-#ld p{font-size:.78rem;color:var(--t2);}
+#ld p{font-size:.78rem;color:var(--t2);font-weight:600;}
 /* MODAL */
-.mov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center;z-index:997;}
+.mov{position:fixed;inset:0;background:rgba(26,34,64,.4);display:none;align-items:flex-end;justify-content:center;z-index:997;}
 .mov.on{display:flex;}
-.mo{background:var(--s1);border:1px solid var(--bd2);border-radius:22px 22px 0 0;padding:20px 18px 32px;width:100%;max-width:430px;animation:su .25s ease;}
+.mo{background:var(--s1);border:1px solid var(--bd);border-radius:22px 22px 0 0;padding:20px 18px 32px;width:100%;max-width:430px;animation:su .25s ease;box-shadow:0 -4px 24px rgba(30,40,100,.12);}
 @keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mo h3{font-family:var(--fm);font-size:1rem;font-weight:700;margin-bottom:16px;}
-/* LOGIN */
-#s-login{background:var(--bg);justify-content:center;padding:36px 26px;}
-.lmark{width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:22px;box-shadow:0 8px 24px rgba(91,141,245,.35);}
-.lglow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 260px 260px at 50% 20%,rgba(91,141,245,.12),transparent 70%),radial-gradient(ellipse 180px 180px at 80% 80%,rgba(56,216,158,.08),transparent 70%);}
-.lh{font-family:var(--fm);font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1.15;margin-bottom:5px;}
-.ls{color:var(--t2);font-size:.8rem;margin-bottom:32px;}
-.lfoot{margin-top:16px;text-align:center;font-size:.72rem;color:var(--t3);}
-.lfoot a{color:var(--acc);cursor:pointer;}
-/* PERFIL hero */
-.phero{padding:20px 18px 16px;background:linear-gradient(180deg,rgba(91,141,245,.08),transparent);border-bottom:1px solid var(--bd);flex-shrink:0;}
-.phav{width:56px;height:56px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff;box-shadow:0 8px 24px rgba(91,141,245,.28);margin-bottom:12px;}
-.phname{font-family:var(--fm);font-size:1.05rem;font-weight:800;}
+.mo h3{font-family:var(--fm);font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--t1);}
+/* DATE BAR */
+.datebar{margin:10px 14px 6px;background:var(--s1);border:1.5px solid var(--bd);border-radius:13px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;box-shadow:var(--sh);}
+.dbv{font-family:var(--fm);font-size:.9rem;font-weight:700;color:var(--t1);}
+.dbedit{background:rgba(74,120,240,.08);border:1px solid rgba(74,120,240,.2);border-radius:8px;padding:5px 11px;color:var(--acc);font-size:.7rem;font-weight:700;cursor:pointer;}
+/* PERFIL HERO */
+.phero{padding:18px 18px 14px;background:linear-gradient(135deg,rgba(74,120,240,.08),rgba(34,196,142,.06));border-bottom:1px solid var(--bd);flex-shrink:0;}
+.phav{width:54px;height:54px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;box-shadow:0 6px 20px rgba(74,120,240,.25);margin-bottom:10px;}
+.phname{font-family:var(--fm);font-size:1rem;font-weight:800;color:var(--t1);}
 .phsub{font-size:.72rem;color:var(--t2);margin-top:3px;}
 /* FECHAMENTO */
-.fechhdr{padding:16px 18px 14px;background:linear-gradient(180deg,rgba(91,141,245,.08),transparent);border-bottom:1px solid var(--bd);flex-shrink:0;}
-.fechbdg{display:inline-flex;align-items:center;gap:5px;background:rgba(91,141,245,.14);border:1px solid rgba(91,141,245,.28);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-.fechnm{font-family:var(--fm);font-size:1rem;font-weight:800;}
-.fechmt{font-size:.72rem;color:var(--t2);margin-top:3px;line-height:1.5;}
-.sum3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:12px 14px;flex-shrink:0;}
-.s3c{background:var(--s1);border:1px solid var(--bd);border-radius:11px;padding:11px 8px;text-align:center;}
+.fechhdr{padding:14px 18px 12px;background:linear-gradient(135deg,rgba(74,120,240,.06),rgba(34,196,142,.04));border-bottom:1px solid var(--bd);flex-shrink:0;}
+.fechbdg{display:inline-flex;align-items:center;gap:5px;background:rgba(74,120,240,.1);border:1px solid rgba(74,120,240,.2);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
+.fechnm{font-family:var(--fm);font-size:.95rem;font-weight:800;color:var(--t1);}
+.fechmt{font-size:.7rem;color:var(--t2);margin-top:3px;line-height:1.5;}
+.sum3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:10px 14px;flex-shrink:0;}
+.s3c{background:var(--s1);border:1px solid var(--bd);border-radius:11px;padding:10px 8px;text-align:center;box-shadow:var(--sh);}
 .s3v{font-family:var(--fc);font-size:.95rem;font-weight:600;}
 .s3l{font-size:.6rem;color:var(--t2);margin-top:3px;}
 /* TABLE */
 .tw{padding:0 14px;flex-shrink:0;overflow-x:auto;}
 .pt{width:100%;border-collapse:collapse;font-size:.67rem;}
-.pt th{background:var(--s2);color:var(--t2);font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:7px 4px;text-align:center;font-size:.57rem;}
+.pt th{background:var(--s2);color:var(--t2);font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:7px 4px;text-align:center;font-size:.56rem;border-bottom:2px solid var(--bd);}
 .pt th:first-child{text-align:left;padding-left:6px;}
-.pt td{padding:6px 4px;text-align:center;border-bottom:1px solid rgba(37,45,66,.6);font-family:var(--fc);font-size:.65rem;}
-.pt td:first-child{text-align:left;font-family:var(--ff);font-weight:700;font-size:.67rem;padding-left:6px;}
-.pt .wkr td{color:var(--t3);opacity:.5;}
-.tp{color:var(--green);font-weight:700;}.tm{color:var(--red);font-weight:700;}.tfl{color:var(--blue);}.tdr{color:var(--draft);}.tok{color:var(--green);}
+.pt td{padding:5px 4px;text-align:center;border-bottom:1px solid var(--bd);font-family:var(--fc);font-size:.64rem;color:var(--t1);}
+.pt td:first-child{text-align:left;font-family:var(--ff);font-weight:700;font-size:.66rem;padding-left:6px;}
+.pt .wkr td{color:var(--t3);opacity:.6;}
+.pt tfoot td{background:var(--s2);font-weight:800;border-top:2px solid var(--bd2);}
+.tp{color:#14a070;font-weight:700;}.tm{color:#c02828;font-weight:700;}
+.tfl{color:#3060d0;}.tdr{color:#c07a10;}.tok{color:#14a070;}
 /* SIGS */
 .sigs{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;flex-shrink:0;}
-.sig{border:1px dashed var(--bd2);border-radius:11px;padding:10px 10px 8px;}
-.sig-ln{height:1px;background:var(--bd2);margin:18px 0 7px;}
+.sig{border:1.5px dashed var(--bd2);border-radius:11px;padding:10px 10px 8px;background:var(--s2);}
+.sig-ln{height:1px;background:var(--bd2);margin:16px 0 7px;}
 .sig-lb{font-size:.6rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;}
-.sig-nm{font-size:.68rem;color:var(--t1);margin-top:3px;}
+.sig-nm{font-size:.68rem;color:var(--t1);margin-top:3px;font-weight:600;}
 .sig-sb{font-size:.6rem;color:var(--t3);margin-top:2px;font-family:var(--fc);}
 /* ADMIN */
-.admhdr{padding:14px 18px;background:linear-gradient(180deg,rgba(155,127,232,.1),transparent);border-bottom:1px solid var(--bd);flex-shrink:0;}
-.admbdg{display:inline-flex;align-items:center;gap:5px;background:rgba(155,127,232,.14);border:1px solid rgba(155,127,232,.28);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
-.admtl{font-family:var(--fm);font-size:1rem;font-weight:800;}
+.admhdr{padding:14px 18px;background:linear-gradient(135deg,rgba(139,104,232,.08),rgba(74,120,240,.05));border-bottom:1px solid var(--bd);flex-shrink:0;}
+.admbdg{display:inline-flex;align-items:center;gap:5px;background:rgba(139,104,232,.1);border:1px solid rgba(139,104,232,.25);border-radius:20px;padding:3px 11px;font-size:.62rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
+.admtl{font-family:var(--fm);font-size:1rem;font-weight:800;color:var(--t1);}
 .admsb{font-size:.72rem;color:var(--t2);margin-top:3px;}
-/* FUNC SELECTOR */
-.fsel{margin:0 14px 4px;flex-shrink:0;}
-/* REG ITEMS */
-.ri{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;margin-bottom:8px;}
-.ri-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.ri-dt{font-family:var(--fm);font-size:.82rem;font-weight:700;}
+/* REG ITEMS (admin) */
+.ri{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:11px 14px;margin-bottom:8px;box-shadow:var(--sh);}
+.ri-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.ri-dt{font-family:var(--fm);font-size:.82rem;font-weight:700;color:var(--t1);}
 .ri-bdg{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:3px 9px;font-size:.62rem;font-weight:800;}
-.ri-bdg.ok{background:rgba(56,216,158,.15);color:var(--green);}
-.ri-bdg.dr{background:rgba(245,159,66,.15);color:var(--draft);}
-.ri-bdg.ms{background:rgba(232,95,95,.15);color:var(--red);}
-.ri-bdg.fl{background:rgba(91,141,245,.15);color:var(--blue);}
-.ri-times{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:8px;}
+.ri-bdg.ok{background:rgba(34,196,142,.12);color:#14a070;}
+.ri-bdg.dr{background:rgba(232,154,24,.12);color:#c07a10;}
+.ri-bdg.ms{background:rgba(229,68,68,.1);color:#c02828;}
+.ri-bdg.fl{background:rgba(74,120,240,.1);color:#3060d0;}
+.ri-times{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:7px;}
 .rit{text-align:center;}
-.rit-l{font-size:.55rem;color:var(--t3);font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
-.rit-v{font-family:var(--fc);font-size:.78rem;font-weight:600;margin-top:2px;}
+.rit-l{font-size:.54rem;color:var(--t3);font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+.rit-v{font-family:var(--fc);font-size:.76rem;font-weight:600;margin-top:2px;color:var(--t1);}
 .rit-v.ph{color:var(--t3);}
-.ri-ft{display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--bd);}
-.ri-sd{font-family:var(--fc);font-size:.78rem;font-weight:700;}
-.ri-ts{font-size:.6rem;color:var(--t3);}
-/* USER ITEMS */
-.ui{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:12px 14px;margin-bottom:8px;}
-.ui.pend{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04);}
-.ui-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
-.ui-nm{font-family:var(--fm);font-size:.85rem;font-weight:700;}
-.ui-em{font-size:.68rem;color:var(--t2);margin-top:2px;}
-.ui-st{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:3px 9px;font-size:.62rem;font-weight:800;}
-.ui-st.pend{background:rgba(245,200,66,.15);color:var(--yellow);}
-.ui-st.usuario{background:rgba(56,216,158,.15);color:var(--green);}
-.ui-st.admin{background:rgba(155,127,232,.15);color:var(--purple);}
-.ui-ac{display:flex;gap:6px;margin-top:8px;}
-.bsm{border:none;border-radius:8px;padding:6px 12px;font-family:var(--fm);font-size:.68rem;font-weight:700;cursor:pointer;}
-.bsm-g{background:rgba(56,216,158,.15);color:var(--green);border:1px solid rgba(56,216,158,.3);}
-.bsm-r{background:rgba(232,95,95,.15);color:var(--red);border:1px solid rgba(232,95,95,.3);}
+.ri-ft{display:flex;justify-content:space-between;align-items:center;padding-top:7px;border-top:1px solid var(--bd);}
+.ri-sd{font-family:var(--fc);font-size:.76rem;font-weight:700;}
+.ri-ts{font-size:.58rem;color:var(--t3);}
 /* CFG */
-.cfgb{margin:0 14px 12px;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px;flex-shrink:0;}
-.cfgb-t{font-family:var(--fm);font-size:.8rem;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);}
+.cfgb{margin:0 14px 10px;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px;flex-shrink:0;box-shadow:var(--sh);}
+.cfgb-t{font-family:var(--fm);font-size:.8rem;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);color:var(--t1);}
 .cfgr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .cfgr:last-child{margin-bottom:0;}
 .cfgl{font-size:.78rem;color:var(--t2);}
-.cfgi{background:var(--s2);border:1px solid var(--bd2);border-radius:8px;padding:7px 10px;color:var(--t1);font-family:var(--fc);font-size:.78rem;width:90px;text-align:center;outline:none;}
+.cfgi{background:var(--s2);border:1.5px solid var(--bd);border-radius:8px;padding:7px 10px;color:var(--t1);font-family:var(--fc);font-size:.78rem;width:90px;text-align:center;outline:none;touch-action:manipulation;}
 .cfgi:focus{border-color:var(--acc);}
-.cfgi-w{width:100%;margin-top:5px;text-align:left;font-family:var(--ff);}
-/* PENDENTE */
-/* DATE BAR */
-.datebar{margin:12px 14px 6px;background:var(--s1);border:1px solid var(--bd2);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.dbv{font-family:var(--fm);font-size:.9rem;font-weight:700;}
-.dbedit{background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);border-radius:8px;padding:5px 11px;color:var(--acc);font-size:.7rem;font-weight:700;cursor:pointer;}
+.cfgi-w{width:100%;margin-top:5px;text-align:left;font-family:var(--ff);font-size:16px;}
+/* USER PICKER (login) */
+.up-wrap{display:flex;gap:12px;justify-content:center;margin:24px 0;}
+.up-card{flex:1;max-width:110px;background:var(--s1);border:2px solid var(--bd);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--sh);}
+.up-card:hover{border-color:var(--acc);box-shadow:0 4px 18px rgba(74,120,240,.18);}
+.up-card.sel{border-color:var(--acc);background:rgba(74,120,240,.05);box-shadow:0 4px 18px rgba(74,120,240,.2);}
+.up-av{width:48px;height:48px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;margin:0 auto 8px;}
+.up-nm{font-size:.72rem;font-weight:700;color:var(--t1);line-height:1.3;}
+/* LOGIN */
+#s-login{background:var(--bg);justify-content:center;padding:36px 24px;}
+.lmark{width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;box-shadow:0 8px 20px rgba(74,120,240,.3);}
+.lh{font-family:var(--fm);font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1.15;margin-bottom:4px;color:var(--t1);}
+.ls{color:var(--t2);font-size:.8rem;margin-bottom:4px;}
+.lfoot{margin-top:14px;text-align:center;font-size:.72rem;color:var(--t3);}
+.lfoot a{color:var(--acc);cursor:pointer;}
+/* FUNC SELECTOR */
+.fsel{margin:0 14px 4px;flex-shrink:0;}
 
-/* COMPATIBILIDADE MOBILE */
-* { -webkit-tap-highlight-color: transparent; }
-input[type="time"]::-webkit-date-and-time-value { text-align: left; }
-input, select, button { -webkit-appearance: none; touch-action: manipulation; }
-.scr { -webkit-overflow-scrolling: touch; }
-/* evita zoom ao focar input no iOS */
-input[type="time"], input[type="text"], input[type="email"], input[type="date"], input[type="password"] { font-size: 16px !important; }
+/* ── PRINT / PDF ─────────────────────────────────────────── */
+/* compatibilidade input iOS */
+input[type="time"]::-webkit-date-and-time-value{text-align:left;}
+input,select,button{-webkit-appearance:none;touch-action:manipulation;}
 
-/* PRINT */
 @media print{
-  @page { size: A4 portrait; margin: 15mm 12mm; }
-  body{background:#fff;color:#000;overflow:visible;}
-  #app{max-width:none;height:auto;overflow:visible;}
+  @page{size:A4 portrait;margin:8mm 10mm;}
+  body,html{background:#fff!important;color:#000!important;overflow:visible!important;height:auto!important;}
+  #app{max-width:none!important;height:auto!important;overflow:visible!important;}
+  /* esconde tudo menos a tela de fechamento ativa */
   .scr{display:none!important;}
   #s-fech.on,#s-adm-fech.on{
-    display:block!important;background:#fff;color:#000;
-    font-family:Arial,Helvetica,sans-serif;padding:0;overflow:visible;
+    display:block!important;background:#fff!important;
+    font-family:Arial,Helvetica,sans-serif!important;padding:0!important;overflow:visible!important;
+    height:auto!important;
   }
-  .bnav,.bkrow,.btn-pair,button,.note,.sl,.fechbdg,#ld,#toast,.mov,.bk,
-  [style*="margin:8px 14px"],
-  [style*="margin:4px 14px 20px"]{display:none!important;}
-  .sbar{display:none!important;}
-  /* Cabeçalho */
-  .fechhdr{background:#fff!important;border-bottom:2px solid #222;padding:0 0 8px;margin-bottom:8px;}
-  .fechnm{font-size:14px;font-weight:700;color:#000;margin-bottom:2px;}
-  .fechmt{font-size:10px;color:#444;line-height:1.4;}
-  /* Cards resumo */
-  .sum3{margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
-  .s3c{border:1px solid #ccc;background:#f8f8f8!important;padding:6px;text-align:center;border-radius:4px;}
-  .s3v{font-size:13px;font-weight:700;color:#000!important;}
-  .s3l{font-size:9px;color:#555;}
-  /* Tabela */
-  .tw{overflow:visible;}
-  .pt{font-size:9px;width:100%;}
-  .pt th{background:#222!important;color:#fff!important;padding:5px 3px;font-size:8px;
-    print-color-adjust:exact;-webkit-print-color-adjust:exact;}
-  .pt td{padding:4px 3px;border-bottom:1px solid #ddd;}
-  .pt td:first-child{font-weight:700;}
-  .pt .wkr td{color:#aaa!important;opacity:.6;}
-  .pt tfoot td{background:#f0f0f0!important;font-weight:800;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
-  .tp{color:#006600!important;font-weight:700;}.tm{color:#cc0000!important;font-weight:700;}
-  .tfl{color:#003399!important;}.tdr{color:#cc6600!important;}.tok{color:#006600!important;}
-  /* Assinaturas */
-  .sigs{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  .sig{border:none;border-top:1px solid #555;padding-top:6px;}
-  .sig-ln{display:none;}
-  .sig-lb{font-size:9px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.05em;}
-  .sig-nm{font-size:11px;color:#000;margin-top:4px;}
-  .sig-sb{font-size:9px;color:#555;margin-top:2px;}
-  *{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  /* esconde elementos de navegação */
+  .bnav,.bkrow,.btn,.btn-pair,.note,.sl,.fechbdg,
+  #ld,#toast,.mov,.bk,.sbar,
+  .pdf-hide,.note-pdf{display:none!important;}
+  /* ── CABEÇALHO ── */
+  .fechhdr{
+    background:#fff!important;border:none!important;
+    border-bottom:2px solid #111!important;
+    padding:0 0 5px!important;margin-bottom:6px!important;
+  }
+  .fechnm{font-size:13pt!important;font-weight:700!important;color:#000!important;}
+  .fechmt{font-size:8pt!important;color:#333!important;line-height:1.3!important;}
+  /* ── CARDS RESUMO ── */
+  .sum3{
+    display:grid!important;grid-template-columns:1fr 1fr 1fr!important;
+    gap:4px!important;padding:4px 0!important;margin-bottom:4px!important;
+  }
+  .s3c{
+    border:1px solid #999!important;background:#f5f5f5!important;
+    padding:4px 6px!important;border-radius:3px!important;box-shadow:none!important;
+  }
+  .s3v{font-size:10pt!important;font-weight:700!important;color:#000!important;}
+  .s3l{font-size:7pt!important;color:#555!important;}
+  /* ── TABELA ── */
+  .tw{overflow:visible!important;padding:0!important;}
+  .pt{font-size:7.5pt!important;width:100%!important;border-collapse:collapse!important;}
+  .pt th{
+    background:#222!important;color:#fff!important;
+    padding:3px 3px!important;font-size:6.5pt!important;
+    print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;
+  }
+  .pt th:first-child{padding-left:4px!important;}
+  .pt td{padding:2.5px 3px!important;border-bottom:1px solid #ddd!important;font-size:7pt!important;}
+  .pt td:first-child{padding-left:4px!important;}
+  .pt .wkr td{color:#bbb!important;}
+  .pt tfoot td{
+    background:#eee!important;font-size:7.5pt!important;font-weight:700!important;
+    border-top:1.5px solid #555!important;
+    print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;
+  }
+  .tp{color:#005522!important;font-weight:700!important;}
+  .tm{color:#880000!important;font-weight:700!important;}
+  .tfl{color:#003388!important;}.tdr{color:#885500!important;}
+  /* ── ASSINATURAS ── */
+  .sl-sigs{display:block!important;}
+  .sigs{
+    display:grid!important;grid-template-columns:1fr 1fr!important;
+    gap:16px!important;padding:0!important;margin-top:10px!important;
+  }
+  .sig{border:none!important;background:#fff!important;padding:0!important;border-radius:0!important;}
+  .sig-ln{height:0!important;margin:0!important;display:none!important;}
+  .sig-line-print{display:block!important;height:1px;background:#333;margin:20px 0 5px;}
+  .sig-lb{font-size:7.5pt!important;font-weight:700!important;color:#333!important;}
+  .sig-nm{font-size:9pt!important;color:#000!important;}
+  .sig-sb{font-size:7pt!important;color:#555!important;}
+  *{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;}
 }
+.sig-line-print{display:none;}
 </style>
 </head>
 <body>
@@ -292,82 +334,79 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 
 <!-- ══ LOGIN ══════════════════════════════════════════════ -->
 <div class="scr on" id="s-login">
-  <div class="lglow"></div>
   <div style="position:relative;z-index:1;width:100%">
     <div class="lmark">⏱</div>
-    <div class="lh">Controle<br>de Ponto</div>
-    <div class="ls">Acesse sua conta para continuar</div>
-    <div class="fg"><label class="fl">E-mail</label><input class="fi" type="email" id="l-email" placeholder="seu@email.com" autocomplete="email"></div>
-    <div class="fg"><label class="fl">Senha</label><input class="fi" type="password" id="l-senha" placeholder="••••••••" autocomplete="current-password"></div>
-    <button class="btn btn-p btn-w" onclick="fazerLogin()">Entrar</button>
-    <div class="lfoot" style="margin-top:18px">
+    <div class="lh">Ponto Eletrônico</div>
+    <div class="ls">Selecione seu perfil para entrar</div>
+    <div class="up-wrap" id="up-wrap"></div>
+    <div id="login-senha-wrap" style="display:none">
+      <div id="login-usuario-sel" style="text-align:center;margin-bottom:14px;font-family:var(--fm);font-size:.85rem;font-weight:700;color:var(--t1)"></div>
+      <div class="fg">
+        <label class="fl">Senha</label>
+        <input class="fi" type="password" id="l-senha" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-p btn-w" onclick="fazerLogin()">Entrar</button>
+      <div style="text-align:center;margin-top:10px">
+        <span style="font-size:.72rem;color:var(--t2);cursor:pointer" onclick="voltarEscolha()">← Trocar usuário</span>
+      </div>
+    </div>
+    <div class="lfoot">
       <a onclick="recuperarSenha()" style="color:var(--t3)">Esqueceu a senha?</a>
-      <div style="margin-top:12px;color:var(--t3);font-size:.62rem;font-family:var(--fc)">v2.1</div>
+      <div style="margin-top:8px;font-family:var(--fc);font-size:.6rem;color:var(--t3)">CONFIG.VERSION</div>
     </div>
   </div>
 </div>
 
 <!-- ══ DASHBOARD ════════════════════════════════════════════ -->
 <div class="scr" id="s-dash">
-  <div class="sbar"><span id="d-hr">09:41</span><span>⚡</span></div>
+  <div class="sbar"><span id="d-hr">09:41</span><span style="font-family:var(--fc);font-size:.6rem;color:var(--t3)">CONFIG.VERSION</span></div>
   <div class="topbar">
-    <div><h2 id="d-sauda">Bom dia 👋</h2><span id="d-sub">carregando...</span></div>
-    <div style="display:flex;align-items:center;gap:8px"><span style="font-size:.58rem;color:var(--t3);font-family:var(--fc)">v2.1</span><div class="av" id="d-av">?</div></div>
+    <div><h2 id="d-sauda">Bom dia 👋</h2><span id="d-sub">—</span></div>
+    <div class="av" id="d-av">?</div>
   </div>
-  <!-- Banco de horas + Hoje em linha única -->
-  <div style="padding:6px 14px 4px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
-    <span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)">Banco de Horas — <span id="d-mes"></span></span>
-  </div>
-  <!-- 4 cards compactos -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:0 14px;flex-shrink:0">
-    <div class="card cg" style="padding:8px 10px">
+  <div class="sl">Banco de Horas — <span id="d-mes"></span></div>
+  <div class="cards4">
+    <div class="card cg">
       <div style="font-size:.85rem">⏱</div>
-      <div class="cv g" id="d-saldo" style="font-size:.95rem;margin-top:4px">--:--</div>
-      <div class="cl" style="font-size:.58rem">Saldo</div>
+      <div class="cv g" id="d-saldo" style="font-size:.9rem">--:--</div>
+      <div class="cl">Saldo</div>
     </div>
-    <div class="card cb" style="padding:8px 10px">
+    <div class="card cb">
       <div style="font-size:.85rem">📅</div>
-      <div class="cv b" id="d-dias" style="font-size:.95rem;margin-top:4px">-/-</div>
-      <div class="cl" style="font-size:.58rem">Dias OK</div>
+      <div class="cv b" id="d-dias" style="font-size:.9rem">-/-</div>
+      <div class="cl">Dias OK</div>
     </div>
-    <div class="card" style="padding:8px 10px;border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);cursor:pointer" onclick="irRegistro(null)">
+    <div class="card ctoday" onclick="irRegistro(null)">
       <div style="font-size:.85rem">📌</div>
-      <div class="cv b" id="d-hoje-num" style="font-size:1.1rem;line-height:1;margin-top:4px"></div>
-      <div class="cl" id="d-hoje-label" style="font-size:.58rem">Hoje</div>
+      <div class="cv b" id="d-hoje-num" style="font-size:1rem;color:var(--acc)"></div>
+      <div class="cl" id="d-hoje-lbl" style="color:var(--acc)">Hoje</div>
     </div>
-    <div class="card cr" style="padding:8px 10px">
+    <div class="card cr">
       <div style="font-size:.85rem">⚠️</div>
-      <div class="cv r" id="d-pend" style="font-size:.95rem;margin-top:4px">0</div>
-      <div class="cl" style="font-size:.58rem">Pendentes</div>
+      <div class="cv r" id="d-pend" style="font-size:.9rem">0</div>
+      <div class="cl">Pendentes</div>
     </div>
   </div>
-  <!-- Calendário compacto -->
-  <div style="padding:6px 14px 2px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+  <div style="padding:8px 14px 2px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
     <span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)">Calendário — <span id="d-cal-tit"></span></span>
-    <div style="display:flex;gap:4px">
+    <div style="display:flex;align-items:center;gap:6px">
       <div class="cal-nb" onclick="calNav(-1)">‹</div>
-      <span class="cal-mo" id="cal-mo" style="font-size:.75rem;font-weight:700;align-self:center"></span>
+      <span id="cal-mo" class="cal-mo"></span>
       <div class="cal-nb" onclick="calNav(1)">›</div>
     </div>
   </div>
-  <div style="padding:0 14px;flex-shrink:0">
-    <div class="cal-dn" style="margin-bottom:2px">
-      <div class="cal-d">D</div><div class="cal-d">S</div><div class="cal-d">T</div>
-      <div class="cal-d">Q</div><div class="cal-d">Q</div><div class="cal-d">S</div><div class="cal-d">S</div>
-    </div>
+  <div class="cal-wrap">
+    <div class="cal-dn"><div class="cal-d">D</div><div class="cal-d">S</div><div class="cal-d">T</div><div class="cal-d">Q</div><div class="cal-d">Q</div><div class="cal-d">S</div><div class="cal-d">S</div></div>
     <div class="cal-cells" id="cal-cells"></div>
   </div>
-  <!-- Legenda + botão em linha -->
-  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 14px 8px;flex-shrink:0;flex-wrap:wrap;gap:4px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <div class="li"><div class="ld" style="background:var(--green)"></div>OK</div>
-      <div class="li"><div class="ld" style="background:var(--draft)"></div>Rascunho</div>
-      <div class="li"><div class="ld" style="background:var(--red)"></div>Pendente</div>
-      <div class="li"><div class="ld" style="background:var(--blue)"></div>Folga</div>
-      <div class="li"><div class="ld" style="background:var(--acc)"></div>Hoje</div>
-    </div>
+  <div class="leg">
+    <div class="li"><div class="ld" style="background:var(--green)"></div>OK</div>
+    <div class="li"><div class="ld" style="background:var(--draft)"></div>Rascunho</div>
+    <div class="li"><div class="ld" style="background:var(--red)"></div>Pendente</div>
+    <div class="li"><div class="ld" style="background:var(--blue)"></div>Folga</div>
+    <div class="li"><div class="ld" style="background:var(--acc)"></div>Hoje</div>
   </div>
-  <div style="margin:0 14px 8px;flex-shrink:0">
+  <div style="margin:4px 14px 10px;flex-shrink:0">
     <button class="btn btn-g btn-w" style="padding:11px" onclick="irRegistro(null)">＋ Registrar ponto de hoje</button>
   </div>
   <div class="bnav">
@@ -380,51 +419,44 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 
 <!-- ══ REGISTRO ════════════════════════════════════════════ -->
 <div class="scr" id="s-reg">
-  <div class="sbar"><span id="r-hr">09:41</span><span>⚡</span></div>
+  <div class="sbar"><span id="r-hr">09:41</span><span></span></div>
   <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Registrar Ponto</h3><p id="r-dia"></p></div></div>
   <div class="datebar">
-    <div><div style="font-size:.62rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Data</div><div class="dbv" id="r-data-disp"></div></div>
+    <div>
+      <div style="font-size:.62rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Data</div>
+      <div class="dbv" id="r-data-disp"></div>
+    </div>
     <div class="dbedit" onclick="abrirModalData()">✏ Alterar</div>
   </div>
-  <div class="tog-row" style="margin:10px 0 0">
-    <div><div style="font-size:.85rem;font-weight:700">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
-    <div class="tog" id="tog" onclick="toggleFolga()"><div class="tog-k"></div></div>
+  <div style="padding:8px 14px 6px;flex-shrink:0">
+    <div class="tog-row" style="margin:0">
+      <div><div style="font-size:.85rem;font-weight:700;color:var(--t1)">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
+      <div class="tog" id="tog" onclick="toggleFolga()"><div class="tog-k"></div></div>
+    </div>
   </div>
   <div class="sl">Horários do Dia</div>
   <div class="tfs">
     <div class="tf" id="tf-e">
-      <div style="flex:1;min-width:0">
-        <div class="tfl">🌅 Entrada</div>
-        <input type="time" class="tfv" id="i-e" oninput="mudaCampo('e')" onchange="mudaCampo('e')" onclick="this.showPicker&&this.showPicker()">
-      </div>
+      <div style="flex:1;min-width:0"><div class="tfl">🌅 Entrada</div><input type="time" class="tfv" id="i-e" oninput="mudaCampo('e')" onchange="mudaCampo('e')" onclick="this.showPicker&&this.showPicker()"></div>
       <div class="tfic tfic-pend" id="ic-e"></div>
     </div>
     <div class="tf" id="tf-sa">
-      <div style="flex:1;min-width:0">
-        <div class="tfl">🍽 Saída Almoço</div>
-        <input type="time" class="tfv" id="i-sa" oninput="mudaCampo('sa')" onchange="mudaCampo('sa')" onclick="this.showPicker&&this.showPicker()">
-      </div>
+      <div style="flex:1;min-width:0"><div class="tfl">🍽 Saída Almoço</div><input type="time" class="tfv" id="i-sa" oninput="mudaCampo('sa')" onchange="mudaCampo('sa')" onclick="this.showPicker&&this.showPicker()"></div>
       <div class="tfic tfic-pend" id="ic-sa"></div>
     </div>
     <div class="tf" id="tf-ra">
-      <div style="flex:1;min-width:0">
-        <div class="tfl">↩ Retorno Almoço</div>
-        <input type="time" class="tfv" id="i-ra" oninput="mudaCampo('ra')" onchange="mudaCampo('ra')" onclick="this.showPicker&&this.showPicker()">
-      </div>
+      <div style="flex:1;min-width:0"><div class="tfl">↩ Retorno Almoço</div><input type="time" class="tfv" id="i-ra" oninput="mudaCampo('ra')" onchange="mudaCampo('ra')" onclick="this.showPicker&&this.showPicker()"></div>
       <div class="tfic tfic-pend" id="ic-ra"></div>
     </div>
     <div class="tf" id="tf-s">
-      <div style="flex:1;min-width:0">
-        <div class="tfl">🌙 Saída</div>
-        <input type="time" class="tfv" id="i-s" oninput="mudaCampo('s')" onchange="mudaCampo('s')" onclick="this.showPicker&&this.showPicker()">
-      </div>
+      <div style="flex:1;min-width:0"><div class="tfl">🌙 Saída</div><input type="time" class="tfv" id="i-s" oninput="mudaCampo('s')" onchange="mudaCampo('s')" onclick="this.showPicker&&this.showPicker()"></div>
       <div class="tfic tfic-pend" id="ic-s"></div>
     </div>
   </div>
-  <div class="note" style="margin-top:10px">🕐 <span><b style="color:var(--t1)">Registrar e Enviar</b> grava o timestamp e envia e-mail. Rascunho salva sem enviar.</span></div>
-  <div style="margin:12px 14px 20px" class="btn-pair">
+  <div class="note" style="margin-top:10px">🕐 <span><b style="color:var(--t1)">Registrar e Enviar</b> grava o timestamp e envia e-mail. Rascunho salva sem enviar. Não é possível registrar horários futuros.</span></div>
+  <div style="margin:10px 14px 20px" class="btn-pair">
     <button class="btn btn-draft" onclick="salvarRascunho()">💾 Salvar Rascunho</button>
-    <button class="btn btn-g"     onclick="registrarEnviar()">✅ Registrar e Enviar</button>
+    <button class="btn btn-g"     onclick="abrirConfirmacao()">✅ Registrar e Enviar</button>
   </div>
   <div class="bnav">
     <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
@@ -436,7 +468,7 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 
 <!-- ══ PERFIL ══════════════════════════════════════════════ -->
 <div class="scr" id="s-perfil">
-  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="sbar"><span>--:--</span><span></span></div>
   <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Dados Cadastrais</h3><p>Informações pessoais</p></div></div>
   <div class="phero">
     <div class="phav" id="p-av">?</div>
@@ -444,10 +476,10 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
     <div class="phsub"  id="p-sub">—</div>
   </div>
   <div style="padding:14px;flex:1">
-    <div class="fg"><label class="fl">Nome Completo</label><input class="fi" type="text"   id="p-nome" placeholder="Seu nome completo"></div>
-    <div class="fg"><label class="fl">RG</label>           <input class="fi" type="text"   id="p-rg"   placeholder="XX.XXX.XXX"></div>
+    <div class="fg"><label class="fl">Nome Completo</label><input class="fi" type="text"  id="p-nome" placeholder="Seu nome completo"></div>
+    <div class="fg"><label class="fl">RG</label>            <input class="fi" type="text"  id="p-rg"   placeholder="XX.XXX.XXX"></div>
     <div class="fg"><label class="fl">Data de Nascimento</label><input class="fi" type="date" id="p-nasc"></div>
-    <div class="fg"><label class="fl">E-mail</label>       <input class="fi" type="email"  id="p-email" placeholder="seu@email.com"></div>
+    <div class="fg"><label class="fl">E-mail</label>        <input class="fi" type="email" id="p-email" placeholder="seu@email.com"></div>
   </div>
   <div style="margin:0 14px 20px"><button class="btn btn-p btn-w" onclick="salvarPerfil()">Salvar Dados</button></div>
   <div class="bnav">
@@ -458,44 +490,55 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
   </div>
 </div>
 
-<!-- ══ FECHAMENTO (usuário) ════════════════════════════════ -->
+<!-- ══ FECHAMENTO ══════════════════════════════════════════ -->
 <div class="scr" id="s-fech">
-  <div class="sbar"><span>--:--</span><span>⚡</span></div>
-  <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Fechamento Mensal</h3><p id="f-periodo">—</p></div></div>
-  <!-- Cabeçalho funcionário -->
-  <div class="fechhdr"><div class="fechbdg">📋 Relatório</div><div class="fechnm" id="f-nm">—</div><div class="fechmt" id="f-mt">—</div></div>
-  <!-- Cards resumo -->
+  <div class="sbar"><span>--:--</span><span></span></div>
+  <div class="bkrow pdf-hide"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Fechamento Mensal</h3><p id="f-periodo">—</p></div></div>
+  <div class="fechhdr"><div class="fechbdg pdf-hide">📋 Relatório</div><div class="fechnm" id="f-nm">—</div><div class="fechmt" id="f-mt">—</div></div>
   <div class="sum3">
-    <div class="s3c"><div class="s3v" style="color:var(--blue)"  id="f-ct">--h</div><div class="s3l">Contratado</div></div>
+    <div class="s3c"><div class="s3v" style="color:var(--blue)" id="f-ct">--h</div><div class="s3l">Contratado</div></div>
     <div class="s3c"><div class="s3v" style="color:var(--green)" id="f-tr">--h</div><div class="s3l">Trabalhado</div></div>
-    <div class="s3c"><div class="s3v" id="f-sd">--:--</div><div class="s3l">Saldo final</div></div>
+    <div class="s3c"><div class="s3v" id="f-sd">--:--</div><div class="s3l">Saldo Final</div></div>
   </div>
-  <!-- Tabela detalhada -->
-  <div class="sl">Registros Detalhados</div>
-  <div class="tw"><table class="pt">
-    <thead><tr><th>Data</th><th>Dia</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead>
-    <tbody id="f-body"></tbody>
-    <tfoot id="f-foot" style="font-weight:700;background:var(--s2)"></tfoot>
-  </table></div>
-  <!-- Assinaturas -->
-  <div class="sl">Assinaturas</div>
+  <div class="sl pdf-hide">Registros Detalhados</div>
+  <div class="tw">
+    <table class="pt">
+      <thead><tr><th>Dia</th><th>Sem</th><th>Entrada</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead>
+      <tbody id="f-body"></tbody>
+      <tfoot id="f-foot"></tfoot>
+    </table>
+  </div>
+  <div class="sl-sigs sl pdf-hide">Assinaturas</div>
   <div class="sigs">
-    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="f-sig-fn">—</div><div class="sig-sb" id="f-sig-rg">—</div></div>
-    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="f-sig-em">—</div></div>
-  </div>
-  <!-- Ações -->
-  <div style="margin:8px 14px 0;display:flex;flex-direction:column;gap:8px">
-    <div class="btn-pair">
-      <button class="btn btn-r" style="font-size:.8rem" onclick="exportarPDF('s-fech')">📄 Exportar PDF</button>
-      <button class="btn" style="background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);color:var(--acc);font-size:.8rem" onclick="enviarFechamentoEmail()">📧 Enviar por E-mail</button>
+    <div class="sig">
+      <div class="sig-line-print"></div>
+      <div class="sig-ln"></div>
+      <div class="sig-lb">Funcionário(a)</div>
+      <div class="sig-nm" id="f-sig-fn">—</div>
+      <div class="sig-sb" id="f-sig-rg">—</div>
     </div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;font-size:.67rem;color:var(--t2);line-height:1.5">
-      📄 <b style="color:var(--t1)">PDF:</b> abre janela de impressão — escolha "Salvar como PDF" no seu dispositivo<br>
-      📧 <b style="color:var(--t1)">E-mail:</b> envia o relatório detalhado em formato texto para os destinatários cadastrados
+    <div class="sig">
+      <div class="sig-line-print"></div>
+      <div class="sig-ln"></div>
+      <div class="sig-lb">Empregador</div>
+      <div class="sig-nm" id="f-sig-em">—</div>
     </div>
   </div>
-  <div style="height:16px"></div>
-  <div class="bnav">
+  <!-- Ações (escondidas no print) -->
+  <div class="pdf-hide" style="margin:8px 14px 0;display:flex;flex-direction:column;gap:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+      <button class="btn btn-r" style="font-size:.74rem;padding:11px 6px" onclick="exportarPDF('s-fech')">📄 PDF</button>
+      <button class="btn btn-ghost" style="font-size:.74rem;padding:11px 6px" onclick="enviarFechamentoEmail('f')">📧 E-mail</button>
+      <button class="btn" style="font-size:.74rem;padding:11px 6px;background:rgba(34,196,142,.1);border:1px solid rgba(34,196,142,.25);color:var(--green)" onclick="exportarCSV()">📊 CSV</button>
+    </div>
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;font-size:.66rem;color:var(--t2);line-height:1.5">
+      📄 <b style="color:var(--t1)">PDF</b> → impressão / "Salvar como PDF" &nbsp;·&nbsp;
+      📧 <b style="color:var(--t1)">E-mail</b> → relatório em texto &nbsp;·&nbsp;
+      📊 <b style="color:var(--t1)">CSV</b> → planilha para Excel/Sheets
+    </div>
+  </div>
+  <div style="height:14px" class="pdf-hide"></div>
+  <div class="bnav pdf-hide">
     <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
     <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
@@ -505,22 +548,22 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 
 <!-- ══ ADMIN — PAINEL ══════════════════════════════════════ -->
 <div class="scr" id="s-adm">
-  <div class="sbar"><span id="a-hr">09:41</span><span>⚡</span></div>
+  <div class="sbar"><span id="a-hr">09:41</span><span style="font-family:var(--fc);font-size:.6rem;color:var(--t3)">CONFIG.VERSION</span></div>
   <div class="admhdr"><div class="admbdg">👔 Admin</div><div class="admtl">Painel de Gestão</div><div class="admsb" id="a-sub">—</div></div>
   <div class="sl">Funcionário</div>
-  <div class="fsel"><select class="fi" id="a-fsel" onchange="trocaFunc()"><option value="">Selecione um funcionário...</option></select></div>
+  <div class="fsel"><select class="fi" id="a-fsel" onchange="trocaFunc()"><option value="">Selecione...</option></select></div>
   <div class="sl">Resumo do Mês</div>
-  <div class="cards2">
-    <div class="card cp"><div style="font-size:1.1rem">⏱</div><div class="cv p" id="a-saldo">--:--</div><div class="cl">Saldo do mês</div></div>
-    <div class="card cg"><div style="font-size:1.1rem">✅</div><div class="cv g" id="a-ok">0</div><div class="cl">Registrados</div></div>
-    <div class="card cy"><div style="font-size:1.1rem">💾</div><div class="cv y" id="a-rasc">0</div><div class="cl">Rascunhos</div></div>
-    <div class="card cr"><div style="font-size:1.1rem">⚠️</div><div class="cv r" id="a-pend">0</div><div class="cl">Pendentes</div></div>
+  <div class="cards4">
+    <div class="card cp"><div style="font-size:.85rem">⏱</div><div class="cv p" id="a-saldo" style="font-size:.9rem">--:--</div><div class="cl">Saldo</div></div>
+    <div class="card cg"><div style="font-size:.85rem">✅</div><div class="cv g" id="a-ok" style="font-size:.9rem">0</div><div class="cl">OK</div></div>
+    <div class="card cy"><div style="font-size:.85rem">💾</div><div class="cv y" id="a-rasc" style="font-size:.9rem">0</div><div class="cl">Rascunhos</div></div>
+    <div class="card cr"><div style="font-size:.85rem">⚠️</div><div class="cv r" id="a-pend" style="font-size:.9rem">0</div><div class="cl">Pendentes</div></div>
   </div>
   <div class="sl">Registros Recentes</div>
   <div style="padding:0 14px;flex:1;overflow-y:auto" id="a-lista"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px 8px;flex-shrink:0">
     <button class="btn btn-ghost" onclick="navA('s-adm-fech')">📊 Fechamento</button>
-    <button class="btn" style="background:rgba(155,127,232,.12);border:1px solid rgba(155,127,232,.28);color:var(--purple)" onclick="navA('s-adm-cfg')">⚙️ Config.</button>
+    <button class="btn" style="background:rgba(139,104,232,.08);border:1px solid rgba(139,104,232,.2);color:var(--purple)" onclick="navA('s-adm-cfg')">⚙️ Config.</button>
   </div>
   <div class="bnav">
     <div class="bni on"  onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
@@ -532,23 +575,36 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 
 <!-- ══ ADMIN — FECHAMENTO ══════════════════════════════════ -->
 <div class="scr" id="s-adm-fech">
-  <div class="sbar"><span>--:--</span><span>⚡</span></div>
-  <div class="bkrow"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Fechamento Mensal</h3><p id="af-func-label">Selecione um funcionário</p></div></div>
-  <div class="fechhdr"><div class="fechbdg">📋 Relatório</div><div class="fechnm" id="af-nm">—</div><div class="fechmt" id="af-mt">—</div></div>
+  <div class="sbar"><span>--:--</span><span></span></div>
+  <div class="bkrow pdf-hide"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Fechamento Mensal</h3><p id="af-func-label">—</p></div></div>
+  <div class="fechhdr"><div class="fechbdg pdf-hide">📋 Relatório</div><div class="fechnm" id="af-nm">—</div><div class="fechmt" id="af-mt">—</div></div>
   <div class="sum3">
-    <div class="s3c"><div class="s3v" style="color:var(--blue)"  id="af-ct">--h</div><div class="s3l">Contratado</div></div>
+    <div class="s3c"><div class="s3v" style="color:var(--blue)" id="af-ct">--h</div><div class="s3l">Contratado</div></div>
     <div class="s3c"><div class="s3v" style="color:var(--green)" id="af-tr">--h</div><div class="s3l">Trabalhado</div></div>
-    <div class="s3c"><div class="s3v" id="af-sd">--:--</div><div class="s3l">Saldo final</div></div>
+    <div class="s3c"><div class="s3v" id="af-sd">--:--</div><div class="s3l">Saldo Final</div></div>
   </div>
-  <div class="sl">Registros</div>
-  <div class="tw"><table class="pt"><thead><tr><th>Data</th><th>Dia</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="af-body"></tbody><tfoot id="af-foot"></tfoot></table></div>
-  <div class="sl">Assinaturas</div>
+  <div class="sl pdf-hide">Registros</div>
+  <div class="tw">
+    <table class="pt">
+      <thead><tr><th>Dia</th><th>Sem</th><th>Entrada</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead>
+      <tbody id="af-body"></tbody>
+      <tfoot id="af-foot"></tfoot>
+    </table>
+  </div>
+  <div class="sl-sigs sl pdf-hide">Assinaturas</div>
   <div class="sigs">
-    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="af-sig-fn">—</div><div class="sig-sb" id="af-sig-rg">—</div></div>
-    <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="af-sig-em">—</div></div>
+    <div class="sig"><div class="sig-line-print"></div><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="af-sig-fn">—</div><div class="sig-sb" id="af-sig-rg">—</div></div>
+    <div class="sig"><div class="sig-line-print"></div><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="af-sig-em">—</div></div>
   </div>
-  <div style="margin:8px 14px 20px"><button class="btn btn-r btn-w" onclick="window.print()">📄 Gerar PDF / Imprimir</button></div>
-  <div class="bnav">
+  <div class="pdf-hide" style="margin:8px 14px 0;display:flex;flex-direction:column;gap:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+      <button class="btn btn-r" style="font-size:.74rem;padding:11px 6px" onclick="exportarPDF('s-adm-fech')">📄 PDF</button>
+      <button class="btn btn-ghost" style="font-size:.74rem;padding:11px 6px" onclick="enviarFechamentoEmail('af')">📧 E-mail</button>
+      <button class="btn" style="font-size:.74rem;padding:11px 6px;background:rgba(34,196,142,.1);border:1px solid rgba(34,196,142,.25);color:var(--green)" onclick="exportarCSV()">📊 CSV</button>
+    </div>
+  </div>
+  <div style="height:14px" class="pdf-hide"></div>
+  <div class="bnav pdf-hide">
     <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
     <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"    onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
@@ -558,22 +614,20 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 
 <!-- ══ ADMIN — CONFIG ══════════════════════════════════════ -->
 <div class="scr" id="s-adm-cfg">
-  <div class="sbar"><span>--:--</span><span>⚡</span></div>
+  <div class="sbar"><span>--:--</span><span></span></div>
   <div class="bkrow"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Configurações</h3><p>Jornada e e-mails</p></div></div>
   <div class="cfgb" style="margin-top:14px">
     <div class="cfgb-t">🕐 Jornada Padrão</div>
-    <div class="cfgr"><span class="cfgl">Entrada</span>       <input class="cfgi" type="time" id="cfg-e"  value="08:30"></div>
-    <div class="cfgr"><span class="cfgl">Saída almoço</span>  <input class="cfgi" type="time" id="cfg-sa" value="12:00"></div>
-    <div class="cfgr"><span class="cfgl">Retorno almoço</span><input class="cfgi" type="time" id="cfg-ra" value="13:00"></div>
-    <div class="cfgr"><span class="cfgl">Saída</span>         <input class="cfgi" type="time" id="cfg-s"  value="17:30"></div>
-    <div class="cfgr"><span class="cfgl">Carga diária</span>  <span id="cfg-carga" style="font-family:var(--fc);font-size:.82rem;font-weight:700;color:var(--acc)">8h00</span></div>
+    <div class="cfgr"><span class="cfgl">Entrada</span>        <input class="cfgi" type="time" id="cfg-e"  value="08:30"></div>
+    <div class="cfgr"><span class="cfgl">Saída almoço</span>   <input class="cfgi" type="time" id="cfg-sa" value="12:00"></div>
+    <div class="cfgr"><span class="cfgl">Retorno almoço</span> <input class="cfgi" type="time" id="cfg-ra" value="13:00"></div>
+    <div class="cfgr"><span class="cfgl">Saída</span>          <input class="cfgi" type="time" id="cfg-s"  value="17:30"></div>
+    <div class="cfgr"><span class="cfgl">Carga diária</span>   <span id="cfg-carga" style="font-family:var(--fc);font-size:.82rem;font-weight:700;color:var(--acc)">8h00</span></div>
   </div>
   <div class="cfgb">
-    <div class="cfgb-t">📧 E-mails de Backup</div>
-    <div style="margin-bottom:8px"><label class="fl" style="font-size:.62rem">Destinatário 1</label><input class="cfgi cfgi-w fi" type="email" id="cfg-em1" placeholder="email1@empresa.com"></div>
-    <div style="margin-bottom:8px"><label class="fl" style="font-size:.62rem">Destinatário 2</label><input class="cfgi cfgi-w fi" type="email" id="cfg-em2" placeholder="email2@empresa.com"></div>
+    <div class="cfgb-t">📧 E-mails Adicionais de Backup</div>
     <div style="margin-bottom:8px"><label class="fl" style="font-size:.62rem">Destinatário 3</label><input class="cfgi cfgi-w fi" type="email" id="cfg-em3" placeholder="email3@empresa.com"></div>
-    <button class="btn btn-ghost btn-w" style="font-size:.78rem;padding:10px;margin-top:6px" onclick="testarEmail()">📤 Enviar e-mail de teste</button>
+    <button class="btn btn-ghost btn-w" style="font-size:.78rem;padding:10px;margin-top:4px" onclick="testarEmail()">📤 Enviar e-mail de teste</button>
   </div>
   <div style="margin:0 14px 24px"><button class="btn btn-p btn-w" onclick="salvarConfig()">Salvar Configurações</button></div>
   <div class="bnav">
@@ -585,14 +639,35 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 </div>
 
 </div><!-- #app -->
-
 <div id="toast"></div>
 <div id="ld"><div class="sp"></div><p id="ld-msg">Carregando...</p></div>
+<!-- Modal confirmação de registro -->
+<div class="mov" id="modal-confirma">
+  <div class="mo">
+    <h3>Confirmar Registro</h3>
+    <div id="mc-resumo" style="background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-family:var(--fm);font-size:.82rem;font-weight:700;color:var(--t1);margin-bottom:10px" id="mc-data">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="mc-horarios"></div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.72rem;color:var(--t2);font-weight:700">Saldo do dia</span>
+        <span id="mc-saldo" style="font-family:var(--fc);font-size:.95rem;font-weight:700"></span>
+      </div>
+    </div>
+    <div style="font-size:.68rem;color:var(--t2);margin-bottom:14px;line-height:1.5">
+      📧 Após confirmar, o registro será salvo e um e-mail enviado automaticamente para os destinatários cadastrados.
+    </div>
+    <div class="btn-pair">
+      <button class="btn btn-ghost" onclick="g('modal-confirma').classList.remove('on')">Cancelar</button>
+      <button class="btn btn-g"     onclick="confirmarEEnviar()">✅ Confirmar e Enviar</button>
+    </div>
+  </div>
+</div>
 
+<!-- Modal data retroativa -->
 <div class="mov" id="modal-data">
   <div class="mo">
     <h3>Alterar data do registro</h3>
-    <div class="fg"><label class="fl">Data</label><input class="fi" type="date" id="md-inp"></div>
+    <div class="fg"><label class="fl">Data (não pode ser futura)</label><input class="fi" type="date" id="md-inp"></div>
     <div class="btn-pair">
       <button class="btn btn-ghost" onclick="fechaModal()">Cancelar</button>
       <button class="btn btn-p"     onclick="confirmaData()">Confirmar</button>
@@ -601,109 +676,146 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
 </div>
 
 <script>
-// ── INIT ─────────────────────────────────────────────────────
-const {createClient} = supabase;
-const sb = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+// Substituir placeholders de versão
+document.querySelectorAll('*').forEach(el=>{
+  if(el.childNodes.length===1&&el.childNodes[0].nodeType===3){
+    if(el.innerHTML.includes('CONFIG.VERSION'))
+      el.innerHTML=el.innerHTML.replace(/CONFIG\.VERSION/g,CONFIG.VERSION);
+  }
+});
+
+const {createClient}=supabase;
+const sb=createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_KEY);
 emailjs.init(CONFIG.EMAILJS_KEY);
 
-const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const DIAS  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DIAS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-const ST = {
-  user: null, perfil: null,
-  cfg: {id:1, entrada:'08:30', saida_almoco:'12:00', retorno_almoco:'13:00', saida:'17:30'},
-  ano: new Date().getFullYear(), mes: new Date().getMonth(),
-  regData: hoje(), folga: false,
-  funcId: null, funcNome: null, // funcionário selecionado pelo admin
+const ST={
+  user:null,perfil:null,emailSel:null,
+  cfg:{id:1,entrada:'08:30',saida_almoco:'12:00',retorno_almoco:'13:00',saida:'17:30'},
+  ano:new Date().getFullYear(),mes:new Date().getMonth(),
+  regData:hoje(),folga:false,
+  funcId:null,funcNome:null,
+  fechDados:{},
 };
 
 // ── UTILS ─────────────────────────────────────────────────────
-function hoje(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
-function p2(n){ return String(n).padStart(2,'0'); }
-function dtBR(iso){ if(!iso)return'—'; const[y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
-function dtEx(iso){ const[y,m,d]=iso.split('-'); const dt=new Date(y,m-1,d); return `${dt.getDate()} de ${MESES[dt.getMonth()]}, ${y}`; }
-function toMin(t){ if(!t)return 0; const[h,m]=(t||'').replace(/\..*/,'').split(':').map(Number); return h*60+m; }
-function minHM(n){ const s=n<0?'-':'+'; const a=Math.abs(n); return `${s}${p2(Math.floor(a/60))}:${p2(a%60)}`; }
-function minH(n){ const a=Math.abs(n); const h=Math.floor(a/60); const m=a%60; return m?`${h}h${p2(m)}`:`${h}h`; }
-function inic(nm){ return (nm||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase(); }
-function saldo(r,c){
+function hoje(){const d=new Date();return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;}
+function agora(){const d=new Date();return `${p2(d.getHours())}:${p2(d.getMinutes())}`;}
+function p2(n){return String(n).padStart(2,'0');}
+function dtBR(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function dtEx(iso){const[y,m,d]=iso.split('-');const dt=new Date(y,m-1,d);return`${dt.getDate()} de ${MESES[dt.getMonth()]}, ${y}`;}
+function toMin(t){if(!t)return 0;const[h,m]=(t||'').replace(/\..*/,'').split(':').map(Number);return h*60+m;}
+function minHM(n){const s=n<0?'-':'+';const a=Math.abs(n);return`${s}${p2(Math.floor(a/60))}:${p2(a%60)}`;}
+function minH(n){const a=Math.abs(n);const h=Math.floor(a/60);const m=a%60;return m?`${h}h${p2(m)}`:`${h}h`;}
+function inic(nm){return(nm||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();}
+function saldoMin(r,c){
   if(!r.entrada||!r.saida||r.folga)return 0;
   const esp=(toMin(c.saida)-toMin(c.entrada))-(toMin(c.retorno_almoco)-toMin(c.saida_almoco));
-  const sa=r.saida_almoco||c.saida_almoco, ra=r.retorno_almoco||c.retorno_almoco;
-  return (toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa))-esp;
+  const sa=r.saida_almoco||c.saida_almoco,ra=r.retorno_almoco||c.retorno_almoco;
+  return(toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa))-esp;
 }
 function uteis(ano,mes){
   const dias=[],tot=new Date(ano,mes+1,0).getDate();
   for(let d=1;d<=tot;d++){const dow=new Date(ano,mes,d).getDay();if(dow&&dow<6)dias.push(`${ano}-${p2(mes+1)}-${p2(d)}`);}
   return dias;
 }
+function g(id){return document.getElementById(id);}
 function toast(msg,t='i',ms=3500){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className=`on ${t}`; clearTimeout(el._t);
-  el._t=setTimeout(()=>el.className='',ms);
+  const el=g('toast');el.textContent=msg;el.className=`on ${t}`;
+  clearTimeout(el._t);el._t=setTimeout(()=>el.className='',ms);
 }
 function ld(show,msg='Carregando...'){
-  document.getElementById('ld').classList.toggle('on',show);
-  document.getElementById('ld-msg').textContent=msg;
+  g('ld').classList.toggle('on',show);g('ld-msg').textContent=msg;
 }
-function ir(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on')); document.getElementById(id)?.classList.add('on'); }
-function fechaModal(){ document.getElementById('modal-data').classList.remove('on'); }
-function abrirModal(id){ document.getElementById(id).classList.add('on'); }
-setInterval(()=>{ ['d-hr','r-hr','a-hr'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=new Date().toTimeString().slice(0,5);}); },60000);
+function ir(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));g(id)?.classList.add('on');}
+function fechaModal(){g('modal-data').classList.remove('on');}
+setInterval(()=>{['d-hr','r-hr','a-hr'].forEach(id=>{const el=g(id);if(el)el.textContent=new Date().toTimeString().slice(0,5);});},60000);
+
+// ── LOGIN COM SELEÇÃO DE USUÁRIO ───────────────────────────────
+function renderUserPicker(){
+  const wrap=g('up-wrap');
+  wrap.innerHTML=CONFIG.USUARIOS.map((u,i)=>`
+    <div class="up-card" id="up-${i}" onclick="selecionarUsuario(${i})">
+      <div class="up-av">${u.iniciais}</div>
+      <div class="up-nm">${u.nome}</div>
+    </div>`).join('');
+}
+renderUserPicker();
+
+function selecionarUsuario(idx){
+  document.querySelectorAll('.up-card').forEach(c=>c.classList.remove('sel'));
+  g(`up-${idx}`)?.classList.add('sel');
+  const u=CONFIG.USUARIOS[idx];
+  ST.emailSel=u.email;
+  g('login-usuario-sel').textContent=`Entrando como: ${u.nome}`;
+  g('login-senha-wrap').style.display='block';
+  g('l-senha').focus();
+}
+
+function voltarEscolha(){
+  g('login-senha-wrap').style.display='none';
+  ST.emailSel=null;
+  document.querySelectorAll('.up-card').forEach(c=>c.classList.remove('sel'));
+  g('l-senha').value='';
+}
 
 // ── AUTH ──────────────────────────────────────────────────────
 sb.auth.onAuthStateChange(async(event,session)=>{
-  if(event==='TOKEN_REFRESHED') return;
+  if(event==='TOKEN_REFRESHED')return;
   if(session?.user){
     ST.user=session.user;
     await loadPerfil();
     await loadCfg();
     const p=ST.perfil?.perfil;
-    console.log('Perfil carregado:', p);
+    console.log('Perfil:',p);
     if(p==='admin')        navA('s-adm');
     else if(p==='usuario') navU('s-dash');
-    else { toast('Acesso não autorizado','e',5000); await fazerLogout(); }
-  } else {
-    ST.user=null; ST.perfil=null; ir('s-login');
+    else{toast('Acesso não autorizado','e',5000);await fazerLogout();}
+  }else{
+    ST.user=null;ST.perfil=null;ST.emailSel=null;
+    ir('s-login');
   }
 });
 
 async function fazerLogin(){
-  const em=document.getElementById('l-email').value.trim();
-  const pw=document.getElementById('l-senha').value;
-  if(!em||!pw){toast('Preencha e-mail e senha','e');return;}
+  const email=ST.emailSel;
+  const senha=g('l-senha').value;
+  if(!email){toast('Selecione um usuário primeiro','e');return;}
+  if(!senha){toast('Digite a senha','e');return;}
   ld(true,'Entrando...');
-  const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  const{error}=await sb.auth.signInWithPassword({email,password:senha});
   ld(false);
-  if(error)toast('E-mail ou senha incorretos','e');
+  if(error)toast('Senha incorreta','e');
 }
 
-
-async function fazerLogout(){ await sb.auth.signOut(); }
+async function fazerLogout(){
+  await sb.auth.signOut();
+  g('l-senha').value='';
+  voltarEscolha();
+}
 
 async function recuperarSenha(){
-  const em=document.getElementById('l-email').value.trim();
-  if(!em){toast('Digite o e-mail primeiro','e');return;}
-  const{error}=await sb.auth.resetPasswordForEmail(em);
+  if(!ST.emailSel){toast('Selecione um usuário primeiro','e');return;}
+  const{error}=await sb.auth.resetPasswordForEmail(ST.emailSel);
   if(!error)toast('Link de recuperação enviado!','s');
   else toast('Erro ao enviar','e');
 }
 
 // ── PERFIL ────────────────────────────────────────────────────
 async function loadPerfil(){
-  try {
+  try{
     const{data,error}=await sb.from('perfis').select('*').eq('id',ST.user.id).single();
-    if(error){ console.error('Erro loadPerfil:', error); ST.perfil=null; return; }
+    if(error){console.error('Perfil erro:',error);ST.perfil=null;return;}
     ST.perfil=data;
-  } catch(e){ console.error('Excecao loadPerfil:', e); ST.perfil=null; }
+  }catch(e){console.error('Perfil exc:',e);ST.perfil=null;}
 }
 
 async function salvarPerfil(){
   const dados={id:ST.user.id,perfil:ST.perfil?.perfil||'usuario',
-    nome: document.getElementById('p-nome').value.trim(),
-    rg:   document.getElementById('p-rg').value.trim(),
-    nascimento: document.getElementById('p-nasc').value||null,
-    email:document.getElementById('p-email').value.trim(),
+    nome:g('p-nome').value.trim(),rg:g('p-rg').value.trim(),
+    nascimento:g('p-nasc').value||null,email:g('p-email').value.trim(),
   };
   ld(true,'Salvando...');
   const{error}=await sb.from('perfis').upsert(dados,{onConflict:'id'});
@@ -712,21 +824,19 @@ async function salvarPerfil(){
   else{console.error(error);toast('Erro: '+error.message,'e');}
 }
 
-function renderPerfil(){
-  const nm=ST.perfil?.nome||ST.user?.email||'?';
-  g('p-av').textContent=inic(nm);
-  g('p-nm').textContent=nm;
-  g('p-sub').textContent=ST.perfil?.perfil==='admin'?'Administrador':'Funcionário(a) · Ativo';
-  g('d-av').textContent=inic(nm);
-}
-
 function preenchePerfil(){
   if(!ST.perfil)return;
-  g('p-nome').value=ST.perfil.nome||'';
-  g('p-rg').value=ST.perfil.rg||'';
-  g('p-nasc').value=ST.perfil.nascimento||'';
-  g('p-email').value=ST.perfil.email||ST.user.email||'';
+  g('p-nome').value=ST.perfil.nome||'';g('p-rg').value=ST.perfil.rg||'';
+  g('p-nasc').value=ST.perfil.nascimento||'';g('p-email').value=ST.perfil.email||ST.user?.email||'';
   renderPerfil();
+}
+
+function renderPerfil(){
+  const nm=ST.perfil?.nome||ST.user?.email||'?';
+  const ini=inic(nm);
+  g('p-av').textContent=ini;g('p-nm').textContent=nm;
+  g('p-sub').textContent=ST.perfil?.perfil==='admin'?'Administrador':'Funcionário(a)';
+  const dav=g('d-av');if(dav)dav.textContent=ini;
 }
 
 // ── CONFIG ────────────────────────────────────────────────────
@@ -737,11 +847,9 @@ async function loadCfg(){
 
 async function salvarConfig(){
   const c={
-    entrada:  g('cfg-e').value,  saida_almoco: g('cfg-sa').value,
-    retorno_almoco: g('cfg-ra').value, saida: g('cfg-s').value,
-    email_destino_1: g('cfg-em1').value.trim(),
-    email_destino_2: g('cfg-em2').value.trim(),
-    email_destino_3: g('cfg-em3').value.trim(),
+    entrada:g('cfg-e').value,saida_almoco:g('cfg-sa').value,
+    retorno_almoco:g('cfg-ra').value,saida:g('cfg-s').value,
+    email_destino_3:g('cfg-em3').value.trim(),
   };
   ld(true,'Salvando...');
   const{error}=await sb.from('configuracoes').update(c).eq('id',ST.cfg.id);
@@ -751,12 +859,10 @@ async function salvarConfig(){
 }
 
 function preencheCfg(){
-  g('cfg-e').value =ST.cfg.entrada?.slice(0,5)||'08:30';
+  g('cfg-e').value=ST.cfg.entrada?.slice(0,5)||'08:30';
   g('cfg-sa').value=ST.cfg.saida_almoco?.slice(0,5)||'12:00';
   g('cfg-ra').value=ST.cfg.retorno_almoco?.slice(0,5)||'13:00';
-  g('cfg-s').value =ST.cfg.saida?.slice(0,5)||'17:30';
-  g('cfg-em1').value=ST.cfg.email_destino_1||'';
-  g('cfg-em2').value=ST.cfg.email_destino_2||'';
+  g('cfg-s').value=ST.cfg.saida?.slice(0,5)||'17:30';
   g('cfg-em3').value=ST.cfg.email_destino_3||'';
   atualizaCarga();
 }
@@ -766,7 +872,15 @@ function atualizaCarga(){
   const el=g('cfg-carga');if(el)el.textContent=minH(c);
 }
 
-// ── CALENDÁRIO ───────────────────────────────────────────────
+// ── CARD HOJE ─────────────────────────────────────────────────
+function atualizaCardHoje(){
+  const d=new Date();
+  const el_num=g('d-hoje-num'),el_lbl=g('d-hoje-lbl');
+  if(el_num)el_num.textContent=d.getDate();
+  if(el_lbl)el_lbl.textContent=`${DIAS[d.getDay()]} · ${MESES[d.getMonth()].slice(0,3)}`;
+}
+
+// ── CALENDÁRIO ────────────────────────────────────────────────
 function calNav(d){
   ST.mes+=d;
   if(ST.mes>11){ST.mes=0;ST.ano++;}
@@ -778,18 +892,17 @@ async function renderCal(){
   const{ano,mes}=ST;
   const label=`${MESES[mes]} ${ano}`;
   ['d-mes','d-cal-tit','cal-mo'].forEach(id=>{const el=g(id);if(el)el.textContent=label;});
-  const ini=`${ano}-${p2(mes+1)}-01`, fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
+  const ini=`${ano}-${p2(mes+1)}-01`,fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
   const{data}=await sb.from('registros').select('data,folga,rascunho').eq('usuario_id',ST.user.id).gte('data',ini).lte('data',fim);
   const mp={};(data||[]).forEach(r=>mp[r.data]=r);
   const u=uteis(ano,mes),hj=hoje();
-  let ok=0,rasc=0,pend=0;
-  u.forEach(d=>{const r=mp[d];if(!r){if(d<=hj)pend++;}else if(r.folga)ok++;else if(r.rascunho)rasc++;else ok++;});
-  g('d-dias').textContent=`${ok}/${u.length}`;
-  // d-rasc removido — card substituído por 'Hoje'
+  let ok=0,pend=0;
+  u.forEach(d=>{const r=mp[d];if(!r){if(d<=hj)pend++;}else if(!r.rascunho)ok++;});
+  const el_dias=g('d-dias');if(el_dias)el_dias.textContent=`${ok}/${u.length}`;
   const el_pend=g('d-pend');if(el_pend)el_pend.textContent=pend;
   // saldo
   const{data:rs}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).gte('data',ini).lte('data',fim).eq('rascunho',false);
-  let tot=0;(rs||[]).forEach(r=>{if(!r.folga)tot+=saldo(r,ST.cfg);});
+  let tot=0;(rs||[]).forEach(r=>{if(!r.folga)tot+=saldoMin(r,ST.cfg);});
   const sel=g('d-saldo');if(sel){sel.textContent=minHM(tot);sel.style.color=tot>=0?'var(--green)':'var(--red)';}
   // células
   const prim=new Date(ano,mes,1).getDay(),totd=new Date(ano,mes+1,0).getDate();
@@ -809,13 +922,33 @@ async function renderCal(){
   }
 }
 
+// ── VALIDAÇÃO DATA/HORA FUTURA ────────────────────────────────
+function validarFuturo(){
+  const hj=hoje();
+  if(ST.regData>hj){
+    toast('Não é permitido registrar datas futuras','e');return false;
+  }
+  if(ST.regData===hj&&!ST.folga){
+    const agorMin=toMin(agora());
+    const campos=[
+      {nm:'Entrada',v:g('i-e').value},
+      {nm:'Saída Almoço',v:g('i-sa').value},
+      {nm:'Retorno Almoço',v:g('i-ra').value},
+      {nm:'Saída',v:g('i-s').value},
+    ];
+    for(const c of campos){
+      if(c.v&&toMin(c.v)>agorMin){
+        toast(`${c.nm} não pode ser horário futuro (${c.v})','e`);return false;
+      }
+    }
+  }
+  return true;
+}
+
 // ── REGISTRO ─────────────────────────────────────────────────
 function irRegistro(data){
-  // Guarda a data ANTES de navegar — navU('s-reg') reseta para hoje
-  ST.regData = data || hoje();
-  ST.folga   = false;
-  ld(true);
-  ir('s-reg');
+  ST.regData=data||hoje();ST.folga=false;
+  ld(true);ir('s-reg');
   atualizaDataDisplay();
   loadRegExistente().then(()=>ld(false));
 }
@@ -830,8 +963,7 @@ function atualizaDataDisplay(){
 async function loadRegExistente(){
   limpaFields();
   const{data,error}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).eq('data',ST.regData).single();
-  if(data && !error){
-    // Registro existente — carregar os dados salvos
+  if(data&&!error){
     ST.folga=data.folga;
     g('tog').classList.toggle('on',data.folga);
     if(!data.folga){
@@ -839,14 +971,13 @@ async function loadRegExistente(){
         if(v){g('i-'+id).value=v.slice(0,5);visualCampo(id,data.rascunho);}
       });
     }
-  } else {
-    // Novo registro — pré-preencher com horário padrão configurado
+  }else{
+    // Novo — pré-preencher com padrão
     const c=ST.cfg;
-    g('i-e').value  = c.entrada?.slice(0,5)        || '08:30';
-    g('i-sa').value = c.saida_almoco?.slice(0,5)   || '12:00';
-    g('i-ra').value = c.retorno_almoco?.slice(0,5) || '13:00';
-    g('i-s').value  = c.saida?.slice(0,5)          || '17:30';
-    // Marcar visualmente como rascunho (ainda não salvo)
+    g('i-e').value=c.entrada?.slice(0,5)||'08:30';
+    g('i-sa').value=c.saida_almoco?.slice(0,5)||'12:00';
+    g('i-ra').value=c.retorno_almoco?.slice(0,5)||'13:00';
+    g('i-s').value=c.saida?.slice(0,5)||'17:30';
     ['e','sa','ra','s'].forEach(id=>visualCampo(id,true));
   }
 }
@@ -875,14 +1006,13 @@ function toggleFolga(){
 
 function coletaH(){
   return{
-    entrada:        g('i-e').value||null,
-    saida_almoco:   g('i-sa').value||null,
-    retorno_almoco: g('i-ra').value||null,
-    saida:          g('i-s').value||null,
+    entrada:g('i-e').value||null,saida_almoco:g('i-sa').value||null,
+    retorno_almoco:g('i-ra').value||null,saida:g('i-s').value||null,
   };
 }
 
 async function salvarRascunho(){
+  if(!validarFuturo())return;
   const h=coletaH();
   const reg={usuario_id:ST.user.id,data:ST.regData,...h,folga:ST.folga,rascunho:true,saldo_minutos:null,enviado_em:null};
   ld(true,'Salvando rascunho...');
@@ -892,136 +1022,254 @@ async function salvarRascunho(){
   else{console.error(error);toast('Erro: '+error.message,'e');}
 }
 
-async function registrarEnviar(){
+// ── MELHORIA 2: Modal de confirmação ─────────────────────────
+function abrirConfirmacao(){
+  if(!validarFuturo())return;
   const h=coletaH();
   if(!ST.folga&&(!h.entrada||!h.saida)){toast('Preencha ao menos entrada e saída','e');return;}
-  const sd=ST.folga?0:saldo({...h,folga:false},ST.cfg);
-  const reg={usuario_id:ST.user.id,data:ST.regData,...h,folga:ST.folga,rascunho:false,saldo_minutos:sd,enviado_em:new Date().toISOString()};
-  ld(true,'Registrando...');
-  const{error}=await sb.from('registros').upsert(reg,{onConflict:'usuario_id,data'});
-  if(error){ld(false);console.error(error);toast('Erro: '+error.message,'e');return;}
-  await enviaEmail(reg,sd);
-  ld(false);toast('Registro enviado! 📧','s');
-  ['e','sa','ra','s'].forEach(id=>visualCampo(id,false));
-  renderCal();
+
+  // Preencher resumo no modal
+  const[y,m,d]=ST.regData.split('-'),dt=new Date(y,m-1,d);
+  g('mc-data').textContent=`${DIAS[dt.getDay()]}, ${dtEx(ST.regData)}`;
+
+  const sd=ST.folga?0:saldoMin({...h,folga:false},ST.cfg);
+  const campos=ST.folga
+    ?[{l:'Status',v:'🌴 Folga',v2:''}]
+    :[
+      {l:'🌅 Entrada',    v:h.entrada||'—'},
+      {l:'🍽 Saída Almoço',v:h.saida_almoco||'—'},
+      {l:'↩ Retorno',    v:h.retorno_almoco||'—'},
+      {l:'🌙 Saída',      v:h.saida||'—'},
+    ];
+
+  g('mc-horarios').innerHTML=campos.map(c=>`
+    <div style="background:var(--s1);border-radius:8px;padding:6px 10px">
+      <div style="font-size:.6rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.07em">${c.l}</div>
+      <div style="font-family:var(--fc);font-size:.9rem;font-weight:600;color:var(--t1);margin-top:2px">${c.v}</div>
+    </div>`).join('');
+
+  const sdEl=g('mc-saldo');
+  sdEl.textContent=ST.folga?'Folga':minHM(sd);
+  sdEl.style.color=ST.folga?'var(--blue)':sd>=0?'var(--green)':'var(--red)';
+
+  // Guardar dados para o confirmar
+  ST._pendingReg={h,sd};
+  g('modal-confirma').classList.add('on');
 }
 
-async function enviaEmail(r,sd){
-  // E-mails fixos de backup + eventuais configurados pelo admin
-  const destFixos = CONFIG.EMAILS_BACKUP;
-  const destCfg   = [ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
-  const dest      = [...new Set([...destFixos,...destCfg])]; // une sem duplicar
+async function confirmarEEnviar(){
+  g('modal-confirma').classList.remove('on');
+  const{h,sd}=ST._pendingReg||{};
+  if(!h&&!ST.folga)return;
+
+  // MELHORIA 1: enviado_em vem do servidor via trigger SQL
+  // NÃO enviamos enviado_em do cliente — o banco define com now()
+  const reg={
+    usuario_id:    ST.user.id,
+    data:          ST.regData,
+    ...(h||{}),
+    folga:         ST.folga,
+    rascunho:      false,
+    saldo_minutos: sd||0,
+    // enviado_em: OMITIDO — definido pelo trigger fn_set_enviado_em() no Supabase
+  };
+
+  ld(true,'Registrando...');
+  const{data:saved,error}=await sb.from('registros')
+    .upsert(reg,{onConflict:'usuario_id,data'})
+    .select('*')
+    .single();
+
+  if(error){ld(false);console.error(error);toast('Erro: '+error.message,'e');return;}
+
+  // Usa o enviado_em retornado pelo servidor para o e-mail
+  const tsServidor=saved?.enviado_em
+    ?new Date(saved.enviado_em).toLocaleString('pt-BR')
+    :new Date().toLocaleString('pt-BR');
+
+  await enviaEmail({...reg,enviado_em:tsServidor},sd||0,tsServidor);
+  ld(false);toast('Registro confirmado e enviado! 📧','s');
+  ['e','sa','ra','s'].forEach(id=>visualCampo(id,false));
+  renderCal();
+  ST._pendingReg=null;
+}
+
+// mantém compatibilidade — chamado internamente
+async function registrarEnviar(){ abrirConfirmacao(); }
+
+async function enviaEmail(r,sd,tsServidor){
+  const dest=[...CONFIG.EMAILS_BACKUP,ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
+  const uniq=[...new Set(dest)];
+  // MELHORIA 1: timestamp vem do servidor, não do cliente
+  const ts=tsServidor||new Date().toLocaleString('pt-BR');
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
-      nome_funcionaria: ST.perfil?.nome||ST.user.email,
-      data_registro: dtBR(r.data),
-      entrada: r.entrada||'—', saida_almoco: r.saida_almoco||'—',
-      retorno_almoco: r.retorno_almoco||'—', saida: r.saida||'—',
-      folga: r.folga?'Sim':'Não', saldo_dia: minHM(sd),
-      enviado_em: new Date().toLocaleString('pt-BR'),
-      to_email: dest.join(','),
+      nome_funcionaria:ST.perfil?.nome||ST.user.email,
+      data_registro:dtBR(r.data),
+      entrada:r.entrada||'—',saida_almoco:r.saida_almoco||'—',
+      retorno_almoco:r.retorno_almoco||'—',saida:r.saida||'—',
+      folga:r.folga?'Sim':'Não',saldo_dia:minHM(sd),
+      enviado_em:ts,
+      to_email:uniq.join(','),
     });
   }catch(e){toast('Salvo, mas falha no e-mail ⚠️','i',4000);}
 }
 
 async function testarEmail(){
-  const destFixos = CONFIG.EMAILS_BACKUP;
-  const destCfg   = [g('cfg-em1').value,g('cfg-em2').value,g('cfg-em3').value].filter(Boolean);
-  const dest      = [...new Set([...destFixos,...destCfg])];
+  const dest=[...CONFIG.EMAILS_BACKUP,g('cfg-em3')?.value].filter(Boolean);
   ld(true,'Enviando teste...');
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
       nome_funcionaria:ST.perfil?.nome||'Teste',data_registro:dtBR(hoje()),
       entrada:'08:30',saida_almoco:'12:00',retorno_almoco:'13:00',saida:'17:30',
       folga:'Não',saldo_dia:'+0:00',enviado_em:new Date().toLocaleString('pt-BR'),
-      to_email:dest.join(','),
+      to_email:[...new Set(dest)].join(','),
     });
-    toast('E-mail de teste enviado para '+dest.length+' destinatário(s)!','s');
-  }catch(e){toast('Erro no envio: '+e.text||e.message,'e');}
+    toast('E-mail de teste enviado!','s');
+  }catch(e){toast('Erro: '+(e.text||e.message),'e');}
   ld(false);
 }
 
-// ── DATA RETROATIVA ──────────────────────────────────────────
+// ── DATA RETROATIVA ───────────────────────────────────────────
 function abrirModalData(){
   g('md-inp').value=ST.regData;g('md-inp').max=hoje();
-  abrirModal('modal-data');
+  g('modal-data').classList.add('on');
 }
 function confirmaData(){
   const v=g('md-inp').value;
+  if(v>hoje()){toast('Data não pode ser futura','e');return;}
   if(v){ST.regData=v;atualizaDataDisplay();loadRegExistente();}
   fechaModal();
 }
 
 // ── FECHAMENTO ────────────────────────────────────────────────
-async function renderFech(uid, prefix){
+async function renderFech(uid,prefix){
   const{ano,mes}=ST;
-  const ini=`${ano}-${p2(mes+1)}-01`, fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
+  const ini=`${ano}-${p2(mes+1)}-01`,fim=`${ano}-${p2(mes+1)}-${new Date(ano,mes+1,0).getDate()}`;
   const{data:regs}=await sb.from('registros').select('*').eq('usuario_id',uid).gte('data',ini).lte('data',fim).order('data');
   const{data:pf}=await sb.from('perfis').select('*').eq('id',uid).single();
   const mp={};(regs||[]).forEach(r=>mp[r.data]=r);
-  const nm=pf?.nome||'—', rg=pf?.rg||'—';
+  const nm=pf?.nome||'—',rg=pf?.rg||'—';
   const carga=(toMin(ST.cfg.saida)-toMin(ST.cfg.entrada))-(toMin(ST.cfg.retorno_almoco)-toMin(ST.cfg.saida_almoco));
-  const u=uteis(ano,mes);
-  let totTrab=0,totSaldo=0;
-  const ini_br=dtBR(ini), fim_br=dtBR(fim);
-  g(`${prefix}-nm`).textContent=nm;
-  g(`${prefix}-mt`).innerHTML=`RG: ${rg} · Período: ${ini_br} – ${fim_br} · Jornada: ${minH(carga)}/dia · Seg a Sex`;
-  // Atualizar periodo no subtítulo se existir
-  const pel=g(`${prefix}-periodo`);if(pel)pel.textContent=`${ini_br} – ${fim_br}`;
-  const tbody=g(`${prefix}-body`);tbody.innerHTML='';
+  const u=uteis(ano,mes);let totTrab=0,totSaldo=0;
+  const ini_br=dtBR(ini),fim_br=dtBR(fim);
+  const el=id=>g(id);
+  el(`${prefix}-nm`).textContent=nm;
+  el(`${prefix}-mt`).innerHTML=`RG: ${rg} · ${ini_br} – ${fim_br} · Jornada: ${minH(carga)}/dia · Seg–Sex`;
+  const pel=el(`${prefix}-periodo`);if(pel)pel.textContent=`${ini_br} – ${fim_br}`;
+  const tbody=el(`${prefix}-body`);tbody.innerHTML='';
   const totd=new Date(ano,mes+1,0).getDate();
   for(let d=1;d<=totd;d++){
     const iso=`${ano}-${p2(mes+1)}-${p2(d)}`,dt=new Date(ano,mes,d),dow=dt.getDay();
-    const dNum=p2(d), dNome=DIAS[dow], r=mp[iso], wk=dow===0||dow===6;
+    const dNum=p2(d),dNome=DIAS[dow],r=mp[iso],wk=dow===0||dow===6;
     let tr='';
-    if(wk)              tr=`<tr class="wkr"><td>${dNum}</td><td>${dNome}</td><td colspan="4" style="text-align:center">—</td><td>—</td></tr>`;
-    else if(!r)         tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" style="text-align:center;color:var(--red)">Pendente</td><td class="tm">—</td></tr>`;
-    else if(r.folga)    tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" class="tfl" style="text-align:center">Folga</td><td class="tfl">—</td></tr>`;
-    else if(r.rascunho) tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" class="tdr" style="text-align:center">Rascunho</td><td class="tdr">...</td></tr>`;
+    if(wk)             tr=`<tr class="wkr"><td>${dNum}</td><td>${dNome}</td><td colspan="4" style="text-align:center">—</td><td>—</td></tr>`;
+    else if(!r)        tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" style="text-align:center;color:var(--red)">Pendente</td><td class="tm">—</td></tr>`;
+    else if(r.folga)   tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" class="tfl" style="text-align:center">Folga</td><td class="tfl">—</td></tr>`;
+    else if(r.rascunho)tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" class="tdr" style="text-align:center">Rascunho</td><td class="tdr">...</td></tr>`;
     else{
-      const sd=saldo(r,ST.cfg);totSaldo+=sd;
+      const sd=saldoMin(r,ST.cfg);totSaldo+=sd;
       if(r.entrada&&r.saida){const sa=r.saida_almoco||ST.cfg.saida_almoco,ra=r.retorno_almoco||ST.cfg.retorno_almoco;totTrab+=(toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa));}
       tr=`<tr><td>${dNum}</td><td>${dNome}</td><td>${r.entrada?.slice(0,5)||'—'}</td><td>${r.saida_almoco?.slice(0,5)||'—'}</td><td>${r.retorno_almoco?.slice(0,5)||'—'}</td><td>${r.saida?.slice(0,5)||'—'}</td><td class="${sd>=0?'tp':'tm'}">${minHM(sd)}</td></tr>`;
     }
     tbody.innerHTML+=tr;
   }
-  // Rodapé de totais
-  const tfoot=g(`${prefix}-foot`);
-  if(tfoot) tfoot.innerHTML=`<tr style="border-top:2px solid var(--bd2)"><td colspan="2" style="font-weight:800;color:var(--t1);padding:6px">TOTAL</td><td colspan="4" style="text-align:center;font-size:.65rem;color:var(--t2)">${u.length} dias úteis · ${minH(carga*u.length)} contratado</td><td class="${totSaldo>=0?'tp':'tm'}" style="font-weight:800">${minHM(totSaldo)}</td></tr>`;
-  g(`${prefix}-ct`).textContent=minH(carga*u.length);
-  g(`${prefix}-tr`).textContent=minH(totTrab);
-  const se=g(`${prefix}-sd`);se.textContent=minHM(totSaldo);se.style.color=totSaldo>=0?'var(--green)':'var(--red)';
-  g(`${prefix}-sig-fn`).textContent=nm;
-  g(`${prefix}-sig-rg`).textContent=`RG: ${rg}`;
-  // Guardar dados para uso no email de fechamento
+  const tfoot=el(`${prefix}-foot`);
+  if(tfoot)tfoot.innerHTML=`<tr><td colspan="2" style="padding-left:6px;font-weight:800">TOTAL</td><td colspan="4" style="text-align:center;font-size:.58rem;color:var(--t2)">${u.length} dias úteis · ${minH(carga*u.length)} contratado</td><td class="${totSaldo>=0?'tp':'tm'}" style="font-weight:800">${minHM(totSaldo)}</td></tr>`;
+  el(`${prefix}-ct`).textContent=minH(carga*u.length);
+  el(`${prefix}-tr`).textContent=minH(totTrab);
+  const se=el(`${prefix}-sd`);se.textContent=minHM(totSaldo);se.style.color=totSaldo>=0?'var(--green)':'var(--red)';
+  el(`${prefix}-sig-fn`).textContent=nm;
+  el(`${prefix}-sig-rg`).textContent=`RG: ${rg}`;
   ST.fechDados={nm,rg,ini:ini_br,fim:fim_br,contratado:minH(carga*u.length),trabalhado:minH(totTrab),saldo:minHM(totSaldo)};
 }
 
-// ── ADMIN ─────────────────────────────────────────────────────
+function exportarPDF(screenId){
+  const scrEls=document.querySelectorAll('.scr');
+  const states=[];
+  scrEls.forEach(s=>{states.push(s.classList.contains('on'));s.classList.remove('on');});
+  g(screenId)?.classList.add('on');
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{scrEls.forEach((s,i)=>{if(states[i])s.classList.add('on');});},500);
+  },150);
+}
 
+async function enviarFechamentoEmail(prefix='f'){
+  const d=ST.fechDados||{};
+  const dest=[...CONFIG.EMAILS_BACKUP,ST.cfg.email_destino_3].filter(Boolean);
+  const uniq=[...new Set(dest)];
+  // Montar relatório em texto
+  const linhas=Array.from(g(`${prefix}-body`)?.querySelectorAll('tr')||[])
+    .map(tr=>Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim()).join('\t|\t'))
+    .filter(Boolean).join('\n');
+  const corpo=[
+    '════════════════════════════════════',
+    `RELATÓRIO DE PONTO MENSAL`,
+    `Período: ${d.ini||'—'} a ${d.fim||'—'}`,
+    '════════════════════════════════════',
+    `Funcionário(a) : ${d.nm||'—'}`,
+    `RG             : ${d.rg||'—'}`,
+    '',
+    `Contratado     : ${d.contratado||'—'}`,
+    `Trabalhado     : ${d.trabalhado||'—'}`,
+    `Saldo Final    : ${d.saldo||'—'}`,
+    '',
+    'Dia | Sem | Entrada | S.Alm | R.Alm | Saída | Saldo',
+    '────────────────────────────────────────────────────',
+    linhas,
+    '────────────────────────────────────────────────────',
+    '',
+    `Assinatura do(a) Funcionário(a): ____________________________`,
+    `Nome: ${d.nm||'—'}   RG: ${d.rg||'—'}`,
+    '',
+    `Assinatura do Empregador: ____________________________`,
+    '',
+    `Gerado em: ${new Date().toLocaleString('pt-BR')}`,
+    `Sistema de Ponto Eletrônico ${CONFIG.VERSION}`,
+  ].join('\n');
 
+  ld(true,'Enviando relatório...');
+  try{
+    await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
+      nome_funcionaria:d.nm||'—',
+      data_registro:`Fechamento ${d.ini||''} – ${d.fim||''}`,
+      entrada:corpo,
+      saida_almoco:`Saldo: ${d.saldo||'—'}`,
+      retorno_almoco:`Contratado: ${d.contratado||'—'} | Trabalhado: ${d.trabalhado||'—'}`,
+      saida:`RG: ${d.rg||'—'}`,
+      folga:'Relatório Mensal',
+      saldo_dia:d.saldo||'—',
+      enviado_em:new Date().toLocaleString('pt-BR'),
+      to_email:uniq.join(','),
+    });
+    toast(`Relatório enviado para ${uniq.length} destinatário(s) 📧`,'s',4000);
+  }catch(e){
+    console.error('Email fechamento:',e);
+    toast('Erro no envio: '+(e.text||e.message||'console'),'e');
+  }
+  ld(false);
+}
 
+// ── ADMIN ────────────────────────────────────────────────────
 async function preencheSelectFunc(){
   const{data}=await sb.from('perfis').select('id,nome,email').eq('perfil','usuario').order('nome');
-  const sel=g('a-fsel');
-  const prev=sel.value;
-  sel.innerHTML='<option value="">Selecione um funcionário...</option>'+
+  const sel=g('a-fsel');const prev=sel.value;
+  sel.innerHTML='<option value="">Selecione...</option>'+
     (data||[]).map(u=>`<option value="${u.id}">${u.nome||u.email}</option>`).join('');
   if(prev)sel.value=prev;
 }
 
 function trocaFunc(){
   const id=g('a-fsel').value;
-  if(!id){ST.funcId=null;ST.funcNome=null;limpaAdm();return;}
-  const sel=g('a-fsel');
-  ST.funcId=id;
-  ST.funcNome=sel.options[sel.selectedIndex].text;
-  loadDadosAdm(id);
+  const nm=g('a-fsel').options[g('a-fsel').selectedIndex]?.text;
+  ST.funcId=id||null;ST.funcNome=nm||null;
+  if(id)loadDadosAdm(id);else limpaAdm();
 }
 
 function limpaAdm(){
   ['a-saldo','a-ok','a-rasc','a-pend'].forEach(id=>{const el=g(id);if(el)el.textContent='0';});
-  g('a-lista').innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:.8rem">Selecione um funcionário acima</div>';
+  g('a-lista').innerHTML='<div style="text-align:center;color:var(--t2);padding:20px;font-size:.8rem">Selecione um funcionário acima</div>';
 }
 
 async function loadDadosAdm(uid){
@@ -1032,13 +1280,13 @@ async function loadDadosAdm(uid){
   const{data:regs}=await sb.from('registros').select('*').eq('usuario_id',uid).gte('data',ini).lte('data',fim).order('data',{ascending:false});
   const u=uteis(ano,mes),hj=hoje();
   let ok=0,rasc=0,pend=0,totSD=0;const mp={};
-  (regs||[]).forEach(r=>{mp[r.data]=r;if(r.folga)ok++;else if(r.rascunho)rasc++;else{ok++;totSD+=saldo(r,ST.cfg);}});
+  (regs||[]).forEach(r=>{mp[r.data]=r;if(r.folga)ok++;else if(r.rascunho)rasc++;else{ok++;totSD+=saldoMin(r,ST.cfg);}});
   u.forEach(d=>{if(!mp[d]&&d<=hj)pend++;});
-  g('a-ok').textContent=ok; g('a-rasc').textContent=rasc; g('a-pend').textContent=pend;
+  g('a-ok').textContent=ok;g('a-rasc').textContent=rasc;g('a-pend').textContent=pend;
   const se=g('a-saldo');se.textContent=minHM(totSD);se.style.color=totSD>=0?'var(--green)':'var(--red)';
   const lista=g('a-lista');lista.innerHTML='';
   const rec=(regs||[]).slice(0,15);
-  if(!rec.length){lista.innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:.8rem">Nenhum registro ainda</div>';return;}
+  if(!rec.length){lista.innerHTML='<div style="text-align:center;color:var(--t2);padding:20px;font-size:.8rem">Nenhum registro ainda</div>';return;}
   rec.forEach(r=>{
     const[y,m,d]=r.data.split('-'),dt=new Date(y,m-1,d);
     const dn=`${DIAS[dt.getDay()]}, ${d} de ${MESES[m-1]}`;
@@ -1046,8 +1294,8 @@ async function loadDadosAdm(uid){
     if(r.folga){bc='fl';bl='🌴 Folga';}
     else if(r.rascunho){bc='dr';bl='💾 Rascunho';}
     else{bc='ok';bl='✓ Registrado';}
-    const sd=r.folga||r.rascunho?'—':minHM(saldo(r,ST.cfg));
-    const sc=!r.folga&&!r.rascunho?(saldo(r,ST.cfg)>=0?'tp':'tm'):'';
+    const sd=r.folga||r.rascunho?'—':minHM(saldoMin(r,ST.cfg));
+    const sc=!r.folga&&!r.rascunho?(saldoMin(r,ST.cfg)>=0?'tp':'tm'):'';
     const ts=r.enviado_em?new Date(r.enviado_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Não enviado';
     lista.innerHTML+=`<div class="ri">
       <div class="ri-top"><div class="ri-dt">${dn}</div><div class="ri-bdg ${bc}">${bl}</div></div>
@@ -1063,163 +1311,105 @@ async function loadDadosAdm(uid){
 }
 
 
-// ── CARD HOJE ────────────────────────────────────────────────
-function atualizaCardHoje(){
-  const d=new Date();
-  const el_num=g('d-hoje-num'), el_lbl=g('d-hoje-label');
-  if(el_num) el_num.textContent=d.getDate();
-  if(el_lbl) el_lbl.textContent=`${DIAS[d.getDay()]} · ${MESES[d.getMonth()].slice(0,3)}`;
-}
+// ── MELHORIA 3: Exportar CSV ──────────────────────────────────
+function exportarCSV(){
+  const d=ST.fechDados||{};
+  const{ano,mes}=ST;
 
-// ── EXPORTAR PDF ─────────────────────────────────────────────
-function exportarPDF(screenId){
-  // Garante que apenas a tela correta fica ativa para o print
-  document.querySelectorAll('.scr').forEach(s=>{
-    s.dataset.wasActive = s.classList.contains('on') ? '1' : '0';
-    s.classList.remove('on');
+  // Cabeçalho do CSV
+  const linhas=[
+    ['Data','Dia da Semana','Entrada','Saída Almoço','Retorno Almoço','Saída','Saldo (min)','Saldo','Status'],
+  ];
+
+  // Coletar dados da tabela renderizada
+  const tbody=g('f-body')||g('af-body');
+  if(!tbody){toast('Abra o fechamento antes de exportar','e');return;}
+
+  Array.from(tbody.querySelectorAll('tr')).forEach(tr=>{
+    const cols=Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim());
+    if(!cols.length)return;
+    // cols: [Dia, Sem, Entrada, S.Alm, R.Alm, Saída, Saldo] ou [Dia, Sem, "Folga"/"Pendente", ..., Saldo]
+    linhas.push(cols);
   });
-  const target = g(screenId);
-  if(target) target.classList.add('on');
-  setTimeout(()=>{
-    window.print();
-    // Restaurar estado após impressão
-    setTimeout(()=>{
-      document.querySelectorAll('.scr').forEach(s=>{
-        if(s.dataset.wasActive==='1') s.classList.add('on');
-      });
-    }, 500);
-  }, 200);
-}
 
-// ── ENVIAR FECHAMENTO POR EMAIL ───────────────────────────────
-async function enviarFechamentoEmail(){
-  const destFixos = CONFIG.EMAILS_BACKUP;
-  const destCfg   = [ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
-  const dest      = [...new Set([...destFixos,...destCfg])];
-  if(!dest.length){toast('Nenhum e-mail cadastrado','e');return;}
-  const d = ST.fechDados || {};
+  // Rodapé de totais
+  linhas.push([]);
+  linhas.push(['TOTAIS','','','','','','','']);
+  linhas.push(['Funcionário(a)',d.nm||'—']);
+  linhas.push(['RG',d.rg||'—']);
+  linhas.push(['Período',`${d.ini||'—'} a ${d.fim||'—'}`]);
+  linhas.push(['Contratado',d.contratado||'—']);
+  linhas.push(['Trabalhado',d.trabalhado||'—']);
+  linhas.push(['Saldo Final',d.saldo||'—']);
+  linhas.push(['Gerado em',new Date().toLocaleString('pt-BR')]);
+  linhas.push([`Sistema de Ponto Eletrônico ${CONFIG.VERSION}`]);
 
-  // Montar tabela detalhada em texto simples
-  const linhas = Array.from(g('f-body')?.querySelectorAll('tr')||[]).map(tr=>{
-    const cols = Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim());
-    if(!cols.length) return '';
-    // formato: 01 | Seg | 08:30 | 12:00 | 13:00 | 17:30 | +0:00
-    return cols.join(' | ');
-  }).filter(Boolean).join('\n');
-
-  const cabecalho = [
-    '================================',
-    `RELATÓRIO DE PONTO — ${(d.ini||'').slice(3)} `,
-    '================================',
-    `Funcionário(a): ${d.nm||'—'}`,
-    `RG: ${d.rg||'—'}`,
-    `Período: ${d.ini||'—'} a ${d.fim||'—'}`,
-    '',
-    `Contratado : ${d.contratado||'—'}`,
-    `Trabalhado : ${d.trabalhado||'—'}`,
-    `Saldo Final: ${d.saldo||'—'}`,
-    '',
-    'Data | Dia | Entrada | S.Almoço | R.Almoço | Saída | Saldo',
-    '-----------------------------------------------------------',
-    linhas,
-    '-----------------------------------------------------------',
-    '',
-    'Assinatura Funcionário(a): ____________________',
-    `Nome: ${d.nm||'—'}   RG: ${d.rg||'—'}`,
-    '',
-    'Assinatura Empregador: ____________________',
-    '',
-    `Gerado em: ${new Date().toLocaleString('pt-BR')}`,
-    'Sistema de Ponto Eletrônico',
-  ].join('\n');
-
-  ld(true,'Enviando relatório...');
-  try{
-    await emailjs.send(CONFIG.EMAILJS_SERVICE, CONFIG.EMAILJS_TEMPLATE,{
-      nome_funcionaria: d.nm || ST.perfil?.nome || '—',
-      data_registro:    `Fechamento Mensal: ${d.ini||''} – ${d.fim||''}`,
-      entrada:          cabecalho,       // usamos campo 'entrada' para o corpo completo
-      saida_almoco:     `Saldo: ${d.saldo||'—'}`,
-      retorno_almoco:   `Contratado: ${d.contratado||'—'} | Trabalhado: ${d.trabalhado||'—'}`,
-      saida:            `RG: ${d.rg||'—'}`,
-      folga:            'Relatório Mensal',
-      saldo_dia:        d.saldo||'—',
-      enviado_em:       new Date().toLocaleString('pt-BR'),
-      to_email:         dest.join(','),
-    });
-    toast('Relatório enviado para '+dest.length+' destinatário(s)! 📧','s',4000);
-  }catch(e){
-    console.error('Email fechamento erro:',e);
-    toast('Erro no envio: '+(e.text||e.message||'verifique o console'),'e');
-  }
-  ld(false);
+  // Montar CSV com separador ; (padrao BR para Excel)
+  const csv=linhas.map(row=>
+    row.map(c=>{
+      const s=String(c==null?'':c);
+      return (s.indexOf(';')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0)
+        ? '"'+s.replace(/"/g,'""')+'"'
+        : s;
+    }).join(';')
+  ).join('\r\n');
+  // BOM UTF-8 para Excel abrir corretamente
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`ponto_${String(mes+1).padStart(2,'0')}_${ano}_${(d.nm||'funcionario').replace(/\s+/g,'_')}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('CSV exportado com sucesso! 📊','s');
 }
 
 // ── NAVEGAÇÃO ─────────────────────────────────────────────────
-function g(id){return document.getElementById(id);}
-
 async function navU(tela){
   ld(true);
   try{
     switch(tela){
-      case 's-dash': {
+      case 's-dash':{
         ir('s-dash');
         const hr=new Date().getHours();
         g('d-sauda').textContent=(hr<12?'Bom dia':hr<18?'Boa tarde':'Boa noite')+' 👋';
         g('d-sub').textContent=`${MESES[ST.mes]} ${ST.ano}`;
         g('d-hr').textContent=new Date().toTimeString().slice(0,5);
-        renderPerfil(); atualizaCardHoje(); await renderCal(); break;
+        renderPerfil();atualizaCardHoje();await renderCal();break;
       }
-      case 's-reg': {
-        ir('s-reg'); ST.regData=hoje();
-        atualizaDataDisplay(); await loadRegExistente(); break;
+      case 's-reg':{
+        ST.regData=hoje();ir('s-reg');
+        atualizaDataDisplay();await loadRegExistente();break;
       }
-      case 's-perfil': {
-        ir('s-perfil'); preenchePerfil(); break;
-      }
-      case 's-fech': {
-        ir('s-fech'); await renderFech(ST.user.id,'f'); break;
-      }
+      case 's-perfil':{ir('s-perfil');preenchePerfil();break;}
+      case 's-fech':{ir('s-fech');await renderFech(ST.user.id,'f');break;}
     }
-  } catch(e){
-    console.error('navU erro:', e);
-    toast('Erro ao carregar tela. Tente novamente.','e');
-  } finally {
-    ld(false);
-  }
+  }catch(e){console.error('navU:',e);toast('Erro ao carregar. Tente novamente.','e');}
+  finally{ld(false);}
 }
 
 async function navA(tela){
   ld(true);
   try{
     switch(tela){
-      case 's-adm': {
+      case 's-adm':{
         ir('s-adm');
-        if(ST.funcId) await loadDadosAdm(ST.funcId);
-        else limpaAdm();
         await preencheSelectFunc();
+        if(ST.funcId)await loadDadosAdm(ST.funcId);else limpaAdm();
         break;
       }
-      case 's-adm-fech': {
+      case 's-adm-fech':{
         ir('s-adm-fech');
-        if(!ST.funcId){
-          toast('Selecione um funcionário no painel primeiro','e');
-          ir('s-adm'); await preencheSelectFunc(); break;
-        }
+        if(!ST.funcId){toast('Selecione um funcionário no painel','e');ir('s-adm');await preencheSelectFunc();break;}
         g('af-func-label').textContent=ST.funcNome||'';
-        await renderFech(ST.funcId,'af');
-        break;
+        await renderFech(ST.funcId,'af');break;
       }
-      case 's-adm-cfg': {
-        ir('s-adm-cfg'); preencheCfg(); break;
-      }
+      case 's-adm-cfg':{ir('s-adm-cfg');preencheCfg();break;}
     }
-  } catch(e){
-    console.error('navA erro:', e);
-    toast('Erro ao carregar tela. Tente novamente.','e');
-  } finally {
-    ld(false);
-  }
+  }catch(e){console.error('navA:',e);toast('Erro ao carregar. Tente novamente.','e');}
+  finally{ld(false);}
 }
 </script>
 </body>
