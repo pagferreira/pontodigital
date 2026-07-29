@@ -234,28 +234,55 @@ select.fi{cursor:pointer;}
 .dbv{font-family:var(--fm);font-size:.9rem;font-weight:700;}
 .dbedit{background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);border-radius:8px;padding:5px 11px;color:var(--acc);font-size:.7rem;font-weight:700;cursor:pointer;}
 
+/* COMPATIBILIDADE MOBILE */
+* { -webkit-tap-highlight-color: transparent; }
+input[type="time"]::-webkit-date-and-time-value { text-align: left; }
+input, select, button { -webkit-appearance: none; touch-action: manipulation; }
+.scr { -webkit-overflow-scrolling: touch; }
+/* evita zoom ao focar input no iOS */
+input[type="time"], input[type="text"], input[type="email"], input[type="date"], input[type="password"] { font-size: 16px !important; }
+
 /* PRINT */
 @media print{
+  @page { size: A4 portrait; margin: 15mm 12mm; }
   body{background:#fff;color:#000;overflow:visible;}
   #app{max-width:none;height:auto;overflow:visible;}
   .scr{display:none!important;}
-  #s-fechamento.on,#s-adm-fech.on{display:block!important;background:#fff;color:#000;font-family:Arial,sans-serif;padding:16px;overflow:visible;}
-  .bnav,.topbar,.bkrow,.btn,.note,.sl,.fechbdg,#ld,#toast,.mov,.bk{display:none!important;}
-  .fechhdr{background:none;border-bottom:2px solid #000;padding:0 0 10px;margin-bottom:10px;}
-  .fechnm{font-size:13px;font-weight:700;color:#000;}
-  .fechmt{font-size:10px;color:#555;}
-  .sum3{margin-bottom:10px;}
-  .s3c{border:1px solid #ccc;background:#f8f8f8;padding:8px;}
-  .s3v,.s3l{color:#000!important;}
-  .pt th{background:#222!important;color:#fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
-  .pt td,.pt th{padding:5px 4px;}
-  .pt .wkr td{color:#aaa;}
-  .tp{color:green!important;}.tm{color:red!important;}.tfl{color:#336!important;}.tdr{color:#930!important;}
-  .sigs{margin-top:16px;}
-  .sig{border:1px solid #ccc;background:#fff;}
-  .sig-ln{background:#333;}
-  .sig-lb,.sig-sb{color:#555;}
-  .sig-nm{color:#000;}
+  #s-fech.on,#s-adm-fech.on{
+    display:block!important;background:#fff;color:#000;
+    font-family:Arial,Helvetica,sans-serif;padding:0;overflow:visible;
+  }
+  .bnav,.bkrow,.btn-pair,button,.note,.sl,.fechbdg,#ld,#toast,.mov,.bk,
+  [style*="margin:8px 14px"],
+  [style*="margin:4px 14px 20px"]{display:none!important;}
+  .sbar{display:none!important;}
+  /* Cabeçalho */
+  .fechhdr{background:#fff!important;border-bottom:2px solid #222;padding:0 0 8px;margin-bottom:8px;}
+  .fechnm{font-size:14px;font-weight:700;color:#000;margin-bottom:2px;}
+  .fechmt{font-size:10px;color:#444;line-height:1.4;}
+  /* Cards resumo */
+  .sum3{margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+  .s3c{border:1px solid #ccc;background:#f8f8f8!important;padding:6px;text-align:center;border-radius:4px;}
+  .s3v{font-size:13px;font-weight:700;color:#000!important;}
+  .s3l{font-size:9px;color:#555;}
+  /* Tabela */
+  .tw{overflow:visible;}
+  .pt{font-size:9px;width:100%;}
+  .pt th{background:#222!important;color:#fff!important;padding:5px 3px;font-size:8px;
+    print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  .pt td{padding:4px 3px;border-bottom:1px solid #ddd;}
+  .pt td:first-child{font-weight:700;}
+  .pt .wkr td{color:#aaa!important;opacity:.6;}
+  .pt tfoot td{background:#f0f0f0!important;font-weight:800;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  .tp{color:#006600!important;font-weight:700;}.tm{color:#cc0000!important;font-weight:700;}
+  .tfl{color:#003399!important;}.tdr{color:#cc6600!important;}.tok{color:#006600!important;}
+  /* Assinaturas */
+  .sigs{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .sig{border:none;border-top:1px solid #555;padding-top:6px;}
+  .sig-ln{display:none;}
+  .sig-lb{font-size:9px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.05em;}
+  .sig-nm{font-size:11px;color:#000;margin-top:4px;}
+  .sig-sb{font-size:9px;color:#555;margin-top:2px;}
   *{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
 }
 </style>
@@ -290,7 +317,11 @@ select.fi{cursor:pointer;}
   <div class="cards2">
     <div class="card cg"><div style="font-size:1.1rem">⏱</div><div class="cv g" id="d-saldo">--:--</div><div class="cl">Saldo do mês</div></div>
     <div class="card cb"><div style="font-size:1.1rem">📅</div><div class="cv b" id="d-dias">-/-</div><div class="cl">Dias preenchidos</div></div>
-    <div class="card cy"><div style="font-size:1.1rem">💾</div><div class="cv y" id="d-rasc">0</div><div class="cl">Rascunhos</div></div>
+    <div class="card" style="border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);cursor:pointer" onclick="irRegistro(null)">
+      <div style="font-size:1.1rem">📌</div>
+      <div class="cv b" id="d-hoje-num" style="font-size:1.5rem;line-height:1"></div>
+      <div class="cl" id="d-hoje-label">Hoje</div>
+    </div>
     <div class="card cr"><div style="font-size:1.1rem">⚠️</div><div class="cv r" id="d-pend">0</div><div class="cl">Pendentes</div></div>
   </div>
   <div class="sl">Calendário — <span id="d-cal-tit"></span></div>
@@ -324,7 +355,11 @@ select.fi{cursor:pointer;}
     <div><div style="font-size:.62rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Data</div><div class="dbv" id="r-data-disp"></div></div>
     <div class="dbedit" onclick="abrirModalData()">✏ Alterar</div>
   </div>
-  <div class="sl">Horários</div>
+  <div class="tog-row" style="margin:10px 0 0">
+    <div><div style="font-size:.85rem;font-weight:700">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
+    <div class="tog" id="tog" onclick="toggleFolga()"><div class="tog-k"></div></div>
+  </div>
+  <div class="sl">Horários do Dia</div>
   <div class="tfs">
     <div class="tf" id="tf-e">
       <div style="flex:1;min-width:0">
@@ -354,10 +389,6 @@ select.fi{cursor:pointer;}
       </div>
       <div class="tfic tfic-pend" id="ic-s"></div>
     </div>
-  </div>
-  <div class="tog-row" style="margin-top:10px">
-    <div><div style="font-size:.85rem;font-weight:700">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
-    <div class="tog" id="tog" onclick="toggleFolga()"><div class="tog-k"></div></div>
   </div>
   <div class="note" style="margin-top:10px">🕐 <span><b style="color:var(--t1)">Registrar e Enviar</b> grava o timestamp e envia e-mail. Rascunho salva sem enviar.</span></div>
   <div style="margin:12px 14px 20px" class="btn-pair">
@@ -401,21 +432,34 @@ select.fi{cursor:pointer;}
 <!-- ══ FECHAMENTO (usuário) ════════════════════════════════ -->
 <div class="scr" id="s-fech">
   <div class="sbar"><span>--:--</span><span>⚡</span></div>
-  <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Fechamento Mensal</h3><p>1 página A4</p></div></div>
+  <div class="bkrow"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Fechamento Mensal</h3><p id="f-periodo">—</p></div></div>
+  <!-- Cabeçalho funcionário -->
   <div class="fechhdr"><div class="fechbdg">📋 Relatório</div><div class="fechnm" id="f-nm">—</div><div class="fechmt" id="f-mt">—</div></div>
+  <!-- Cards resumo -->
   <div class="sum3">
     <div class="s3c"><div class="s3v" style="color:var(--blue)"  id="f-ct">--h</div><div class="s3l">Contratado</div></div>
     <div class="s3c"><div class="s3v" style="color:var(--green)" id="f-tr">--h</div><div class="s3l">Trabalhado</div></div>
     <div class="s3c"><div class="s3v" id="f-sd">--:--</div><div class="s3l">Saldo final</div></div>
   </div>
-  <div class="sl">Registros</div>
-  <div class="tw"><table class="pt"><thead><tr><th>Data</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="f-body"></tbody></table></div>
+  <!-- Tabela detalhada -->
+  <div class="sl">Registros Detalhados</div>
+  <div class="tw"><table class="pt">
+    <thead><tr><th>Data</th><th>Dia</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead>
+    <tbody id="f-body"></tbody>
+    <tfoot id="f-foot" style="font-weight:700;background:var(--s2)"></tfoot>
+  </table></div>
+  <!-- Assinaturas -->
   <div class="sl">Assinaturas</div>
   <div class="sigs">
     <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="f-sig-fn">—</div><div class="sig-sb" id="f-sig-rg">—</div></div>
     <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="f-sig-em">—</div></div>
   </div>
-  <div style="margin:8px 14px 20px"><button class="btn btn-r btn-w" onclick="window.print()">📄 Gerar PDF / Imprimir</button></div>
+  <!-- Ações -->
+  <div style="margin:8px 14px 4px" class="btn-pair">
+    <button class="btn btn-r" onclick="exportarPDF('s-fech')">📄 Exportar PDF</button>
+    <button class="btn" style="background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);color:var(--acc)" onclick="enviarFechamentoEmail()">📧 Enviar E-mail</button>
+  </div>
+  <div style="margin:4px 14px 20px;font-size:.68rem;color:var(--t3);text-align:center">O PDF abre a janela de impressão do sistema</div>
   <div class="bnav">
     <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
     <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
@@ -463,7 +507,7 @@ select.fi{cursor:pointer;}
     <div class="s3c"><div class="s3v" id="af-sd">--:--</div><div class="s3l">Saldo final</div></div>
   </div>
   <div class="sl">Registros</div>
-  <div class="tw"><table class="pt"><thead><tr><th>Data</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="af-body"></tbody></table></div>
+  <div class="tw"><table class="pt"><thead><tr><th>Data</th><th>Dia</th><th>Entr.</th><th>S.Alm</th><th>R.Alm</th><th>Saída</th><th>Saldo</th></tr></thead><tbody id="af-body"></tbody><tfoot id="af-foot"></tfoot></table></div>
   <div class="sl">Assinaturas</div>
   <div class="sigs">
     <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Funcionário(a)</div><div class="sig-nm" id="af-sig-fn">—</div><div class="sig-sb" id="af-sig-rg">—</div></div>
@@ -733,9 +777,13 @@ async function renderCal(){
 
 // ── REGISTRO ─────────────────────────────────────────────────
 function irRegistro(data){
-  ST.regData=data||hoje();ST.folga=false;
-  g('tog').classList.remove('on');
-  atualizaDataDisplay();loadRegExistente();navU('s-reg');
+  // Guarda a data ANTES de navegar — navU('s-reg') reseta para hoje
+  ST.regData = data || hoje();
+  ST.folga   = false;
+  ld(true);
+  ir('s-reg');
+  atualizaDataDisplay();
+  loadRegExistente().then(()=>ld(false));
 }
 
 function atualizaDataDisplay(){
@@ -881,30 +929,38 @@ async function renderFech(uid, prefix){
   const carga=(toMin(ST.cfg.saida)-toMin(ST.cfg.entrada))-(toMin(ST.cfg.retorno_almoco)-toMin(ST.cfg.saida_almoco));
   const u=uteis(ano,mes);
   let totTrab=0,totSaldo=0;
+  const ini_br=dtBR(ini), fim_br=dtBR(fim);
   g(`${prefix}-nm`).textContent=nm;
-  g(`${prefix}-mt`).innerHTML=`RG: ${rg} · Período: ${dtBR(ini)} – ${dtBR(fim)}<br>Jornada: ${minH(carga)}/dia · Seg a Sex`;
+  g(`${prefix}-mt`).innerHTML=`RG: ${rg} · Período: ${ini_br} – ${fim_br} · Jornada: ${minH(carga)}/dia · Seg a Sex`;
+  // Atualizar periodo no subtítulo se existir
+  const pel=g(`${prefix}-periodo`);if(pel)pel.textContent=`${ini_br} – ${fim_br}`;
   const tbody=g(`${prefix}-body`);tbody.innerHTML='';
   const totd=new Date(ano,mes+1,0).getDate();
   for(let d=1;d<=totd;d++){
     const iso=`${ano}-${p2(mes+1)}-${p2(d)}`,dt=new Date(ano,mes,d),dow=dt.getDay();
-    const dn=`${p2(d)} ${DIAS[dow]}`,r=mp[iso],wk=dow===0||dow===6;
+    const dNum=p2(d), dNome=DIAS[dow], r=mp[iso], wk=dow===0||dow===6;
     let tr='';
-    if(wk)                tr=`<tr class="wkr"><td>${dn}</td><td colspan="4" style="text-align:center">—</td><td>—</td></tr>`;
-    else if(!r)           tr=`<tr><td>${dn}</td><td colspan="4" style="text-align:center;color:var(--red)">Pendente</td><td class="tm">—</td></tr>`;
-    else if(r.folga)      tr=`<tr><td>${dn}</td><td colspan="4" class="tfl" style="text-align:center">Folga</td><td class="tfl">—</td></tr>`;
-    else if(r.rascunho)   tr=`<tr><td>${dn}</td><td colspan="4" class="tdr" style="text-align:center">Rascunho</td><td class="tdr">...</td></tr>`;
+    if(wk)              tr=`<tr class="wkr"><td>${dNum}</td><td>${dNome}</td><td colspan="4" style="text-align:center">—</td><td>—</td></tr>`;
+    else if(!r)         tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" style="text-align:center;color:var(--red)">Pendente</td><td class="tm">—</td></tr>`;
+    else if(r.folga)    tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" class="tfl" style="text-align:center">Folga</td><td class="tfl">—</td></tr>`;
+    else if(r.rascunho) tr=`<tr><td>${dNum}</td><td>${dNome}</td><td colspan="4" class="tdr" style="text-align:center">Rascunho</td><td class="tdr">...</td></tr>`;
     else{
       const sd=saldo(r,ST.cfg);totSaldo+=sd;
       if(r.entrada&&r.saida){const sa=r.saida_almoco||ST.cfg.saida_almoco,ra=r.retorno_almoco||ST.cfg.retorno_almoco;totTrab+=(toMin(r.saida)-toMin(r.entrada))-(toMin(ra)-toMin(sa));}
-      tr=`<tr><td>${dn}</td><td>${r.entrada?.slice(0,5)||'—'}</td><td>${r.saida_almoco?.slice(0,5)||'—'}</td><td>${r.retorno_almoco?.slice(0,5)||'—'}</td><td>${r.saida?.slice(0,5)||'—'}</td><td class="${sd>=0?'tp':'tm'}">${minHM(sd)}</td></tr>`;
+      tr=`<tr><td>${dNum}</td><td>${dNome}</td><td>${r.entrada?.slice(0,5)||'—'}</td><td>${r.saida_almoco?.slice(0,5)||'—'}</td><td>${r.retorno_almoco?.slice(0,5)||'—'}</td><td>${r.saida?.slice(0,5)||'—'}</td><td class="${sd>=0?'tp':'tm'}">${minHM(sd)}</td></tr>`;
     }
     tbody.innerHTML+=tr;
   }
+  // Rodapé de totais
+  const tfoot=g(`${prefix}-foot`);
+  if(tfoot) tfoot.innerHTML=`<tr style="border-top:2px solid var(--bd2)"><td colspan="2" style="font-weight:800;color:var(--t1);padding:6px">TOTAL</td><td colspan="4" style="text-align:center;font-size:.65rem;color:var(--t2)">${u.length} dias úteis · ${minH(carga*u.length)} contratado</td><td class="${totSaldo>=0?'tp':'tm'}" style="font-weight:800">${minHM(totSaldo)}</td></tr>`;
   g(`${prefix}-ct`).textContent=minH(carga*u.length);
   g(`${prefix}-tr`).textContent=minH(totTrab);
   const se=g(`${prefix}-sd`);se.textContent=minHM(totSaldo);se.style.color=totSaldo>=0?'var(--green)':'var(--red)';
   g(`${prefix}-sig-fn`).textContent=nm;
   g(`${prefix}-sig-rg`).textContent=`RG: ${rg}`;
+  // Guardar dados para uso no email de fechamento
+  ST.fechDados={nm,rg,ini:ini_br,fim:fim_br,contratado:minH(carga*u.length),trabalhado:minH(totTrab),saldo:minHM(totSaldo)};
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
@@ -972,6 +1028,65 @@ async function loadDadosAdm(uid){
   });
 }
 
+
+// ── CARD HOJE ────────────────────────────────────────────────
+function atualizaCardHoje(){
+  const d=new Date();
+  const el_num=g('d-hoje-num'), el_lbl=g('d-hoje-label');
+  if(el_num) el_num.textContent=d.getDate();
+  if(el_lbl) el_lbl.textContent=`${DIAS[d.getDay()]} · ${MESES[d.getMonth()].slice(0,3)}`;
+}
+
+// ── EXPORTAR PDF ─────────────────────────────────────────────
+function exportarPDF(screenId){
+  // Garante que apenas a tela correta fica ativa para o print
+  document.querySelectorAll('.scr').forEach(s=>{
+    s.dataset.wasActive = s.classList.contains('on') ? '1' : '0';
+    s.classList.remove('on');
+  });
+  const target = g(screenId);
+  if(target) target.classList.add('on');
+  setTimeout(()=>{
+    window.print();
+    // Restaurar estado após impressão
+    setTimeout(()=>{
+      document.querySelectorAll('.scr').forEach(s=>{
+        if(s.dataset.wasActive==='1') s.classList.add('on');
+      });
+    }, 500);
+  }, 200);
+}
+
+// ── ENVIAR FECHAMENTO POR EMAIL ───────────────────────────────
+async function enviarFechamentoEmail(){
+  const destFixos = CONFIG.EMAILS_BACKUP;
+  const destCfg   = [ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
+  const dest      = [...new Set([...destFixos,...destCfg])];
+  if(!dest.length){toast('Nenhum e-mail cadastrado','e');return;}
+  const d = ST.fechDados || {};
+  // Montar resumo em texto
+  const rows = Array.from(g('f-body')?.querySelectorAll('tr')||[])
+    .map(tr=>Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim()).join(' | '))
+    .join('\n');
+  ld(true,'Enviando fechamento...');
+  try{
+    await emailjs.send(CONFIG.EMAILJS_SERVICE, CONFIG.EMAILJS_TEMPLATE,{
+      nome_funcionaria: d.nm || ST.perfil?.nome || '—',
+      data_registro:    `Fechamento ${d.ini||''} a ${d.fim||''}`,
+      entrada:          `Contratado: ${d.contratado||'—'}`,
+      saida_almoco:     `Trabalhado: ${d.trabalhado||'—'}`,
+      retorno_almoco:   `Saldo: ${d.saldo||'—'}`,
+      saida:            `RG: ${d.rg||'—'}`,
+      folga:            '—',
+      saldo_dia:        d.saldo||'—',
+      enviado_em:       new Date().toLocaleString('pt-BR'),
+      to_email:         dest.join(','),
+    });
+    toast('Fechamento enviado para '+dest.length+' e-mail(s)! 📧','s');
+  }catch(e){toast('Erro no envio: '+(e.text||e.message||'verifique o console'),'e');}
+  ld(false);
+}
+
 // ── NAVEGAÇÃO ─────────────────────────────────────────────────
 function g(id){return document.getElementById(id);}
 
@@ -984,7 +1099,7 @@ async function navU(tela){
       g('d-sauda').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+' 👋';
       g('d-sub').textContent=`${MESES[ST.mes]} ${ST.ano}`;
       g('d-hr').textContent=new Date().toTimeString().slice(0,5);
-      renderPerfil(); await renderCal(); break;
+      renderPerfil(); atualizaCardHoje(); await renderCal(); break;
     case 's-reg':
       ir('s-reg');ST.regData=hoje();
       atualizaDataDisplay();await loadRegExistente();break;
