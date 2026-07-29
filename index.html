@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Ponto Eletrônico</title>
+<title>Registro Eletrônico</title>
 <script>
 const CONFIG = {
   SUPABASE_URL:     "https://xdsoeijpmaqflibjabmo.supabase.co",
@@ -18,10 +18,10 @@ const CONFIG = {
     { nome: "Sabrina",   email: "sabrinaveloso@yahoo.com.br",  iniciais: "SV" },
     { nome: "Ana Paula", email: "anapaula@teste.com",          iniciais: "AP" },
   ],
-  VERSION: "v2.3",
+  VERSION: "v2.4",
 };
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
@@ -327,17 +327,375 @@ input,select,button{-webkit-appearance:none;touch-action:manipulation;}
   *{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;}
 }
 .sig-line-print{display:none;}
+
+/* ══ DIÁRIO DO RAFA — overlay ════════════════════════════════ */
+#s-rafa{position:fixed;inset:0;z-index:9000;overflow-y:auto;
+  overflow-x:hidden;display:none;background:#f0f7ff;
+  -webkit-overflow-scrolling:touch;}
+#s-rafa.on{display:block;}
+#s-rafa .rafa-bar{position:sticky;top:0;z-index:100;
+  background:linear-gradient(135deg,#1c5f99,#3a8fd4);
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  box-shadow:0 2px 12px rgba(28,95,153,.3);}
+#s-rafa .rafa-bk{width:34px;height:34px;background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.3);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;color:#fff;cursor:pointer;flex-shrink:0;}
+#s-rafa .rafa-title{font-family:'Nunito',sans-serif;
+  font-weight:800;font-size:.95rem;color:#fff;}
+
+#s-rafa {
+  --bg:       #f0f7ff;
+  --surface:  #ffffff;
+  --blue:     #3a8fd4;
+  --blue-d:   #1c5f99;
+  --blue-l:   #e3f1fd;
+  --mint:     #5bbf9a;
+  --mint-l:   #dff4ec;
+  --peach:    #f59b5e;
+  --peach-l:  #fdeede;
+  --rose:     #e06b6b;
+  --rose-l:   #fde5e5;
+  --lav:      #9b7fd4;
+  --lav-l:    #ede7fa;
+  --gold:     #d4a53a;
+  --gold-l:   #fdf3d8;
+  --text:     #1a2c3d;
+  --text-s:   #4a6880;
+  --text-m:   #8aaccc;
+  --border:   #d8eaf7;
+  --radius:   16px;
+  --shadow:   0 2px 16px rgba(30,80,140,.08);
+  --shadow-lg:0 8px 40px rgba(30,80,140,.14);
+}
+#s-rafa * { margin:0; padding:0; box-sizing:border-box; }
+#s-rafa {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  color: var(--text);
+}
+#s-rafa /* ── HEADER ── */
+.header {
+  background: linear-gradient(135deg, var(--blue-d) 0%, var(--blue) 60%, #56b4e8 100%);
+  padding: 32px 24px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#s-rafa .header::before {
+  content:'';
+  position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+#s-rafa .header h1 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 28px; font-weight: 900;
+  color: white; position: relative;
+  letter-spacing: -0.5px;
+}
+#s-rafa .header h1 span { opacity: .75; font-weight: 400; }
+#s-rafa .header p { color: rgba(255,255,255,.75); font-size: 13px; margin-top: 4px; position: relative; }
+#s-rafa /* ── CONTAINER ── */
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+#s-rafa /* ── DATE BAR ── */
+.date-bar {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+#s-rafa .date-bar .icon { font-size: 24px; }
+#s-rafa .date-bar label { font-size: 11px; font-weight: 700; color: var(--text-m); letter-spacing: .8px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+#s-rafa .date-bar input[type=date] {
+  border: none; outline: none;
+  font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800;
+  color: var(--blue-d); background: transparent; cursor: pointer;
+}
+#s-rafa /* ── SECTION ── */
+.section {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  transition: box-shadow .2s;
+}
+#s-rafa .section:hover { box-shadow: var(--shadow-lg); }
+#s-rafa .section-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1.5px solid transparent;
+  transition: background .15s, border-color .2s;
+}
+#s-rafa .section-header.open { border-color: var(--border); }
+#s-rafa .section-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+#s-rafa .section-title { font-family:'Nunito',sans-serif; font-size: 15px; font-weight: 800; color: var(--text); }
+#s-rafa .section-subtitle { font-size: 11px; color: var(--text-m); margin-top: 1px; }
+#s-rafa .section-chevron { margin-left: auto; color: var(--text-m); transition: transform .25s; font-size: 18px; }
+#s-rafa .section-chevron.open { transform: rotate(180deg); }
+#s-rafa .section-body {
+  padding: 18px 20px;
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  animation: slideDown .2s ease;
+}
+#s-rafa .section-body.open { display: flex; }
+
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+#s-rafa /* ── EVENT ROW ── */
+.event-row {
+  display: flex; align-items: flex-start; gap: 12px;
+}
+#s-rafa .event-row .time-col { flex: 0 0 108px; }
+#s-rafa .event-row .info-col { flex: 1; }
+#s-rafa /* ── LABELS ── */
+.field-label {
+  font-size: 11px; font-weight: 700; color: var(--text-s);
+  letter-spacing: .5px; text-transform: uppercase;
+  margin-bottom: 6px; display: block;
+}
+#s-rafa /* ── TIME INPUT ── */
+.time-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700;
+  color: var(--blue-d);
+  background: var(--blue-l);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  cursor: pointer;
+}
+#s-rafa .time-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(58,143,212,.15); }
+#s-rafa /* ── TEXT INPUT / TEXTAREA ── */
+.text-input, #s-rafa .textarea-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: 'Nunito Sans', sans-serif; font-size: 14px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+#s-rafa .text-input:focus, #s-rafa .textarea-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(58,143,212,.12);
+}
+#s-rafa .textarea-input { resize: vertical; min-height: 64px; line-height: 1.5; }
+#s-rafa /* ── SELECT ── */
+.select-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: 'Nunito Sans', sans-serif; font-size: 14px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238aaccc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+#s-rafa .select-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(58,143,212,.12); }
+#s-rafa /* ── CHIPS ── */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+#s-rafa .chip {
+  padding: 5px 13px;
+  border-radius: 100px;
+  font-size: 12px; font-weight: 700;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+#s-rafa .chip:hover { transform: scale(1.04); }
+#s-rafa .chip.selected { border-color: currentColor; }
+#s-rafa /* ── ADD ROW BUTTON ── */
+.add-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: 1.5px dashed var(--border);
+  border-radius: 10px; padding: 8px 14px;
+  font-size: 12px; font-weight: 700; color: var(--text-m);
+  cursor: pointer; transition: all .15s;
+  font-family: 'Nunito', sans-serif;
+  width: 100%;
+  justify-content: center;
+}
+#s-rafa .add-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-l); }
+#s-rafa /* ── REMOVE BTN ── */
+.remove-btn {
+  background: none; border: none;
+  color: var(--text-m); font-size: 18px; cursor: pointer;
+  padding: 2px 4px; border-radius: 6px;
+  transition: color .15s, background .15s;
+  line-height: 1; margin-top: 8px;
+}
+#s-rafa .remove-btn:hover { color: var(--rose); background: var(--rose-l); }
+#s-rafa /* ── OBS BLOCK ── */
+.obs-block { margin-top: 4px; }
+#s-rafa /* ── GENERATE BTN ── */
+.generate-btn {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, var(--blue-d), var(--blue));
+  color: white; border: none; border-radius: 14px;
+  padding: 18px;
+  font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(28,95,153,.3);
+  transition: transform .15s, box-shadow .15s;
+  margin-top: 24px;
+}
+#s-rafa .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(28,95,153,.35); }
+#s-rafa .generate-btn:active { transform: translateY(0); }
+#s-rafa /* ── PREVIEW PANEL ── */
+.preview-panel {
+  display: none;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 2px solid var(--mint);
+  padding: 24px 20px;
+  margin-top: 20px;
+  box-shadow: 0 6px 32px rgba(91,191,154,.15);
+  animation: slideDown .3s ease;
+}
+#s-rafa .preview-panel.visible { display: block; }
+#s-rafa .preview-title {
+  font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900;
+  color: var(--mint); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+#s-rafa .preview-message {
+  background: #e9f8f1;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 13.5px; line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  font-family: 'Nunito Sans', sans-serif;
+  border: 1px solid #c5edd9;
+  max-height: 400px;
+  overflow-y: auto;
+}
+#s-rafa .preview-actions {
+  display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;
+}
+#s-rafa .action-btn {
+  flex: 1; min-width: 140px;
+  padding: 13px 16px;
+  border-radius: 12px; border: none;
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: transform .15s, box-shadow .15s;
+}
+#s-rafa .action-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+#s-rafa .btn-whatsapp { background: #25d366; color: white; }
+#s-rafa .btn-copy { background: var(--blue-l); color: var(--blue-d); }
+#s-rafa .btn-edit { background: #f0f4f8; color: var(--text-s); }
+#s-rafa /* ── DIVIDER ── */
+.divider-row { border: none; border-top: 1.5px dashed var(--border); margin: 4px 0; }
+#s-rafa /* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--text); color: white;
+  padding: 12px 24px; border-radius: 100px;
+  font-size: 13px; font-weight: 700;
+  opacity: 0; transition: all .3s;
+  z-index: 999; pointer-events: none;
+  font-family: 'Nunito', sans-serif;
+}
+#s-rafa .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#s-rafa /* ── BADGE COUNTS ── */
+.badge {
+  background: var(--blue); color: white;
+  font-size: 10px; font-weight: 800;
+  padding: 2px 7px; border-radius: 100px;
+  min-width: 20px; text-align: center;
+  margin-left: auto; margin-right: 0;
+}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- ══ LOGIN ══════════════════════════════════════════════ -->
-<div class="scr on" id="s-login">
+<!-- ══ LAUNCHER — tela inicial ════════════════════════════ -->
+<div class="scr on" id="s-launcher">
+  <div class="lglow"></div>
+  <div style="position:relative;z-index:1;width:100%;padding-top:20px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="lmark" style="margin:0 auto 16px">📱</div>
+      <div class="lh" style="font-size:1.35rem">Registro Eletrônico</div>
+      <div class="ls">Selecione o aplicativo</div>
+    </div>
+    <!-- Cards dos dois apps -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px">
+      <!-- Diário do Rafael -->
+      <div onclick="abrirRafa()"
+        style="background:#fff;border:2px solid #d8eaf7;border-radius:18px;
+               padding:20px 12px;text-align:center;cursor:pointer;
+               box-shadow:0 4px 16px rgba(30,80,140,.1);transition:all .2s"
+        onmouseover="this.style.borderColor='#3a8fd4';this.style.boxShadow='0 6px 24px rgba(58,143,212,.25)'"
+        onmouseout="this.style.borderColor='#d8eaf7';this.style.boxShadow='0 4px 16px rgba(30,80,140,.1)'">
+        <div style="width:52px;height:52px;background:linear-gradient(135deg,#1c5f99,#3a8fd4);
+                    border-radius:16px;display:flex;align-items:center;justify-content:center;
+                    font-size:1.6rem;margin:0 auto 12px;box-shadow:0 4px 14px rgba(58,143,212,.3)">🍼</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.82rem;
+                    color:#1a2c3d;line-height:1.3;margin-bottom:4px">Diário do<br>Rafael</div>
+        <div style="font-size:.64rem;color:#4a6880">Registro diário</div>
+      </div>
+      <!-- Ponto -->
+      <div onclick="abrirPonto()"
+        style="background:#fff;border:2px solid var(--bd);border-radius:18px;
+               padding:20px 12px;text-align:center;cursor:pointer;
+               box-shadow:var(--sh);transition:all .2s"
+        onmouseover="this.style.borderColor='var(--acc)';this.style.boxShadow='0 6px 24px rgba(74,120,240,.25)'"
+        onmouseout="this.style.borderColor='var(--bd)';this.style.boxShadow='var(--sh)'">
+        <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+                    border-radius:16px;display:flex;align-items:center;justify-content:center;
+                    font-size:1.6rem;margin:0 auto 12px;box-shadow:0 4px 14px rgba(74,120,240,.3)">⏱</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.82rem;
+                    color:var(--t1);line-height:1.3;margin-bottom:4px">Registro e<br>Controle de Ponto</div>
+        <div style="font-size:.64rem;color:var(--t2)">Jornada de trabalho</div>
+      </div>
+    </div>
+    <div style="text-align:center;font-family:var(--fc);font-size:.6rem;color:var(--t3)">CONFIG.VERSION</div>
+  </div>
+</div>
+
+<!-- ══ LOGIN PONTO ══════════════════════════════════════════ -->
+<div class="scr" id="s-login">
+  <div class="lglow"></div>
   <div style="position:relative;z-index:1;width:100%">
-    <div class="lmark">⏱</div>
-    <div class="lh">Ponto Eletrônico</div>
-    <div class="ls">Selecione seu perfil para entrar</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+      <div style="width:32px;height:32px;background:var(--s2);border:1px solid var(--bd);
+                  border-radius:9px;display:flex;align-items:center;justify-content:center;
+                  font-size:.8rem;color:var(--t2);cursor:pointer;flex-shrink:0"
+           onclick="irLauncher()">←</div>
+      <div>
+        <div class="lh" style="font-size:1.15rem;margin-bottom:0">Controle de Ponto</div>
+        <div style="font-size:.72rem;color:var(--t2)">Selecione seu perfil</div>
+      </div>
+    </div>
     <div class="up-wrap" id="up-wrap"></div>
     <div id="login-senha-wrap" style="display:none">
       <div id="login-usuario-sel" style="text-align:center;margin-bottom:14px;font-family:var(--fm);font-size:.85rem;font-weight:700;color:var(--t1)"></div>
@@ -352,7 +710,6 @@ input,select,button{-webkit-appearance:none;touch-action:manipulation;}
     </div>
     <div class="lfoot">
       <a onclick="recuperarSenha()" style="color:var(--t3)">Esqueceu a senha?</a>
-      <div style="margin-top:8px;font-family:var(--fc);font-size:.6rem;color:var(--t3)">CONFIG.VERSION</div>
     </div>
   </div>
 </div>
@@ -494,6 +851,12 @@ input,select,button{-webkit-appearance:none;touch-action:manipulation;}
 <div class="scr" id="s-fech">
   <div class="sbar"><span>--:--</span><span></span></div>
   <div class="bkrow pdf-hide"><div class="bk" onclick="navU('s-dash')">←</div><div><h3>Fechamento Mensal</h3><p id="f-periodo">—</p></div></div>
+  <!-- Seletor de mês — escondido no print -->
+  <div class="pdf-hide" style="padding:10px 14px 4px;flex-shrink:0">
+    <select class="fi" id="fech-mes-sel" onchange="trocarMesFechamento()"
+      style="font-family:var(--fm);font-weight:700;font-size:.88rem;color:var(--t1);background:var(--s1);border-color:var(--bd2);cursor:pointer">
+    </select>
+  </div>
   <div class="fechhdr"><div class="fechbdg pdf-hide">📋 Relatório</div><div class="fechnm" id="f-nm">—</div><div class="fechmt" id="f-mt">—</div></div>
   <div class="sum3">
     <div class="s3c"><div class="s3v" style="color:var(--blue)" id="f-ct">--h</div><div class="s3l">Contratado</div></div>
@@ -638,6 +1001,170 @@ input,select,button{-webkit-appearance:none;touch-action:manipulation;}
   </div>
 </div>
 
+
+
+<!-- ══ DIÁRIO DO RAFA ══════════════════════════════════════ -->
+<div id="s-rafa">
+  <div class="rafa-bar">
+    <div class="rafa-bk" onclick="fecharRafa()">←</div>
+    <div class="rafa-title">🍼 Diário do Rafael</div>
+  </div>
+<div class="container">
+
+  <!-- DATE -->
+  <div class="date-bar">
+    <span class="icon">📅</span>
+    <div>
+      <label for="dataPrincipal">Data do registro</label>
+      <input type="date" id="dataPrincipal">
+    </div>
+  </div>
+
+  <!-- MAMADAS / MAMADEIRAS -->
+  <div class="section" id="sec-mama">
+    <div class="section-header open" onclick="toggleSection('mama')">
+      <div class="section-icon" style="background:#e3f1fd">🍼</div>
+      <div>
+        <div class="section-title">Mamadas & Mamadeiras</div>
+        <div class="section-subtitle">Peito, mamadeira e volumes</div>
+      </div>
+      <span class="badge" id="badge-mama">0</span>
+      <span class="section-chevron open" id="chev-mama">▾</span>
+    </div>
+    <div class="section-body open" id="body-mama">
+      <div id="rows-mama"></div>
+      <button class="add-btn" onclick="addMama()">+ Adicionar mamada</button>
+    </div>
+  </div>
+
+  <!-- SONO / COCHILOS -->
+  <div class="section" id="sec-sono">
+    <div class="section-header" onclick="toggleSection('sono')">
+      <div class="section-icon" style="background:#ede7fa">😴</div>
+      <div>
+        <div class="section-title">Sono & Cochilos</div>
+        <div class="section-subtitle">Horário de início e fim</div>
+      </div>
+      <span class="badge" id="badge-sono">0</span>
+      <span class="section-chevron" id="chev-sono">▾</span>
+    </div>
+    <div class="section-body" id="body-sono">
+      <div id="rows-sono"></div>
+      <button class="add-btn" onclick="addSono()">+ Adicionar cochilo</button>
+    </div>
+  </div>
+
+  <!-- FRUTAS -->
+  <div class="section" id="sec-fruta">
+    <div class="section-header" onclick="toggleSection('fruta')">
+      <div class="section-icon" style="background:#fdeede">🍌</div>
+      <div>
+        <div class="section-title">Frutas & Lanches</div>
+        <div class="section-subtitle">Fruta da manhã, tarde e extras</div>
+      </div>
+      <span class="badge" id="badge-fruta">0</span>
+      <span class="section-chevron" id="chev-fruta">▾</span>
+    </div>
+    <div class="section-body" id="body-fruta">
+      <div id="rows-fruta"></div>
+      <button class="add-btn" onclick="addFruta()">+ Adicionar fruta/lanche</button>
+    </div>
+  </div>
+
+  <!-- REFEIÇÕES -->
+  <div class="section" id="sec-ref">
+    <div class="section-header" onclick="toggleSection('ref')">
+      <div class="section-icon" style="background:#fdf3d8">🥣</div>
+      <div>
+        <div class="section-title">Refeições</div>
+        <div class="section-subtitle">Almoço, jantar e papinhas</div>
+      </div>
+      <span class="badge" id="badge-ref">0</span>
+      <span class="section-chevron" id="chev-ref">▾</span>
+    </div>
+    <div class="section-body" id="body-ref">
+      <div id="rows-ref"></div>
+      <button class="add-btn" onclick="addRef()">+ Adicionar refeição</button>
+    </div>
+  </div>
+
+  <!-- EVACUAÇÕES -->
+  <div class="section" id="sec-evac">
+    <div class="section-header" onclick="toggleSection('evac')">
+      <div class="section-icon" style="background:#fde5e5">💩</div>
+      <div>
+        <div class="section-title">Evacuações & Fraldas</div>
+        <div class="section-subtitle">Quantidade, consistência e observações</div>
+      </div>
+      <span class="badge" id="badge-evac">0</span>
+      <span class="section-chevron" id="chev-evac">▾</span>
+    </div>
+    <div class="section-body" id="body-evac">
+      <div id="rows-evac"></div>
+      <button class="add-btn" onclick="addEvac()">+ Adicionar evacuação</button>
+    </div>
+  </div>
+
+  <!-- MEDICAMENTOS -->
+  <div class="section" id="sec-med">
+    <div class="section-header" onclick="toggleSection('med')">
+      <div class="section-icon" style="background:#dff4ec">💊</div>
+      <div>
+        <div class="section-title">Medicamentos & Rotinas</div>
+        <div class="section-subtitle">Remédios, nebulização, maresis</div>
+      </div>
+      <span class="badge" id="badge-med">0</span>
+      <span class="section-chevron" id="chev-med">▾</span>
+    </div>
+    <div class="section-body" id="body-med">
+      <div id="rows-med"></div>
+      <button class="add-btn" onclick="addMed()">+ Adicionar medicamento/rotina</button>
+    </div>
+  </div>
+
+  <!-- OUTROS -->
+  <div class="section" id="sec-outro">
+    <div class="section-header" onclick="toggleSection('outro')">
+      <div class="section-icon" style="background:#f0f4f8">📝</div>
+      <div>
+        <div class="section-title">Outros & Observações</div>
+        <div class="section-subtitle">Atividades, passeios, corte de unhas, banho...</div>
+      </div>
+      <span class="badge" id="badge-outro">0</span>
+      <span class="section-chevron" id="chev-outro">▾</span>
+    </div>
+    <div class="section-body" id="body-outro">
+      <div id="rows-outro"></div>
+      <button class="add-btn" onclick="addOutro()">+ Adicionar observação</button>
+    </div>
+  </div>
+
+  <!-- GERAR -->
+  <button class="generate-btn" onclick="gerarResumo()">✨ Gerar resumo para WhatsApp</button>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel" id="previewPanel">
+    <div class="preview-title">✅ Mensagem gerada</div>
+    <div class="preview-message" id="previewText"></div>
+    <div class="preview-actions">
+      <button class="action-btn btn-whatsapp" onclick="abrirWhatsApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Enviar WhatsApp
+      </button>
+      <button class="action-btn btn-copy" onclick="copiarTexto()">
+        📋 Copiar texto
+      </button>
+      <button class="action-btn btn-edit" onclick="editarMensagem()">
+        ✏️ Editar
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="rafa-toast" style="z-index:9100"></div>
+  <div class="toast" id="rafa-toast"></div>
+</div>
 </div><!-- #app -->
 <div id="toast"></div>
 <div id="ld"><div class="sp"></div><p id="ld-msg">Carregando...</p></div>
@@ -775,7 +1302,7 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     else{toast('Acesso não autorizado','e',5000);await fazerLogout();}
   }else{
     ST.user=null;ST.perfil=null;ST.emailSel=null;
-    ir('s-login');
+    ir('s-launcher'); voltarEscolha();
   }
 });
 
@@ -1366,6 +1893,61 @@ function exportarCSV(){
   toast('CSV exportado com sucesso! 📊','s');
 }
 
+
+// ── SELETOR DE MÊS NO FECHAMENTO ─────────────────────────────
+function popularMesesFechamento(){
+  const sel = g('fech-mes-sel');
+  if(!sel) return;
+  sel.innerHTML = '';
+  const agora = new Date();
+  // 6 meses: vigente + 5 anteriores
+  for(let i = 0; i < 6; i++){
+    const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
+    const ano = d.getFullYear();
+    const mes = d.getMonth();
+    const opt = document.createElement('option');
+    opt.value = `${ano}-${mes}`;
+    opt.textContent = `${MESES[mes]} ${ano}`;
+    // Selecionar o mês atual de ST
+    if(ano === ST.ano && mes === ST.mes) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+async function trocarMesFechamento(){
+  const sel = g('fech-mes-sel');
+  if(!sel || !sel.value) return;
+  const [ano, mes] = sel.value.split('-').map(Number);
+  ST.ano = ano;
+  ST.mes = mes;
+  ld(true, 'Carregando ' + MESES[mes] + '...');
+  try{
+    await renderFech(ST.user.id, 'f');
+  } catch(e){
+    console.error('trocarMes:', e);
+    toast('Erro ao carregar mês', 'e');
+  } finally {
+    ld(false);
+  }
+}
+
+
+// ── LAUNCHER ─────────────────────────────────────────────────
+function irLauncher(){ ir('s-launcher'); voltarEscolha(); }
+function abrirPonto(){ ir('s-login'); renderUserPicker(); }
+function abrirRafa(){
+  document.getElementById('s-rafa').classList.add('on');
+  if(!window._rafaOk){ initRafa(); window._rafaOk=true; }
+  document.getElementById('s-rafa').scrollTop=0;
+}
+function fecharRafa(){
+  document.getElementById('s-rafa').classList.remove('on');
+}
+window.addEventListener('popstate',function(){
+  var r=document.getElementById('s-rafa');
+  if(r&&r.classList.contains('on')){ fecharRafa(); history.pushState(null,'',location.href); }
+});
+
 // ── NAVEGAÇÃO ─────────────────────────────────────────────────
 async function navU(tela){
   ld(true);
@@ -1384,7 +1966,12 @@ async function navU(tela){
         atualizaDataDisplay();await loadRegExistente();break;
       }
       case 's-perfil':{ir('s-perfil');preenchePerfil();break;}
-      case 's-fech':{ir('s-fech');await renderFech(ST.user.id,'f');break;}
+      case 's-fech':{
+        ir('s-fech');
+        popularMesesFechamento();
+        await renderFech(ST.user.id,'f');
+        break;
+      }
     }
   }catch(e){console.error('navU:',e);toast('Erro ao carregar. Tente novamente.','e');}
   finally{ld(false);}
@@ -1410,6 +1997,472 @@ async function navA(tela){
     }
   }catch(e){console.error('navA:',e);toast('Erro ao carregar. Tente novamente.','e');}
   finally{ld(false);}
+}
+
+</script>
+
+<script>
+// ══ DIÁRIO DO RAFA — funções originais ════════════════════
+// ── UTILS ──────────────────────────────────────────
+let counters = { mama:0, sono:0, fruta:0, ref:0, evac:0, med:0, outro:0 };
+
+function uid() { return Math.random().toString(36).slice(2,8); }
+
+function toggleSection(key) {
+  const body  = document.getElementById('body-' + key);
+  const chev  = document.getElementById('chev-' + key);
+  const hdr   = document.querySelector(`#sec-${key} .section-header`);
+  const open  = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+  hdr.classList.toggle('open', open);
+}
+
+function updateBadge(key) {
+  const rows = document.querySelectorAll(`#rows-${key} .entry-row`);
+  document.getElementById('badge-' + key).textContent = rows.length;
+}
+
+function removeRow(id, key) {
+  const el = document.getElementById('row-' + id);
+  if (el) { el.style.animation = 'fadeOut .2s ease forwards'; setTimeout(() => { el.remove(); updateBadge(key); }, 200); }
+}
+
+// ── SECTION BUILDERS ───────────────────────────────
+
+function addMama() {
+  const id = uid();
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Horário</label>
+        <input type="time" class="time-input" id="t-${id}">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Tipo</label>
+        <select class="select-input" id="tipo-${id}" onchange="toggleVolume('${id}')">
+          <option value="peito">🤱 Peito</option>
+          <option value="mamadeira">🍼 Mamadeira</option>
+          <option value="ambos">🤱🍼 Ambos</option>
+        </select>
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','mama')">×</button>
+    </div>
+    <div class="event-row" id="vol-row-${id}" style="display:none">
+      <div style="width:108px"></div>
+      <div class="info-col">
+        <label class="field-label">Volume (ml)</label>
+        <input type="number" class="text-input" placeholder="ex: 150" id="vol-${id}" min="50" max="300" step="10">
+      </div>
+    </div>
+    <div class="obs-block">
+      <label class="field-label">Observação</label>
+      <input type="text" class="text-input" placeholder="ex: aceitou bem, chorou..." id="obs-${id}">
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-mama').appendChild(div);
+  updateBadge('mama');
+}
+
+function toggleVolume(id) {
+  const tipo = document.getElementById('tipo-' + id).value;
+  const row  = document.getElementById('vol-row-' + id);
+  row.style.display = (tipo === 'mamadeira' || tipo === 'ambos') ? 'flex' : 'none';
+}
+
+function addSono() {
+  const id = uid();
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Dormiu às</label>
+        <input type="time" class="time-input" id="ini-${id}">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Acordou às</label>
+        <input type="time" class="time-input" id="fim-${id}" style="background:#ede7fa;color:#5b3c99">
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','sono')">×</button>
+    </div>
+    <div class="obs-block">
+      <label class="field-label">Observação</label>
+      <input type="text" class="text-input" placeholder="ex: dormiu rápido, acordou agitado..." id="obs-${id}">
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-sono').appendChild(div);
+  updateBadge('sono');
+}
+
+const FRUTAS_LISTA = ['Banana','Maçã','Pêra','Mamão','Manga','Uva','Pitaya','Laranja','Melão','Goiaba','Abacate','Outro'];
+
+function addFruta() {
+  const id = uid();
+  const chips = FRUTAS_LISTA.map(f =>
+    `<div class="chip" style="background:#fdeede;color:#8b4a0a" onclick="toggleChip(this,'${id}')" data-val="${f}">${fruitEmoji(f)} ${f}</div>`
+  ).join('');
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Horário</label>
+        <input type="time" class="time-input" id="t-${id}" style="background:#fdeede;color:#8b4a0a">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Fruta(s) / lanche</label>
+        <div class="chips" id="chips-${id}">${chips}</div>
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','fruta')">×</button>
+    </div>
+    <div class="obs-block">
+      <label class="field-label">Observação (ex: com Piemonte, aceitou bem...)</label>
+      <input type="text" class="text-input" placeholder="ex: com Piemonte, recusou..." id="obs-${id}">
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-fruta').appendChild(div);
+  updateBadge('fruta');
+}
+
+function fruitEmoji(f) {
+  const m = {Banana:'🍌',Maçã:'🍎',Pêra:'🍐',Mamão:'🍈',Manga:'🥭',Uva:'🍇',Pitaya:'🍒',Laranja:'🍊',Melão:'🍈',Goiaba:'🍓',Abacate:'🥑',Outro:'🍽️'};
+  return m[f] || '🍽️';
+}
+
+function toggleChip(el, id) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    el.style.boxShadow = '0 2px 8px rgba(0,0,0,.12)';
+    el.style.transform = 'scale(1.06)';
+  } else {
+    el.style.boxShadow = '';
+    el.style.transform = '';
+  }
+}
+
+const REF_TIPOS = ['🥣 Almoço','🌙 Jantar','🍜 Papinha extra'];
+const LEGUMES   = ['Batata','Batata-doce','Baroa','Chuchu','Abóbora','Inhame','Cenoura','Abobrinha','Beterraba','Ervilha','Outro'];
+
+function addRef() {
+  const id = uid();
+  const tipoOpts = REF_TIPOS.map(t => `<option>${t}</option>`).join('');
+  const chips = LEGUMES.map(l =>
+    `<div class="chip" style="background:#fdf3d8;color:#7a5500" onclick="toggleChip(this,'${id}')" data-val="${l}">${l}</div>`
+  ).join('');
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Horário</label>
+        <input type="time" class="time-input" id="t-${id}" style="background:#fdf3d8;color:#7a5500">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Tipo de refeição</label>
+        <select class="select-input" id="tipo-${id}">${tipoOpts}</select>
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','ref')">×</button>
+    </div>
+    <div style="margin-top:10px">
+      <label class="field-label">Ingredientes / legumes</label>
+      <div class="chips" id="chips-${id}">${chips}</div>
+    </div>
+    <div class="obs-block" style="margin-top:10px">
+      <label class="field-label">Observação (aceitou, recusou, qtd...)</label>
+      <input type="text" class="text-input" placeholder="ex: comeu tudo, recusou a cenoura..." id="obs-${id}">
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-ref').appendChild(div);
+  updateBadge('ref');
+}
+
+const EVAC_CONS = ['Normal','Mole','Diarreia','Presa/Dura','Esverdeada','Com sangue'];
+
+function addEvac() {
+  const id = uid();
+  const consOpts = EVAC_CONS.map(c => `<option>${c}</option>`).join('');
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Horário</label>
+        <input type="time" class="time-input" id="t-${id}" style="background:#fde5e5;color:#8b2020">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Consistência</label>
+        <select class="select-input" id="cons-${id}">${consOpts}</select>
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','evac')">×</button>
+    </div>
+    <div class="obs-block">
+      <label class="field-label">Observação (cor, pomada, assadura...)</label>
+      <input type="text" class="text-input" placeholder="ex: passei Bepantol, assadura leve..." id="obs-${id}">
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-evac').appendChild(div);
+  updateBadge('evac');
+}
+
+const MEDS_LISTA = ['💊 Piemonte','☀️ Vitamina D','💧 Maresis','🌿 Alegra','🩺 Novalgina','💊 Floratil','🌬️ Nebulização','💊 Predisin','🧪 Outro'];
+
+function addMed() {
+  const id = uid();
+  const chips = MEDS_LISTA.map(m =>
+    `<div class="chip" style="background:#dff4ec;color:#1a6040" onclick="toggleChip(this,'${id}')" data-val="${m}">${m}</div>`
+  ).join('');
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Horário</label>
+        <input type="time" class="time-input" id="t-${id}" style="background:#dff4ec;color:#1a6040">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Medicamento / procedimento</label>
+        <div class="chips" id="chips-${id}">${chips}</div>
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','med')">×</button>
+    </div>
+    <div class="obs-block">
+      <label class="field-label">Dose / observação</label>
+      <input type="text" class="text-input" placeholder="ex: 2,5ml, 3 gotas, 2x hoje..." id="obs-${id}">
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-med').appendChild(div);
+  updateBadge('med');
+}
+
+const OUTROS_TIPOS = ['🌞 Banho de sol','🛁 Banho','✂️ Corte de unhas','🚗 Passeio/garagem','🎮 Brincadeiras','🏊 Natação','🩺 Consulta médica','📏 Pesagem','🌡️ Temperatura','🧴 Creme/pomada','Outro'];
+
+function addOutro() {
+  const id = uid();
+  const chips = OUTROS_TIPOS.map(o =>
+    `<div class="chip" style="background:#f0f4f8;color:#4a6880" onclick="toggleChip(this,'${id}')" data-val="${o}">${o}</div>`
+  ).join('');
+  const div = document.createElement('div');
+  div.className = 'entry-row'; div.id = 'row-' + id;
+  div.style.cssText = 'animation:slideDown .2s ease';
+  div.innerHTML = `
+    <div class="event-row">
+      <div class="time-col">
+        <label class="field-label">Horário (opcion.)</label>
+        <input type="time" class="time-input" id="t-${id}">
+      </div>
+      <div class="info-col">
+        <label class="field-label">Atividade</label>
+        <div class="chips" id="chips-${id}">${chips}</div>
+      </div>
+      <button class="remove-btn" onclick="removeRow('${id}','outro')">×</button>
+    </div>
+    <div class="obs-block">
+      <label class="field-label">Descrição / observação</label>
+      <textarea class="textarea-input" placeholder="Descreva aqui..." id="obs-${id}"></textarea>
+    </div>
+    <hr class="divider-row" style="margin-top:12px">`;
+  document.getElementById('rows-outro').appendChild(div);
+  updateBadge('outro');
+}
+
+// ── GENERATE MESSAGE ────────────────────────────────
+
+function fmtTime(val) { return val || '--:--'; }
+
+function getChips(id) {
+  return [...document.querySelectorAll(`#chips-${id} .chip.selected`)].map(c => c.dataset.val).join(', ');
+}
+
+function gerarResumo() {
+  const dataEl = document.getElementById('dataPrincipal');
+  const data   = dataEl.value
+    ? new Date(dataEl.value + 'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'})
+    : 'Data não informada';
+
+  let msg = `🍼 *DIÁRIO DO RAFA*\n`;
+  msg    += `📅 ${data}\n`;
+  msg    += `${'─'.repeat(28)}\n`;
+
+  // MAMADAS
+  const mamaRows = document.querySelectorAll('#rows-mama .entry-row');
+  if (mamaRows.length) {
+    msg += `\n🍼 *MAMADAS*\n`;
+    mamaRows.forEach(row => {
+      const id   = row.id.replace('row-','');
+      const hora = fmtTime(document.getElementById('t-'+id)?.value);
+      const tipo = document.getElementById('tipo-'+id)?.value || '';
+      const vol  = document.getElementById('vol-'+id)?.value;
+      const obs  = document.getElementById('obs-'+id)?.value;
+      const tipoLabel = tipo === 'peito' ? '🤱 Peito' : tipo === 'mamadeira' ? '🍼 Mamadeira' : '🤱🍼 Peito + Mamadeira';
+      let linha = `• ${hora} — ${tipoLabel}`;
+      if (vol) linha += ` (${vol}ml)`;
+      if (obs) linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  // SONO
+  const sonoRows = document.querySelectorAll('#rows-sono .entry-row');
+  if (sonoRows.length) {
+    msg += `\n😴 *SONO*\n`;
+    sonoRows.forEach(row => {
+      const id  = row.id.replace('row-','');
+      const ini = fmtTime(document.getElementById('ini-'+id)?.value);
+      const fim = fmtTime(document.getElementById('fim-'+id)?.value);
+      const obs = document.getElementById('obs-'+id)?.value;
+      // calc duration
+      let dur = '';
+      const iniV = document.getElementById('ini-'+id)?.value;
+      const fimV = document.getElementById('fim-'+id)?.value;
+      if (iniV && fimV) {
+        const [ih,im] = iniV.split(':').map(Number);
+        const [fh,fm] = fimV.split(':').map(Number);
+        const diff = (fh*60+fm) - (ih*60+im);
+        if (diff > 0) dur = ` (${Math.floor(diff/60)}h${String(diff%60).padStart(2,'0')}min)`;
+      }
+      let linha = `• ${ini} até ${fim}${dur}`;
+      if (obs) linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  // FRUTAS
+  const frutaRows = document.querySelectorAll('#rows-fruta .entry-row');
+  if (frutaRows.length) {
+    msg += `\n🍌 *FRUTAS & LANCHES*\n`;
+    frutaRows.forEach(row => {
+      const id     = row.id.replace('row-','');
+      const hora   = fmtTime(document.getElementById('t-'+id)?.value);
+      const chips  = getChips(id);
+      const obs    = document.getElementById('obs-'+id)?.value;
+      let linha = `• ${hora} — ${chips || 'fruta não especificada'}`;
+      if (obs) linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  // REFEIÇÕES
+  const refRows = document.querySelectorAll('#rows-ref .entry-row');
+  if (refRows.length) {
+    msg += `\n🥣 *REFEIÇÕES*\n`;
+    refRows.forEach(row => {
+      const id    = row.id.replace('row-','');
+      const hora  = fmtTime(document.getElementById('t-'+id)?.value);
+      const tipo  = document.getElementById('tipo-'+id)?.value || '';
+      const chips = getChips(id);
+      const obs   = document.getElementById('obs-'+id)?.value;
+      let linha = `• ${hora} — ${tipo}`;
+      if (chips) linha += `\n  📦 ${chips}`;
+      if (obs)   linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  // EVACUAÇÕES
+  const evacRows = document.querySelectorAll('#rows-evac .entry-row');
+  if (evacRows.length) {
+    msg += `\n💩 *EVACUAÇÕES*\n`;
+    evacRows.forEach(row => {
+      const id   = row.id.replace('row-','');
+      const hora = fmtTime(document.getElementById('t-'+id)?.value);
+      const cons = document.getElementById('cons-'+id)?.value || '';
+      const obs  = document.getElementById('obs-'+id)?.value;
+      let linha = `• ${hora} — ${cons}`;
+      if (obs) linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  // MEDICAMENTOS
+  const medRows = document.querySelectorAll('#rows-med .entry-row');
+  if (medRows.length) {
+    msg += `\n💊 *MEDICAMENTOS & ROTINAS*\n`;
+    medRows.forEach(row => {
+      const id    = row.id.replace('row-','');
+      const hora  = fmtTime(document.getElementById('t-'+id)?.value);
+      const chips = getChips(id);
+      const obs   = document.getElementById('obs-'+id)?.value;
+      let linha = `• ${hora} — ${chips || 'não especificado'}`;
+      if (obs) linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  // OUTROS
+  const outroRows = document.querySelectorAll('#rows-outro .entry-row');
+  if (outroRows.length) {
+    msg += `\n📝 *OUTROS & OBSERVAÇÕES*\n`;
+    outroRows.forEach(row => {
+      const id    = row.id.replace('row-','');
+      const hora  = document.getElementById('t-'+id)?.value;
+      const chips = getChips(id);
+      const obs   = document.getElementById('obs-'+id)?.value;
+      let linha = hora ? `• ${fmtTime(hora)} — ${chips || 'atividade'}` : `• ${chips || 'atividade'}`;
+      if (obs) linha += `\n  ↳ ${obs}`;
+      msg += linha + '\n';
+    });
+  }
+
+  msg += `\n${'─'.repeat(28)}\n`;
+  msg += `_Enviado via Diário do Rafa_ 🍼`;
+
+  document.getElementById('previewText').textContent = msg;
+  const panel = document.getElementById('previewPanel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── ACTIONS ─────────────────────────────────────────
+
+function copiarTexto() {
+  const txt = document.getElementById('previewText').textContent;
+  navigator.clipboard.writeText(txt).then(() => showToast('✅ Copiado para a área de transferência!'));
+}
+
+function abrirWhatsApp() {
+  const txt = document.getElementById('previewText').textContent;
+  const enc = encodeURIComponent(txt);
+  window.open(`https://wa.me/?text=${enc}`, '_blank');
+}
+
+function editarMensagem() {
+  const el = document.getElementById('previewText');
+  if (el.contentEditable !== 'true') {
+    el.contentEditable = 'true';
+    el.focus();
+    el.style.border = '2px solid var(--blue)';
+    showToast('✏️ Mensagem editável — clique fora para confirmar');
+  } else {
+    el.contentEditable = 'false';
+    el.style.border = '';
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('rafa-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── INIT ─────────────────────────────────────────────
+function initRafa() {
+  var today = new Date();
+  var y = today.getFullYear();
+  var m = String(today.getMonth()+1).padStart(2,'0');
+  var d = String(today.getDate()).padStart(2,'0');
+  var dp = document.getElementById('dataPrincipal');
+  if(dp && !dp.value) dp.value = y+'-'+m+'-'+d;
+  if(document.getElementById('rows-mama') &&
+     !document.getElementById('rows-mama').children.length) addMama();
 }
 </script>
 </body>
