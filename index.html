@@ -785,6 +785,32 @@ input,select,button{-webkit-appearance:none;touch-action:manipulation;}
     </div>
     <div class="dbedit" onclick="abrirModalData()">✏ Alterar</div>
   </div>
+  <!-- Banner de alteração retroativa (oculto por padrão) -->
+  <div id="reg-alt-banner" style="display:none;margin:8px 14px 0;flex-shrink:0">
+    <div style="background:rgba(232,154,24,.1);border:1.5px solid rgba(232,154,24,.4);
+                border-radius:12px;padding:11px 13px">
+      <div style="font-size:.76rem;font-weight:800;color:var(--draft);margin-bottom:6px">
+        ⚠️ Alteração de registro já enviado
+      </div>
+      <div style="font-size:.68rem;color:var(--t2);margin-bottom:8px;line-height:1.5">
+        Este dia já foi registrado e enviado oficialmente.
+        A alteração será marcada com data/hora de modificação.
+      </div>
+      <div>
+        <label style="font-size:.62rem;font-weight:800;color:var(--t2);
+                      text-transform:uppercase;letter-spacing:.1em;
+                      display:block;margin-bottom:5px">Justificativa (obrigatória)</label>
+        <textarea id="reg-just"
+          style="width:100%;background:var(--s1);border:1.5px solid rgba(232,154,24,.4);
+                 border-radius:10px;padding:9px 12px;color:var(--t1);font-family:var(--ff);
+                 font-size:.82rem;resize:none;min-height:60px;outline:none;
+                 transition:border-color .15s;-webkit-appearance:none"
+          placeholder="Ex: Erro no horário de entrada, esqueci de registrar a saída..."
+          onfocus="this.style.borderColor='var(--draft)'"
+          onblur="this.style.borderColor='rgba(232,154,24,.4)'"></textarea>
+      </div>
+    </div>
+  </div>
   <div style="padding:8px 14px 6px;flex-shrink:0">
     <div class="tog-row" style="margin:0">
       <div><div style="font-size:.85rem;font-weight:700;color:var(--t1)">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
@@ -1180,6 +1206,9 @@ input,select,button{-webkit-appearance:none;touch-action:manipulation;}
         <span id="mc-saldo" style="font-family:var(--fc);font-size:.95rem;font-weight:700"></span>
       </div>
     </div>
+    <div id="mc-alt-warn" style="display:none;background:rgba(232,154,24,.1);border:1px solid rgba(232,154,24,.4);border-radius:10px;padding:8px 11px;margin-bottom:10px;font-size:.68rem;color:#c07a10;font-weight:700">
+      ⚠️ Esta é uma alteração retroativa. O e-mail será marcado como alteração e a justificativa será incluída.
+    </div>
     <div style="font-size:.68rem;color:var(--t2);margin-bottom:14px;line-height:1.5">
       📧 Após confirmar, o registro será salvo e um e-mail enviado automaticamente para os destinatários cadastrados.
     </div>
@@ -1489,6 +1518,11 @@ function atualizaDataDisplay(){
 
 async function loadRegExistente(){
   limpaFields();
+  // Limpar estado de alteração
+  ST.isAlteracao = false;
+  const just = g('reg-just'); if(just) just.value='';
+  const banner = g('reg-alt-banner'); if(banner) banner.style.display='none';
+
   const{data,error}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).eq('data',ST.regData).single();
   if(data&&!error){
     ST.folga=data.folga;
@@ -1497,6 +1531,13 @@ async function loadRegExistente(){
       [['e',data.entrada],['sa',data.saida_almoco],['ra',data.retorno_almoco],['s',data.saida]].forEach(([id,v])=>{
         if(v){g('i-'+id).value=v.slice(0,5);visualCampo(id,data.rascunho);}
       });
+    }
+    // Detectar alteração retroativa: dia passado E registro já enviado oficialmente
+    const isPassado = ST.regData < hoje();
+    const jaEnviado = !data.rascunho; // já foi registrado e enviado
+    if(isPassado && jaEnviado){
+      ST.isAlteracao = true;
+      if(banner) banner.style.display='block';
     }
   }else{
     // Novo — pré-preencher com padrão
@@ -1527,8 +1568,21 @@ function visualCampo(id,isDraft){
 }
 
 function toggleFolga(){
-  ST.folga=!ST.folga;g('tog').classList.toggle('on',ST.folga);
-  if(ST.folga)limpaFields();
+  ST.folga=!ST.folga;
+  g('tog').classList.toggle('on',ST.folga);
+  if(ST.folga){
+    // Marcando como folga: limpar os campos
+    limpaFields();
+  } else {
+    // Desmarcando folga: restaurar horários padrão para edição
+    const c=ST.cfg;
+    g('i-e').value  = c.entrada?.slice(0,5)        || '08:30';
+    g('i-sa').value = c.saida_almoco?.slice(0,5)   || '12:00';
+    g('i-ra').value = c.retorno_almoco?.slice(0,5) || '13:00';
+    g('i-s').value  = c.saida?.slice(0,5)          || '17:30';
+    // Marcar como rascunho visual (ainda não salvo)
+    ['e','sa','ra','s'].forEach(id=>visualCampo(id,true));
+  }
 }
 
 function coletaH(){
@@ -1540,8 +1594,16 @@ function coletaH(){
 
 async function salvarRascunho(){
   if(!validarFuturo())return;
+  // Alteração retroativa: justificativa obrigatória mesmo no rascunho
+  if(ST.isAlteracao){
+    const just=(g('reg-just')?.value||'').trim();
+    if(!just){toast('Informe a justificativa para salvar a alteração','e');g('reg-just')?.focus();return;}
+  }
   const h=coletaH();
-  const reg={usuario_id:ST.user.id,data:ST.regData,...h,folga:ST.folga,rascunho:true,saldo_minutos:null,enviado_em:null};
+  const just=ST.isAlteracao?(g('reg-just')?.value||'').trim():null;
+  const reg={usuario_id:ST.user.id,data:ST.regData,...h,folga:ST.folga,rascunho:true,
+             saldo_minutos:null,enviado_em:null,
+             ...(just?{justificativa:just}:{})};
   ld(true,'Salvando rascunho...');
   const{error}=await sb.from('registros').upsert(reg,{onConflict:'usuario_id,data'});
   ld(false);
@@ -1554,6 +1616,11 @@ function abrirConfirmacao(){
   if(!validarFuturo())return;
   const h=coletaH();
   if(!ST.folga&&(!h.entrada||!h.saida)){toast('Preencha ao menos entrada e saída','e');return;}
+  // Validar justificativa se for alteração retroativa
+  if(ST.isAlteracao){
+    const just=(g('reg-just')?.value||'').trim();
+    if(!just){toast('Informe a justificativa para a alteração','e');g('reg-just')?.focus();return;}
+  }
 
   // Preencher resumo no modal
   const[y,m,d]=ST.regData.split('-'),dt=new Date(y,m-1,d);
@@ -1581,6 +1648,9 @@ function abrirConfirmacao(){
 
   // Guardar dados para o confirmar
   ST._pendingReg={h,sd};
+  // Mostrar aviso de alteração no modal se necessário
+  const mcWarn=g('mc-alt-warn');
+  if(mcWarn) mcWarn.style.display=ST.isAlteracao?'block':'none';
   g('modal-confirma').classList.add('on');
 }
 
@@ -1591,6 +1661,7 @@ async function confirmarEEnviar(){
 
   // MELHORIA 1: enviado_em vem do servidor via trigger SQL
   // NÃO enviamos enviado_em do cliente — o banco define com now()
+  const justAlt = ST.isAlteracao ? (g('reg-just')?.value||'').trim() : null;
   const reg={
     usuario_id:    ST.user.id,
     data:          ST.regData,
@@ -1599,6 +1670,7 @@ async function confirmarEEnviar(){
     rascunho:      false,
     saldo_minutos: sd||0,
     // enviado_em: OMITIDO — definido pelo trigger fn_set_enviado_em() no Supabase
+    ...(justAlt ? {justificativa: justAlt} : {}),
   };
 
   ld(true,'Registrando...');
@@ -1629,14 +1701,18 @@ async function enviaEmail(r,sd,tsServidor){
   const uniq=[...new Set(dest)];
   // MELHORIA 1: timestamp vem do servidor, não do cliente
   const ts=tsServidor||new Date().toLocaleString('pt-BR');
+  // Flag de alteração retroativa no e-mail
+  const flagAlt = ST.isAlteracao ? '⚠️ ALTERAÇÃO RETROATIVA' : 'Registro normal';
+  const justEmail = ST.isAlteracao ? (g('reg-just')?.value||'').trim() : '';
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
       nome_funcionaria:ST.perfil?.nome||ST.user.email,
-      data_registro:dtBR(r.data),
+      data_registro:dtBR(r.data) + (ST.isAlteracao ? ' ⚠️ ALTERADO' : ''),
       entrada:r.entrada||'—',saida_almoco:r.saida_almoco||'—',
       retorno_almoco:r.retorno_almoco||'—',saida:r.saida||'—',
-      folga:r.folga?'Sim':'Não',saldo_dia:minHM(sd),
-      enviado_em:ts,
+      folga:r.folga?'Sim':'Não',
+      saldo_dia:minHM(sd) + (justEmail ? '\nJustificativa: '+justEmail : ''),
+      enviado_em:ts + (ST.isAlteracao?' | '+flagAlt:''),
       to_email:uniq.join(','),
     });
   }catch(e){toast('Salvo, mas falha no e-mail ⚠️','i',4000);}
