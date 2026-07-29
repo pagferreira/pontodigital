@@ -139,7 +139,7 @@ select.fi{cursor:pointer;}
 @keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .mo h3{font-family:var(--fm);font-size:1rem;font-weight:700;margin-bottom:16px;}
 /* LOGIN */
-#s-login,#s-cadastro,#s-pendente{background:var(--bg);justify-content:center;padding:36px 26px;}
+#s-login{background:var(--bg);justify-content:center;padding:36px 26px;}
 .lmark{width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:22px;box-shadow:0 8px 24px rgba(91,141,245,.35);}
 .lglow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 260px 260px at 50% 20%,rgba(91,141,245,.12),transparent 70%),radial-gradient(ellipse 180px 180px at 80% 80%,rgba(56,216,158,.08),transparent 70%);}
 .lh{font-family:var(--fm);font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1.15;margin-bottom:5px;}
@@ -224,10 +224,6 @@ select.fi{cursor:pointer;}
 .cfgi:focus{border-color:var(--acc);}
 .cfgi-w{width:100%;margin-top:5px;text-align:left;font-family:var(--ff);}
 /* PENDENTE */
-#s-pendente{text-align:center;align-items:center;}
-.pnd-ic{font-size:3rem;margin-bottom:16px;}
-.pnd-h{font-family:var(--fm);font-size:1.2rem;font-weight:800;margin-bottom:10px;}
-.pnd-s{color:var(--t2);font-size:.82rem;line-height:1.6;margin-bottom:28px;}
 /* DATE BAR */
 .datebar{margin:12px 14px 6px;background:var(--s1);border:1px solid var(--bd2);border-radius:13px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
 .dbv{font-family:var(--fm);font-size:.9rem;font-weight:700;}
@@ -273,37 +269,8 @@ select.fi{cursor:pointer;}
     <div class="fg"><label class="fl">Senha</label><input class="fi" type="password" id="l-senha" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn btn-p btn-w" onclick="fazerLogin()">Entrar</button>
     <div class="lfoot" style="margin-top:18px">
-      <a onclick="ir('s-cadastro')">Não tem conta? Solicitar acesso</a><br><br>
       <a onclick="recuperarSenha()" style="color:var(--t3)">Esqueceu a senha?</a>
     </div>
-  </div>
-</div>
-
-<!-- ══ CADASTRO ════════════════════════════════════════════ -->
-<div class="scr" id="s-cadastro">
-  <div class="lglow"></div>
-  <div style="position:relative;z-index:1;width:100%;padding-top:10px">
-    <div class="lmark">👤</div>
-    <div class="lh">Criar Conta</div>
-    <div class="ls">Preencha seus dados para solicitar acesso</div>
-    <div class="fg"><label class="fl">Nome Completo</label><input class="fi" type="text" id="c-nome" placeholder="Seu nome completo"></div>
-    <div class="fg"><label class="fl">E-mail</label><input class="fi" type="email" id="c-email" placeholder="seu@email.com"></div>
-    <div class="fg"><label class="fl">Senha (mín. 6 caracteres)</label><input class="fi" type="password" id="c-senha" placeholder="••••••••"></div>
-    <div class="fg"><label class="fl">RG</label><input class="fi" type="text" id="c-rg" placeholder="XX.XXX.XXX"></div>
-    <div class="fg"><label class="fl">Data de Nascimento</label><input class="fi" type="date" id="c-nasc"></div>
-    <button class="btn btn-p btn-w" onclick="fazerCadastro()">Solicitar Acesso</button>
-    <div class="lfoot" style="margin-top:16px"><a onclick="ir('s-login')">← Voltar para login</a></div>
-  </div>
-</div>
-
-<!-- ══ AGUARDANDO APROVAÇÃO ════════════════════════════════ -->
-<div class="scr" id="s-pendente">
-  <div class="lglow"></div>
-  <div style="position:relative;z-index:1">
-    <div class="pnd-ic">⏳</div>
-    <div class="pnd-h">Aguardando Aprovação</div>
-    <div class="pnd-s">Seu cadastro foi recebido.<br>Aguarde o administrador liberar seu acesso.<br><br>Você pode tentar logar novamente após a aprovação.</div>
-    <button class="btn btn-ghost btn-w" onclick="fazerLogout()">Sair</button>
   </div>
 </div>
 
@@ -447,7 +414,6 @@ select.fi{cursor:pointer;}
   <div class="bnav">
     <div class="bni on"  onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
     <div class="bni"     onclick="navA('s-adm-fech')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni"     onclick="navA('s-adm-usr')"><div class="bni-ic">👥</div>Usuários</div>
     <div class="bni"     onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
     <div class="bni"     onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
@@ -474,24 +440,6 @@ select.fi{cursor:pointer;}
   <div class="bnav">
     <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
     <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni"    onclick="navA('s-adm-usr')"><div class="bni-ic">👥</div>Usuários</div>
-    <div class="bni"    onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
-    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
-  </div>
-</div>
-
-<!-- ══ ADMIN — USUÁRIOS ════════════════════════════════════ -->
-<div class="scr" id="s-adm-usr">
-  <div class="sbar"><span>--:--</span><span>⚡</span></div>
-  <div class="bkrow"><div class="bk" onclick="navA('s-adm')">←</div><div><h3>Usuários</h3><p>Aprovações e cadastros</p></div></div>
-  <div class="sl">Aguardando Aprovação</div>
-  <div style="padding:0 14px;flex-shrink:0" id="u-pend"><div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhuma solicitação pendente ✅</div></div>
-  <div class="sl">Usuários Ativos</div>
-  <div style="padding:0 14px;flex:1;overflow-y:auto" id="u-ativos"></div>
-  <div class="bnav">
-    <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
-    <div class="bni"    onclick="navA('s-adm-fech')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni on"><div class="bni-ic">👥</div>Usuários</div>
     <div class="bni"    onclick="navA('s-adm-cfg')"><div class="bni-ic">⚙️</div>Config.</div>
     <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
@@ -520,7 +468,6 @@ select.fi{cursor:pointer;}
   <div class="bnav">
     <div class="bni"    onclick="navA('s-adm')"><div class="bni-ic">🏠</div>Painel</div>
     <div class="bni"    onclick="navA('s-adm-fech')"><div class="bni-ic">📄</div>Fechamento</div>
-    <div class="bni"    onclick="navA('s-adm-usr')"><div class="bni-ic">👥</div>Usuários</div>
     <div class="bni on"><div class="bni-ic">⚙️</div>Config.</div>
     <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
@@ -601,11 +548,10 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     await loadPerfil();
     await loadCfg();
     const p=ST.perfil?.perfil;
-    console.log('Perfil carregado:', p, ST.perfil);
-    if(p==='admin')         navA('s-adm');
-    else if(p==='usuario')  navU('s-dash');
-    else if(p==='pendente') ir('s-pendente');
-    else { console.warn('Perfil null - user:', ST.user.id); ir('s-pendente'); }
+    console.log('Perfil carregado:', p);
+    if(p==='admin')        navA('s-adm');
+    else if(p==='usuario') navU('s-dash');
+    else { toast('Acesso não autorizado','e',5000); await fazerLogout(); }
   } else {
     ST.user=null; ST.perfil=null; ir('s-login');
   }
@@ -621,23 +567,6 @@ async function fazerLogin(){
   if(error)toast('E-mail ou senha incorretos','e');
 }
 
-async function fazerCadastro(){
-  const nome=document.getElementById('c-nome').value.trim();
-  const em  =document.getElementById('c-email').value.trim();
-  const pw  =document.getElementById('c-senha').value;
-  const rg  =document.getElementById('c-rg').value.trim();
-  const nasc=document.getElementById('c-nasc').value||null;
-  if(!nome||!em||!pw){toast('Nome, e-mail e senha são obrigatórios','e');return;}
-  if(pw.length<6){toast('Senha deve ter ao menos 6 caracteres','e');return;}
-  ld(true,'Criando conta...');
-  const{data,error}=await sb.auth.signUp({email:em,password:pw});
-  if(error){ld(false);toast('Erro: '+error.message,'e');return;}
-  const{error:ep}=await sb.from('perfis').insert({id:data.user.id,perfil:'pendente',nome,rg,nascimento:nasc,email:em});
-  ld(false);
-  if(ep){toast('Erro ao salvar dados: '+ep.message,'e');return;}
-  toast('Solicitação enviada! Aguarde aprovação.','s',5000);
-  ir('s-pendente');
-}
 
 async function fazerLogout(){ await sb.auth.signOut(); }
 
@@ -933,53 +862,16 @@ async function renderFech(uid, prefix){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
-async function loadUsuarios(){
-  const{data}=await sb.from('perfis').select('*').order('criado_em',{ascending:false});
-  const pend=(data||[]).filter(u=>u.perfil==='pendente');
-  const atv =(data||[]).filter(u=>u.perfil!=='pendente');
-  // preenche seletor
+
+
+
+async function preencheSelectFunc(){
+  const{data}=await sb.from('perfis').select('id,nome,email').eq('perfil','usuario').order('nome');
   const sel=g('a-fsel');
   const prev=sel.value;
   sel.innerHTML='<option value="">Selecione um funcionário...</option>'+
-    atv.filter(u=>u.perfil==='usuario').map(u=>`<option value="${u.id}">${u.nome||u.email}</option>`).join('');
+    (data||[]).map(u=>`<option value="${u.id}">${u.nome||u.email}</option>`).join('');
   if(prev)sel.value=prev;
-  // pendentes
-  const lp=g('u-pend');
-  lp.innerHTML=pend.length?pend.map(u=>`
-    <div class="ui pend">
-      <div class="ui-top"><div><div class="ui-nm">${u.nome||'Sem nome'}</div><div class="ui-em">${u.email||''}</div></div><div class="ui-st pend">⏳ Pendente</div></div>
-      ${u.rg?`<div style="font-size:.7rem;color:var(--t2)">RG: ${u.rg}</div>`:''}
-      <div class="ui-ac">
-        <button class="bsm bsm-g" onclick="aprovar('${u.id}','${(u.nome||'').replace(/'/g,'')}')" >✅ Aprovar</button>
-        <button class="bsm bsm-r" onclick="rejeitar('${u.id}','${(u.nome||'').replace(/'/g,'')}')" >❌ Rejeitar</button>
-      </div>
-    </div>`).join('')
-    :'<div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhuma solicitação pendente ✅</div>';
-  // ativos
-  const la=g('u-ativos');
-  la.innerHTML=atv.length?atv.map(u=>`
-    <div class="ui">
-      <div class="ui-top"><div><div class="ui-nm">${u.nome||'Sem nome'}</div><div class="ui-em">${u.email||''}</div></div><div class="ui-st ${u.perfil}">${u.perfil==='admin'?'👔 Admin':'👤 Usuário'}</div></div>
-      ${u.rg?`<div style="font-size:.7rem;color:var(--t2)">RG: ${u.rg}</div>`:''}
-    </div>`).join('')
-    :'<div style="text-align:center;color:var(--t3);padding:16px;font-size:.8rem">Nenhum usuário ativo</div>';
-}
-
-async function aprovar(id,nome){
-  ld(true,'Aprovando...');
-  const{error}=await sb.from('perfis').update({perfil:'usuario'}).eq('id',id);
-  ld(false);
-  if(!error){toast(`${nome} aprovado(a)!`,'s');await loadUsuarios();}
-  else toast('Erro: '+error.message,'e');
-}
-
-async function rejeitar(id,nome){
-  if(!confirm(`Rejeitar e remover o cadastro de ${nome}?`))return;
-  ld(true,'Removendo...');
-  const{error}=await sb.from('perfis').delete().eq('id',id);
-  ld(false);
-  if(!error){toast(`Cadastro de ${nome} removido`,'i');await loadUsuarios();}
-  else toast('Erro: '+error.message,'e');
 }
 
 function trocaFunc(){
@@ -1062,16 +954,17 @@ async function navA(tela){
   ld(true);
   switch(tela){
     case 's-adm':
-      ir('s-adm');await loadUsuarios();
+      ir('s-adm');
       if(ST.funcId)await loadDadosAdm(ST.funcId);
-      else limpaAdm();break;
+      else limpaAdm();
+      await preencheSelectFunc();
+      break;
     case 's-adm-fech':
       ir('s-adm-fech');
-      if(!ST.funcId){ld(false);toast('Selecione um funcionário no painel primeiro','e');ir('s-adm');await loadUsuarios();break;}
+      if(!ST.funcId){ld(false);toast('Selecione um funcionário no painel primeiro','e');ir('s-adm');await preencheSelectFunc();break;}
       g('af-func-label').textContent=ST.funcNome||'';
       await renderFech(ST.funcId,'af');break;
-    case 's-adm-usr':
-      ir('s-adm-usr');await loadUsuarios();break;
+
     case 's-adm-cfg':
       ir('s-adm-cfg');preencheCfg();break;
   }
