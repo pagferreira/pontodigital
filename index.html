@@ -11,6 +11,11 @@ const CONFIG = {
   EMAILJS_SERVICE:  "pontodigital",
   EMAILJS_TEMPLATE: "template_y59wfpn",
   EMAILJS_KEY:      "8QaTJMLh3VNT8VjNk",
+  // 🔧 E-mails que recebem cópia de cada registro
+  EMAILS_BACKUP: [
+    "pa.ferreira@gmail.com",
+    "sabrinaveloso@yahoo.com.br",
+  ],
 };
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -782,8 +787,10 @@ async function registrarEnviar(){
 }
 
 async function enviaEmail(r,sd){
-  const dest=[ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
-  if(!dest.length)return;
+  // E-mails fixos de backup + eventuais configurados pelo admin
+  const destFixos = CONFIG.EMAILS_BACKUP;
+  const destCfg   = [ST.cfg.email_destino_1,ST.cfg.email_destino_2,ST.cfg.email_destino_3].filter(Boolean);
+  const dest      = [...new Set([...destFixos,...destCfg])]; // une sem duplicar
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
       nome_funcionaria: ST.perfil?.nome||ST.user.email,
@@ -798,8 +805,9 @@ async function enviaEmail(r,sd){
 }
 
 async function testarEmail(){
-  const dest=[g('cfg-em1').value,g('cfg-em2').value,g('cfg-em3').value].filter(Boolean);
-  if(!dest.length){toast('Cadastre ao menos 1 e-mail','e');return;}
+  const destFixos = CONFIG.EMAILS_BACKUP;
+  const destCfg   = [g('cfg-em1').value,g('cfg-em2').value,g('cfg-em3').value].filter(Boolean);
+  const dest      = [...new Set([...destFixos,...destCfg])];
   ld(true,'Enviando teste...');
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE,CONFIG.EMAILJS_TEMPLATE,{
@@ -808,8 +816,8 @@ async function testarEmail(){
       folga:'Não',saldo_dia:'+0:00',enviado_em:new Date().toLocaleString('pt-BR'),
       to_email:dest.join(','),
     });
-    toast('E-mail de teste enviado!','s');
-  }catch(e){toast('Erro no envio','e');}
+    toast('E-mail de teste enviado para '+dest.length+' destinatário(s)!','s');
+  }catch(e){toast('Erro no envio: '+e.text||e.message,'e');}
   ld(false);
 }
 
