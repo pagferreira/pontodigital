@@ -302,6 +302,7 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
     <button class="btn btn-p btn-w" onclick="fazerLogin()">Entrar</button>
     <div class="lfoot" style="margin-top:18px">
       <a onclick="recuperarSenha()" style="color:var(--t3)">Esqueceu a senha?</a>
+      <div style="margin-top:12px;color:var(--t3);font-size:.62rem;font-family:var(--fc)">v2.1</div>
     </div>
   </div>
 </div>
@@ -311,7 +312,7 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
   <div class="sbar"><span id="d-hr">09:41</span><span>⚡</span></div>
   <div class="topbar">
     <div><h2 id="d-sauda">Bom dia 👋</h2><span id="d-sub">carregando...</span></div>
-    <div class="av" id="d-av">?</div>
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-size:.58rem;color:var(--t3);font-family:var(--fc)">v2.1</span><div class="av" id="d-av">?</div></div>
   </div>
   <div class="sl">Banco de Horas — <span id="d-mes"></span></div>
   <div class="cards2">
@@ -751,8 +752,8 @@ async function renderCal(){
   let ok=0,rasc=0,pend=0;
   u.forEach(d=>{const r=mp[d];if(!r){if(d<=hj)pend++;}else if(r.folga)ok++;else if(r.rascunho)rasc++;else ok++;});
   g('d-dias').textContent=`${ok}/${u.length}`;
-  g('d-rasc').textContent=rasc;
-  g('d-pend').textContent=pend;
+  // d-rasc removido — card substituído por 'Hoje'
+  const el_pend=g('d-pend');if(el_pend)el_pend.textContent=pend;
   // saldo
   const{data:rs}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).gte('data',ini).lte('data',fim).eq('rascunho',false);
   let tot=0;(rs||[]).forEach(r=>{if(!r.folga)tot+=saldo(r,ST.cfg);});
@@ -1092,44 +1093,66 @@ function g(id){return document.getElementById(id);}
 
 async function navU(tela){
   ld(true);
-  switch(tela){
-    case 's-dash':
-      ir('s-dash');
-      const h=new Date().getHours();
-      g('d-sauda').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+' 👋';
-      g('d-sub').textContent=`${MESES[ST.mes]} ${ST.ano}`;
-      g('d-hr').textContent=new Date().toTimeString().slice(0,5);
-      renderPerfil(); atualizaCardHoje(); await renderCal(); break;
-    case 's-reg':
-      ir('s-reg');ST.regData=hoje();
-      atualizaDataDisplay();await loadRegExistente();break;
-    case 's-perfil':
-      ir('s-perfil');preenchePerfil();break;
-    case 's-fech':
-      ir('s-fech');await renderFech(ST.user.id,'f');break;
+  try{
+    switch(tela){
+      case 's-dash': {
+        ir('s-dash');
+        const hr=new Date().getHours();
+        g('d-sauda').textContent=(hr<12?'Bom dia':hr<18?'Boa tarde':'Boa noite')+' 👋';
+        g('d-sub').textContent=`${MESES[ST.mes]} ${ST.ano}`;
+        g('d-hr').textContent=new Date().toTimeString().slice(0,5);
+        renderPerfil(); atualizaCardHoje(); await renderCal(); break;
+      }
+      case 's-reg': {
+        ir('s-reg'); ST.regData=hoje();
+        atualizaDataDisplay(); await loadRegExistente(); break;
+      }
+      case 's-perfil': {
+        ir('s-perfil'); preenchePerfil(); break;
+      }
+      case 's-fech': {
+        ir('s-fech'); await renderFech(ST.user.id,'f'); break;
+      }
+    }
+  } catch(e){
+    console.error('navU erro:', e);
+    toast('Erro ao carregar tela. Tente novamente.','e');
+  } finally {
+    ld(false);
   }
-  ld(false);
 }
 
 async function navA(tela){
   ld(true);
-  switch(tela){
-    case 's-adm':
-      ir('s-adm');
-      if(ST.funcId)await loadDadosAdm(ST.funcId);
-      else limpaAdm();
-      await preencheSelectFunc();
-      break;
-    case 's-adm-fech':
-      ir('s-adm-fech');
-      if(!ST.funcId){ld(false);toast('Selecione um funcionário no painel primeiro','e');ir('s-adm');await preencheSelectFunc();break;}
-      g('af-func-label').textContent=ST.funcNome||'';
-      await renderFech(ST.funcId,'af');break;
-
-    case 's-adm-cfg':
-      ir('s-adm-cfg');preencheCfg();break;
+  try{
+    switch(tela){
+      case 's-adm': {
+        ir('s-adm');
+        if(ST.funcId) await loadDadosAdm(ST.funcId);
+        else limpaAdm();
+        await preencheSelectFunc();
+        break;
+      }
+      case 's-adm-fech': {
+        ir('s-adm-fech');
+        if(!ST.funcId){
+          toast('Selecione um funcionário no painel primeiro','e');
+          ir('s-adm'); await preencheSelectFunc(); break;
+        }
+        g('af-func-label').textContent=ST.funcNome||'';
+        await renderFech(ST.funcId,'af');
+        break;
+      }
+      case 's-adm-cfg': {
+        ir('s-adm-cfg'); preencheCfg(); break;
+      }
+    }
+  } catch(e){
+    console.error('navA erro:', e);
+    toast('Erro ao carregar tela. Tente novamente.','e');
+  } finally {
+    ld(false);
   }
-  ld(false);
 }
 </script>
 </body>
