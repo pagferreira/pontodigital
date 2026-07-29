@@ -314,34 +314,64 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
     <div><h2 id="d-sauda">Bom dia 👋</h2><span id="d-sub">carregando...</span></div>
     <div style="display:flex;align-items:center;gap:8px"><span style="font-size:.58rem;color:var(--t3);font-family:var(--fc)">v2.1</span><div class="av" id="d-av">?</div></div>
   </div>
-  <div class="sl">Banco de Horas — <span id="d-mes"></span></div>
-  <div class="cards2">
-    <div class="card cg"><div style="font-size:1.1rem">⏱</div><div class="cv g" id="d-saldo">--:--</div><div class="cl">Saldo do mês</div></div>
-    <div class="card cb"><div style="font-size:1.1rem">📅</div><div class="cv b" id="d-dias">-/-</div><div class="cl">Dias preenchidos</div></div>
-    <div class="card" style="border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);cursor:pointer" onclick="irRegistro(null)">
-      <div style="font-size:1.1rem">📌</div>
-      <div class="cv b" id="d-hoje-num" style="font-size:1.5rem;line-height:1"></div>
-      <div class="cl" id="d-hoje-label">Hoje</div>
-    </div>
-    <div class="card cr"><div style="font-size:1.1rem">⚠️</div><div class="cv r" id="d-pend">0</div><div class="cl">Pendentes</div></div>
+  <!-- Banco de horas + Hoje em linha única -->
+  <div style="padding:6px 14px 4px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+    <span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)">Banco de Horas — <span id="d-mes"></span></span>
   </div>
-  <div class="sl">Calendário — <span id="d-cal-tit"></span></div>
-  <div class="cal">
-    <div class="cal-top"><span class="cal-mo" id="cal-mo"></span><div class="cal-nav"><div class="cal-nb" onclick="calNav(-1)">‹</div><div class="cal-nb" onclick="calNav(1)">›</div></div></div>
-    <div class="cal-dn"><div class="cal-d">D</div><div class="cal-d">S</div><div class="cal-d">T</div><div class="cal-d">Q</div><div class="cal-d">Q</div><div class="cal-d">S</div><div class="cal-d">S</div></div>
+  <!-- 4 cards compactos -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:0 14px;flex-shrink:0">
+    <div class="card cg" style="padding:8px 10px">
+      <div style="font-size:.85rem">⏱</div>
+      <div class="cv g" id="d-saldo" style="font-size:.95rem;margin-top:4px">--:--</div>
+      <div class="cl" style="font-size:.58rem">Saldo</div>
+    </div>
+    <div class="card cb" style="padding:8px 10px">
+      <div style="font-size:.85rem">📅</div>
+      <div class="cv b" id="d-dias" style="font-size:.95rem;margin-top:4px">-/-</div>
+      <div class="cl" style="font-size:.58rem">Dias OK</div>
+    </div>
+    <div class="card" style="padding:8px 10px;border-color:rgba(91,141,245,.28);background:rgba(91,141,245,.05);cursor:pointer" onclick="irRegistro(null)">
+      <div style="font-size:.85rem">📌</div>
+      <div class="cv b" id="d-hoje-num" style="font-size:1.1rem;line-height:1;margin-top:4px"></div>
+      <div class="cl" id="d-hoje-label" style="font-size:.58rem">Hoje</div>
+    </div>
+    <div class="card cr" style="padding:8px 10px">
+      <div style="font-size:.85rem">⚠️</div>
+      <div class="cv r" id="d-pend" style="font-size:.95rem;margin-top:4px">0</div>
+      <div class="cl" style="font-size:.58rem">Pendentes</div>
+    </div>
+  </div>
+  <!-- Calendário compacto -->
+  <div style="padding:6px 14px 2px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+    <span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)">Calendário — <span id="d-cal-tit"></span></span>
+    <div style="display:flex;gap:4px">
+      <div class="cal-nb" onclick="calNav(-1)">‹</div>
+      <span class="cal-mo" id="cal-mo" style="font-size:.75rem;font-weight:700;align-self:center"></span>
+      <div class="cal-nb" onclick="calNav(1)">›</div>
+    </div>
+  </div>
+  <div style="padding:0 14px;flex-shrink:0">
+    <div class="cal-dn" style="margin-bottom:2px">
+      <div class="cal-d">D</div><div class="cal-d">S</div><div class="cal-d">T</div>
+      <div class="cal-d">Q</div><div class="cal-d">Q</div><div class="cal-d">S</div><div class="cal-d">S</div>
+    </div>
     <div class="cal-cells" id="cal-cells"></div>
   </div>
-  <div class="leg">
-    <div class="li"><div class="ld" style="background:var(--green)"></div>Registrado</div>
-    <div class="li"><div class="ld" style="background:var(--draft)"></div>Rascunho</div>
-    <div class="li"><div class="ld" style="background:var(--red)"></div>Pendente</div>
-    <div class="li"><div class="ld" style="background:var(--blue)"></div>Folga</div>
-    <div class="li"><div class="ld" style="background:var(--acc)"></div>Hoje</div>
+  <!-- Legenda + botão em linha -->
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 14px 8px;flex-shrink:0;flex-wrap:wrap;gap:4px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="li"><div class="ld" style="background:var(--green)"></div>OK</div>
+      <div class="li"><div class="ld" style="background:var(--draft)"></div>Rascunho</div>
+      <div class="li"><div class="ld" style="background:var(--red)"></div>Pendente</div>
+      <div class="li"><div class="ld" style="background:var(--blue)"></div>Folga</div>
+      <div class="li"><div class="ld" style="background:var(--acc)"></div>Hoje</div>
+    </div>
   </div>
-  <div style="margin:4px 14px 14px"><button class="btn btn-g btn-w" onclick="irRegistro(null)">＋ Registrar ponto de hoje</button></div>
+  <div style="margin:0 14px 8px;flex-shrink:0">
+    <button class="btn btn-g btn-w" style="padding:11px" onclick="irRegistro(null)">＋ Registrar ponto de hoje</button>
+  </div>
   <div class="bnav">
     <div class="bni on"  onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni"     onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni"     onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"     onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
     <div class="bni"     onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
@@ -398,7 +428,6 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
   </div>
   <div class="bnav">
     <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni on"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni"    onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
     <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
@@ -423,7 +452,6 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
   <div style="margin:0 14px 20px"><button class="btn btn-p btn-w" onclick="salvarPerfil()">Salvar Dados</button></div>
   <div class="bnav">
     <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni"    onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni on"><div class="bni-ic">👤</div>Perfil</div>
     <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
@@ -456,14 +484,19 @@ input[type="time"], input[type="text"], input[type="email"], input[type="date"],
     <div class="sig"><div class="sig-ln"></div><div class="sig-lb">Empregador</div><div class="sig-nm" id="f-sig-em">—</div></div>
   </div>
   <!-- Ações -->
-  <div style="margin:8px 14px 4px" class="btn-pair">
-    <button class="btn btn-r" onclick="exportarPDF('s-fech')">📄 Exportar PDF</button>
-    <button class="btn" style="background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);color:var(--acc)" onclick="enviarFechamentoEmail()">📧 Enviar E-mail</button>
+  <div style="margin:8px 14px 0;display:flex;flex-direction:column;gap:8px">
+    <div class="btn-pair">
+      <button class="btn btn-r" style="font-size:.8rem" onclick="exportarPDF('s-fech')">📄 Exportar PDF</button>
+      <button class="btn" style="background:rgba(91,141,245,.12);border:1px solid rgba(91,141,245,.28);color:var(--acc);font-size:.8rem" onclick="enviarFechamentoEmail()">📧 Enviar por E-mail</button>
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;font-size:.67rem;color:var(--t2);line-height:1.5">
+      📄 <b style="color:var(--t1)">PDF:</b> abre janela de impressão — escolha "Salvar como PDF" no seu dispositivo<br>
+      📧 <b style="color:var(--t1)">E-mail:</b> envia o relatório detalhado em formato texto para os destinatários cadastrados
+    </div>
   </div>
-  <div style="margin:4px 14px 20px;font-size:.68rem;color:var(--t3);text-align:center">O PDF abre a janela de impressão do sistema</div>
+  <div style="height:16px"></div>
   <div class="bnav">
     <div class="bni"    onclick="navU('s-dash')"><div class="bni-ic">🏠</div>Início</div>
-    <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
     <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
@@ -1065,26 +1098,60 @@ async function enviarFechamentoEmail(){
   const dest      = [...new Set([...destFixos,...destCfg])];
   if(!dest.length){toast('Nenhum e-mail cadastrado','e');return;}
   const d = ST.fechDados || {};
-  // Montar resumo em texto
-  const rows = Array.from(g('f-body')?.querySelectorAll('tr')||[])
-    .map(tr=>Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim()).join(' | '))
-    .join('\n');
-  ld(true,'Enviando fechamento...');
+
+  // Montar tabela detalhada em texto simples
+  const linhas = Array.from(g('f-body')?.querySelectorAll('tr')||[]).map(tr=>{
+    const cols = Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim());
+    if(!cols.length) return '';
+    // formato: 01 | Seg | 08:30 | 12:00 | 13:00 | 17:30 | +0:00
+    return cols.join(' | ');
+  }).filter(Boolean).join('\n');
+
+  const cabecalho = [
+    '================================',
+    `RELATÓRIO DE PONTO — ${(d.ini||'').slice(3)} `,
+    '================================',
+    `Funcionário(a): ${d.nm||'—'}`,
+    `RG: ${d.rg||'—'}`,
+    `Período: ${d.ini||'—'} a ${d.fim||'—'}`,
+    '',
+    `Contratado : ${d.contratado||'—'}`,
+    `Trabalhado : ${d.trabalhado||'—'}`,
+    `Saldo Final: ${d.saldo||'—'}`,
+    '',
+    'Data | Dia | Entrada | S.Almoço | R.Almoço | Saída | Saldo',
+    '-----------------------------------------------------------',
+    linhas,
+    '-----------------------------------------------------------',
+    '',
+    'Assinatura Funcionário(a): ____________________',
+    `Nome: ${d.nm||'—'}   RG: ${d.rg||'—'}`,
+    '',
+    'Assinatura Empregador: ____________________',
+    '',
+    `Gerado em: ${new Date().toLocaleString('pt-BR')}`,
+    'Sistema de Ponto Eletrônico',
+  ].join('\n');
+
+  ld(true,'Enviando relatório...');
   try{
     await emailjs.send(CONFIG.EMAILJS_SERVICE, CONFIG.EMAILJS_TEMPLATE,{
       nome_funcionaria: d.nm || ST.perfil?.nome || '—',
-      data_registro:    `Fechamento ${d.ini||''} a ${d.fim||''}`,
-      entrada:          `Contratado: ${d.contratado||'—'}`,
-      saida_almoco:     `Trabalhado: ${d.trabalhado||'—'}`,
-      retorno_almoco:   `Saldo: ${d.saldo||'—'}`,
+      data_registro:    `Fechamento Mensal: ${d.ini||''} – ${d.fim||''}`,
+      entrada:          cabecalho,       // usamos campo 'entrada' para o corpo completo
+      saida_almoco:     `Saldo: ${d.saldo||'—'}`,
+      retorno_almoco:   `Contratado: ${d.contratado||'—'} | Trabalhado: ${d.trabalhado||'—'}`,
       saida:            `RG: ${d.rg||'—'}`,
-      folga:            '—',
+      folga:            'Relatório Mensal',
       saldo_dia:        d.saldo||'—',
       enviado_em:       new Date().toLocaleString('pt-BR'),
       to_email:         dest.join(','),
     });
-    toast('Fechamento enviado para '+dest.length+' e-mail(s)! 📧','s');
-  }catch(e){toast('Erro no envio: '+(e.text||e.message||'verifique o console'),'e');}
+    toast('Relatório enviado para '+dest.length+' destinatário(s)! 📧','s',4000);
+  }catch(e){
+    console.error('Email fechamento erro:',e);
+    toast('Erro no envio: '+(e.text||e.message||'verifique o console'),'e');
+  }
   ld(false);
 }
 
