@@ -111,7 +111,7 @@ select.fi{cursor:pointer;}
 .tf.ok{border-color:rgba(56,216,158,.38);background:rgba(56,216,158,.04);}
 .tf.dr{border-color:rgba(245,159,66,.38);background:rgba(245,159,66,.04);}
 .tfl{font-size:.66rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
-.tfv{font-family:var(--fc);font-size:1.25rem;font-weight:600;background:transparent;border:none;color:var(--t1);outline:none;width:90px;}
+.tfv{font-family:var(--fc);font-size:1.25rem;font-weight:600;background:transparent;border:none;color:var(--t1);outline:none;width:100%;min-width:0;-webkit-appearance:none;cursor:pointer;}
 .tfv::placeholder{color:var(--t3);}
 .tfic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
 .tfic-ok{background:var(--green);color:#fff;}
@@ -312,6 +312,7 @@ select.fi{cursor:pointer;}
     <div class="bni"     onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni"     onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"     onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"     onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
@@ -325,10 +326,34 @@ select.fi{cursor:pointer;}
   </div>
   <div class="sl">Horários</div>
   <div class="tfs">
-    <div class="tf" id="tf-e"><div><div class="tfl">🌅 Entrada</div><input type="time" class="tfv" id="i-e" onchange="mudaCampo('e')"></div><div class="tfic tfic-pend" id="ic-e"></div></div>
-    <div class="tf" id="tf-sa"><div><div class="tfl">🍽 Saída Almoço</div><input type="time" class="tfv" id="i-sa" onchange="mudaCampo('sa')"></div><div class="tfic tfic-pend" id="ic-sa"></div></div>
-    <div class="tf" id="tf-ra"><div><div class="tfl">↩ Retorno Almoço</div><input type="time" class="tfv" id="i-ra" onchange="mudaCampo('ra')"></div><div class="tfic tfic-pend" id="ic-ra"></div></div>
-    <div class="tf" id="tf-s"><div><div class="tfl">🌙 Saída</div><input type="time" class="tfv" id="i-s" onchange="mudaCampo('s')"></div><div class="tfic tfic-pend" id="ic-s"></div></div>
+    <div class="tf" id="tf-e">
+      <div style="flex:1;min-width:0">
+        <div class="tfl">🌅 Entrada</div>
+        <input type="time" class="tfv" id="i-e" oninput="mudaCampo('e')" onchange="mudaCampo('e')" onclick="this.showPicker&&this.showPicker()">
+      </div>
+      <div class="tfic tfic-pend" id="ic-e"></div>
+    </div>
+    <div class="tf" id="tf-sa">
+      <div style="flex:1;min-width:0">
+        <div class="tfl">🍽 Saída Almoço</div>
+        <input type="time" class="tfv" id="i-sa" oninput="mudaCampo('sa')" onchange="mudaCampo('sa')" onclick="this.showPicker&&this.showPicker()">
+      </div>
+      <div class="tfic tfic-pend" id="ic-sa"></div>
+    </div>
+    <div class="tf" id="tf-ra">
+      <div style="flex:1;min-width:0">
+        <div class="tfl">↩ Retorno Almoço</div>
+        <input type="time" class="tfv" id="i-ra" oninput="mudaCampo('ra')" onchange="mudaCampo('ra')" onclick="this.showPicker&&this.showPicker()">
+      </div>
+      <div class="tfic tfic-pend" id="ic-ra"></div>
+    </div>
+    <div class="tf" id="tf-s">
+      <div style="flex:1;min-width:0">
+        <div class="tfl">🌙 Saída</div>
+        <input type="time" class="tfv" id="i-s" oninput="mudaCampo('s')" onchange="mudaCampo('s')" onclick="this.showPicker&&this.showPicker()">
+      </div>
+      <div class="tfic tfic-pend" id="ic-s"></div>
+    </div>
   </div>
   <div class="tog-row" style="margin-top:10px">
     <div><div style="font-size:.85rem;font-weight:700">🌴 Marcar como Folga</div><div style="font-size:.68rem;color:var(--t2);margin-top:2px">Dia não útil ou folga eventual</div></div>
@@ -344,6 +369,7 @@ select.fi{cursor:pointer;}
     <div class="bni on"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni"    onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
@@ -368,6 +394,7 @@ select.fi{cursor:pointer;}
     <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni"    onclick="navU('s-fech')"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni on"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
@@ -394,6 +421,7 @@ select.fi{cursor:pointer;}
     <div class="bni"    onclick="navU('s-reg')"><div class="bni-ic">⏱</div>Registro</div>
     <div class="bni on"><div class="bni-ic">📄</div>Fechamento</div>
     <div class="bni"    onclick="navU('s-perfil')"><div class="bni-ic">👤</div>Perfil</div>
+    <div class="bni"    onclick="fazerLogout()"><div class="bni-ic">🚪</div>Sair</div>
   </div>
 </div>
 
@@ -718,9 +746,10 @@ function atualizaDataDisplay(){
 }
 
 async function loadRegExistente(){
-  limpaFields(false);
-  const{data}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).eq('data',ST.regData).single();
-  if(data){
+  limpaFields();
+  const{data,error}=await sb.from('registros').select('*').eq('usuario_id',ST.user.id).eq('data',ST.regData).single();
+  if(data && !error){
+    // Registro existente — carregar os dados salvos
     ST.folga=data.folga;
     g('tog').classList.toggle('on',data.folga);
     if(!data.folga){
@@ -728,10 +757,19 @@ async function loadRegExistente(){
         if(v){g('i-'+id).value=v.slice(0,5);visualCampo(id,data.rascunho);}
       });
     }
+  } else {
+    // Novo registro — pré-preencher com horário padrão configurado
+    const c=ST.cfg;
+    g('i-e').value  = c.entrada?.slice(0,5)        || '08:30';
+    g('i-sa').value = c.saida_almoco?.slice(0,5)   || '12:00';
+    g('i-ra').value = c.retorno_almoco?.slice(0,5) || '13:00';
+    g('i-s').value  = c.saida?.slice(0,5)          || '17:30';
+    // Marcar visualmente como rascunho (ainda não salvo)
+    ['e','sa','ra','s'].forEach(id=>visualCampo(id,true));
   }
 }
 
-function limpaFields(isDraft){
+function limpaFields(){
   ['e','sa','ra','s'].forEach(id=>{
     const inp=g('i-'+id);if(inp)inp.value='';
     const tf=g('tf-'+id);if(tf)tf.classList.remove('ok','dr');
@@ -750,7 +788,7 @@ function visualCampo(id,isDraft){
 
 function toggleFolga(){
   ST.folga=!ST.folga;g('tog').classList.toggle('on',ST.folga);
-  if(ST.folga)limpaFields(false);
+  if(ST.folga)limpaFields();
 }
 
 function coletaH(){
